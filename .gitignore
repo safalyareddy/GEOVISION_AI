@@ -1,0 +1,27 @@
+venv/
+__pycache__/
+.pytest_cache/
+dataset/
+checkpoints/
+logs/
+mlflow.db
+*.pth
+*.ckpt
+*.onnx
+*.onnx.data
+.DS_Store
+
+# Model checkpoints
+checkpoints/
+
+# Training logs
+logs/
+
+# MLFlow
+mlflow.db
+
+# Model weights
+*.pth
+*.ckpt
+*.onnx
+*.onnx.data

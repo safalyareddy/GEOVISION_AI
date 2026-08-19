@@ -1,0 +1,4 @@
+name: "segformer"
+encoder_name: "nvidia/mit-b2"
+in_channels: 3
+classes: 1

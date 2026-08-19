@@ -1,0 +1,23 @@
+defaults:
+  - _self_
+  - model: unet_plusplus
+
+dataset:
+  data_root: "dataset"
+  size: 256
+  batch_size: 16
+  num_workers: 2
+
+training:
+  epochs: 5
+  lr: 0.001
+  weight_decay: 0.0001
+  precision: "32"
+  val_check_interval: 1.0
+
+loss:
+  dice_weight: 0.5
+  focal_weight: 0.5
+
+onnx:
+  export_path: "checkpoints/weights.onnx"
