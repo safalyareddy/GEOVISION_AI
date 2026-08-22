@@ -1,0 +1,13 @@
+# GeoVision AI — Satellite Dataset Configuration
+
+dataset:
+  raw_dir: "dataset/raw"
+  prepared_dir: "dataset/prepared"
+  image_dir_name: "images"
+  mask_dir_name: "masks"
+  supported_extensions:
+    - ".png"
+    - ".jpg"
+    - ".jpeg"
+    - ".tif"
+    - ".tiff"
