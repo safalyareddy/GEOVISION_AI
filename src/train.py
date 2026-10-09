@@ -43,6 +43,18 @@ from src.models import build_model
 from src.loss import HybridDiceFocalLoss
 
 
+def seed_everything(seed: int = 42) -> None:
+    """
+    Set random seeds across Python, NumPy, and PyTorch for reproducible runs.
+    """
+    import random
+    random.seed(seed)
+    np.random.seed(seed)
+    if HAS_TORCH:
+        torch.manual_seed(seed)
+        torch.cuda.manual_seed_all(seed)
+
+
 if HAS_TORCH and HAS_LIGHTNING:
     class WaterSegmentationLightningModule(L.LightningModule):
         """
