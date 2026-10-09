@@ -122,29 +122,37 @@ class ModelEvaluator:
         # Calculate dataset scores
         dice_scores: List[float] = []
         iou_scores: List[float] = []
+        precision_scores: List[float] = []
+        recall_scores: List[float] = []
 
-        if dataloader is not None:
+        if dataloader is not None and HAS_TORCH and model is not None:
+            model.eval()
             for batch in dataloader:
                 if isinstance(batch, dict) and "image" in batch and "mask" in batch:
                     img = batch["image"]
                     mask = batch["mask"]
-                    if HAS_TORCH and isinstance(img, torch.Tensor):
+                    if isinstance(img, torch.Tensor):
                         with torch.no_grad():
                             preds = torch.sigmoid(model(img)).cpu().numpy()
                             targets = mask.cpu().numpy()
-                        metrics = calculate_metrics(preds, targets)
-                        dice_scores.append(metrics["dice"])
-                        iou_scores.append(metrics["iou"])
+                        for p, t in zip(preds, targets):
+                            metrics = calculate_metrics(p, t)
+                            dice_scores.append(metrics["dice"])
+                            iou_scores.append(metrics["iou"])
+                            precision_scores.append(metrics["precision"])
+                            recall_scores.append(metrics["recall"])
 
         mean_dice = float(np.mean(dice_scores)) if dice_scores else 0.0
         mean_iou = float(np.mean(iou_scores)) if iou_scores else 0.0
+        mean_prec = float(np.mean(precision_scores)) if precision_scores else 0.0
+        mean_rec = float(np.mean(recall_scores)) if recall_scores else 0.0
 
         return {
             "model_name": self.model_name,
             "dice": mean_dice,
             "iou": mean_iou,
-            "precision": 0.0,
-            "recall": 0.0,
+            "precision": mean_prec,
+            "recall": mean_rec,
             "latency_ms": mean_latency,
             "fps": fps,
             "parameters": total_params,
@@ -154,6 +162,7 @@ class ModelEvaluator:
 
 def run_benchmark_suite(
     dataset_dir: str = "dataset",
+    checkpoint_dir: str = "checkpoints",
     save_csv: bool = False,
     output_path: str = "benchmark_results.csv"
 ) -> List[Dict[str, Any]]:
@@ -164,13 +173,46 @@ def run_benchmark_suite(
     print("GeoVision AI — Cross-Architecture Evaluation Suite")
     print("=" * 60)
 
+    test_loader = None
+    if HAS_TORCH:
+        try:
+            test_loader = get_dataloader(split="test", root_dir=dataset_dir, batch_size=4, shuffle=False)
+            print(f"[INFO] Loaded test dataset with {len(test_loader.dataset)} samples from '{dataset_dir}'.")
+        except Exception as e:
+            print(f"[WARNING] Could not load test dataset from '{dataset_dir}': {e}.")
+
     results: List[Dict[str, Any]] = []
+    ckpt_map = {
+        "unet_plusplus": "unet_plusplus_best.pth",
+        "deeplabv3_plus": "deeplabv3_plus_best.pth",
+        "segformer": "segformer_best.pth",
+        "segformer_b2": "segformer_best.pth"
+    }
+
     for model_key in SUPPORTED_MODELS:
         evaluator = ModelEvaluator(model_name=model_key, dataset_dir=dataset_dir)
-        res = evaluator.evaluate_model()
+        model = None
+        if HAS_TORCH:
+            model = build_model(model_name=model_key)
+            ckpt_name = ckpt_map.get(model_key, f"{model_key}_best.pth")
+            ckpt_path = Path(checkpoint_dir) / ckpt_name
+            if ckpt_path.exists():
+                try:
+                    state = torch.load(str(ckpt_path), map_location="cpu", weights_only=True)
+                    if isinstance(state, dict) and "state_dict" in state:
+                        state = state["state_dict"]
+                    model.load_state_dict(state, strict=False)
+                    print(f"[INFO] Loaded checkpoint '{ckpt_path}' for model '{model_key}'.")
+                except Exception as ex:
+                    print(f"[WARNING] Failed loading checkpoint '{ckpt_path}': {ex}.")
+
+        res = evaluator.evaluate_model(model=model, dataloader=test_loader)
         results.append(res)
 
-        print(f"[INFO] Model: {model_key:<16} | Latency: {res['latency_ms']:.2f} ms | FPS: {res['fps']:.1f} | Params: {res['parameters'] / 1e6:.2f}M")
+        print(
+            f"[INFO] Model: {model_key:<14} | Dice: {res['dice']:.4f} | IoU: {res['iou']:.4f} | "
+            f"Latency: {res['latency_ms']:.2f} ms | FPS: {res['fps']:.1f} | Params: {res['parameters'] / 1e6:.2f}M"
+        )
 
     if save_csv and results:
         try:

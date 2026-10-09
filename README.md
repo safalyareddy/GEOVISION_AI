@@ -66,36 +66,41 @@ graph TD
 
 ```
 .
-├── config/                  # Hydra-based configuration definitions for experiments
-│   └── config.yaml          # Main configuration file
-├── src/                     # Core deep learning package source code
-│   ├── api/                 # FastAPI REST service & schema models
-│   │   ├── main.py          # FastAPI application server entrypoint
-│   │   └── schemas.py       # Pydantic request/response payload schemas
-│   ├── dataset.py           # Albumentations-augmented dataset loaders
-│   ├── loss.py              # Custom hybrid Dice-Focal class-balanced loss
-│   ├── models.py            # Model factory supporting UNet++, DeepLabV3+, and SegFormer-B2
-│   ├── train.py             # PyTorch Lightning loop manager
-│   └── evaluate.py          # Benchmark test suite runner
-├── client/                  # Streamlit dashboard user interface
-│   └── app.py               # Streamlit application entrypoint
-├── scripts/                 # Operational automation and optimization scripts
-│   ├── prepare_dataset.py   # Dataset organizer and statistics generator
-│   ├── debug_inference.py   # PyTorch vs. ONNX comparison script
-│   ├── diagnose_onnx.py     # Checkpoint integrity validator
-│   └── export_onnx.py       # PyTorch weight tracing to ONNX
-├── tests/                   # Pytest automated testing suite
-│   ├── test_api.py          # API endpoint unit tests
-│   ├── test_dataset.py      # Data loaders & augmentation tests
-│   └── test_models.py       # Model architectures forward-pass tests
-├── docker/                  # Docker container definitions
-│   ├── Dockerfile.api       # Container profile for the backend API
-│   └── Dockerfile.ui        # Container profile for the Streamlit UI
-├── docs/                    # Portfolio documentation assets
-│   └── images/              # Screen recordings and visual screenshots
+├── app.py                   # Interactive Streamlit Web Application
+├── benchmark_results.csv    # Exported evaluation benchmark results
+├── config/                  # Configuration files
+│   └── dataset.yaml         # Dataset loader configuration
+├── src/                     # Core Deep Learning Package
+│   ├── api/                 # FastAPI REST Service
+│   │   ├── __init__.py
+│   │   └── main.py          # FastAPI server entrypoint (/predict, /health)
+│   ├── data/                # Dataset & Data Loading
+│   │   ├── __init__.py
+│   │   └── dataset.py       # PyTorch SatelliteWaterDataset & DataLoader
+│   ├── loss.py              # Hybrid Dice-Focal Loss implementation
+│   ├── models.py            # Model factory (UNet++, DeepLabV3+, SegFormer-B2)
+│   ├── train.py             # PyTorch Lightning training pipeline
+│   └── evaluate.py          # Cross-architecture evaluation suite
+├── scripts/                 # MLOps & Optimization Scripts
+│   ├── validate_dataset.py  # Dataset pairing & spatial integrity validator
+│   ├── split_dataset.py     # Reproducible 70/15/15 dataset splitter
+│   ├── export_onnx.py       # PyTorch model weight tracing to ONNX
+│   └── debug_inference.py   # PyTorch vs ONNX runtime parity validator
+├── tests/                   # Pytest Automated Test Suite (30 unit & integration tests)
+│   ├── test_api.py          # FastAPI endpoint integration tests
+│   ├── test_dataset.py      # Dataset loader & pairing unit tests
+│   ├── test_evaluate.py     # Metric computation unit tests
+│   ├── test_models.py       # Model architecture forward-pass tests
+│   ├── test_onnx.py         # ONNX export & parity tests
+│   └── test_train.py        # Lightning module & reproducibility tests
+├── notebooks/               # Research & Analysis Notebooks
+│   └── GeoVision_AI_Segmentation.ipynb
+├── docs/                    # Portfolio Documentation Assets
+│   ├── dataset_report.md    # Detailed dataset audit report
+│   └── images/              # Benchmark charts & screenshots
 ├── pytest.ini               # Pytest configurations
-├── docker-compose.yml       # Docker Compose service coordinator
-└── requirements.txt         # Project dependencies
+├── requirements.txt         # Project dependencies
+└── README.md                # Project documentation
 ```
 
 ---

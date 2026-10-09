@@ -1,0 +1,277 @@
+"""
+GeoVision AI — Satellite Water Body Segmentation Platform
+Interactive Streamlit Web Dashboard
+"""
+
+import io
+import time
+from pathlib import Path
+from PIL import Image
+import numpy as np
+import pandas as pd
+
+try:
+    import streamlit as st
+    HAS_STREAMLIT = True
+except ImportError:
+    HAS_STREAMLIT = False
+
+try:
+    import torch
+    import torchvision.transforms as T
+    HAS_TORCH = True
+except ImportError:
+    HAS_TORCH = False
+
+try:
+    import onnxruntime as ort
+    HAS_ONNX = True
+except ImportError:
+    HAS_ONNX = False
+
+from src.models import build_model, SUPPORTED_MODELS
+
+# Page Configuration
+if HAS_STREAMLIT:
+    st.set_page_config(
+        page_title="GeoVision AI — Water Body Segmentation",
+        page_icon="🌊",
+        layout="wide",
+        initial_sidebar_state="expanded"
+    )
+
+# Model Caching Helpers
+@st.cache_resource if HAS_STREAMLIT else (lambda f: f)
+def load_pytorch_model(model_name: str):
+    """Load and cache PyTorch segmentation model."""
+    model = build_model(model_name=model_name)
+    ckpt_map = {
+        "unet_plusplus": "checkpoints/unet_plusplus_best.pth",
+        "deeplabv3_plus": "checkpoints/deeplabv3_plus_best.pth",
+        "segformer": "checkpoints/segformer_best.pth"
+    }
+    ckpt_path = Path(ckpt_map.get(model_name, ""))
+    if ckpt_path.exists():
+        try:
+            state = torch.load(str(ckpt_path), map_location="cpu", weights_only=True)
+            if isinstance(state, dict) and "state_dict" in state:
+                state = state["state_dict"]
+            model.load_state_dict(state, strict=False)
+        except Exception as e:
+            st.warning(f"Could not load checkpoint '{ckpt_path}': {e}")
+    model.eval()
+    return model
+
+
+@st.cache_resource if HAS_STREAMLIT else (lambda f: f)
+def load_onnx_session(model_name: str):
+    """Load and cache ONNX Runtime inference session."""
+    onnx_map = {
+        "unet_plusplus": "checkpoints/unet_plusplus_best.onnx",
+        "deeplabv3_plus": "checkpoints/deeplabv3_plus_best.onnx",
+        "segformer": "checkpoints/segformer_best.onnx"
+    }
+    onnx_path = Path(onnx_map.get(model_name, ""))
+    if onnx_path.exists() and HAS_ONNX:
+        return ort.InferenceSession(str(onnx_path), providers=["CPUExecutionProvider"])
+    return None
+
+
+def run_inference(image: Image.Image, model_name: str, threshold: float, backend: str):
+    """Run model inference and return binary mask, probabilities, latency."""
+    orig_size = image.size
+    img_resized = image.resize((256, 256))
+    img_arr = np.array(img_resized, dtype=np.float32) / 255.0
+
+    start_time = time.perf_counter()
+
+    if backend == "ONNX Runtime" and HAS_ONNX:
+        session = load_onnx_session(model_name)
+        if session is not None:
+            # Transpose [H, W, C] to [1, C, H, W]
+            input_tensor = np.transpose(img_arr, (2, 0, 1))[np.newaxis, :].astype(np.float32)
+            input_name = session.get_inputs()[0].name
+            logits = session.run(None, {input_name: input_tensor})[0]
+            probs = 1.0 / (1.0 + np.exp(-logits.squeeze()))
+        else:
+            backend = "PyTorch (Fallback)"
+
+    if backend != "ONNX Runtime" or session is None:
+        model = load_pytorch_model(model_name)
+        transform = T.Compose([
+            T.Resize((256, 256)),
+            T.ToTensor(),
+        ])
+        t_img = transform(image).unsqueeze(0)
+        with torch.no_grad():
+            logits = model(t_img)
+            probs = torch.sigmoid(logits).squeeze().cpu().numpy()
+
+    latency_ms = (time.perf_counter() - start_time) * 1000.0
+
+    binary_mask = (probs >= threshold).astype(np.uint8)
+    mask_img = Image.fromarray(binary_mask * 255, mode="L").resize(orig_size, Image.NEAREST)
+
+    return mask_img, binary_mask, latency_ms
+
+
+def create_overlay(image: Image.Image, mask_img: Image.Image):
+    """Create cyan overlay of predicted water mask on original satellite image."""
+    img_np = np.array(image.convert("RGB"))
+    mask_np = np.array(mask_img)
+
+    overlay = img_np.copy()
+    # Cyan highlight for predicted water body pixels [0, 255, 255]
+    water_indices = mask_np > 127
+    overlay[water_indices] = (
+        0.5 * img_np[water_indices] + 0.5 * np.array([0, 220, 255])
+    ).astype(np.uint8)
+
+    return Image.fromarray(overlay)
+
+
+def main():
+    if not HAS_STREAMLIT:
+        print("Streamlit is not installed. Run `pip install streamlit`.")
+        return
+
+    st.title("🌊 GeoVision AI — Satellite Water Body Segmentation Platform")
+    st.markdown(
+        "**MAANG-Grade Machine Learning & Remote Sensing Platform** for high-resolution "
+        "satellite surface water detection, water coverage quantization, and cross-architecture benchmarking."
+    )
+
+    # Sidebar
+    st.sidebar.header("⚙️ Inference Configuration")
+
+    model_choice = st.sidebar.selectbox(
+        "Select Model Architecture",
+        options=["unet_plusplus", "deeplabv3_plus", "segformer"],
+        format_func=lambda x: {"unet_plusplus": "UNet++ (ResNet34)", "deeplabv3_plus": "DeepLabV3+ (ResNet50)", "segformer": "SegFormer-B2"}[x]
+    )
+
+    threshold = st.sidebar.slider(
+        "Binary Decision Threshold",
+        min_value=0.10,
+        max_value=0.90,
+        value=0.50,
+        step=0.05,
+        help="Probability threshold above which a pixel is classified as surface water."
+    )
+
+    backend = st.sidebar.radio(
+        "Inference Execution Backend",
+        options=["PyTorch", "ONNX Runtime"],
+        help="Compare execution performance between PyTorch eager execution and ONNX Runtime CPU graph engine."
+    )
+
+    st.sidebar.markdown("---")
+    st.sidebar.markdown("### 📊 Dataset Overview")
+    st.sidebar.info(
+        "**Sentinel-2 Imagery**: 10m spatial resolution\n\n"
+        "• Total Split Samples: 414\n"
+        "• Train: 306 | Val: 54 | Test: 54\n"
+        "• Class Ratio: 95.78% Land / 4.22% Water"
+    )
+
+    # Main Dashboard Tabs
+    tab1, tab2, tab3 = st.tabs(["🚀 Single Image Inference", "📈 Model Benchmarks", "ℹ️ Architecture & Methodology"])
+
+    with tab1:
+        st.subheader("Satellite Image Analysis & Mask Generation")
+
+        col_input, col_sample = st.columns([2, 1])
+
+        with col_input:
+            uploaded_file = st.file_uploader("Upload Satellite Image (PNG, JPG, TIFF)", type=["png", "jpg", "jpeg", "tif", "tiff"])
+
+        with col_sample:
+            use_sample = st.checkbox("Use Sample Test Image (`patch_0047.png`)", value=(uploaded_file is None))
+
+        image = None
+        gt_mask = None
+
+        if uploaded_file is not None:
+            image = Image.open(uploaded_file).convert("RGB")
+        elif use_sample:
+            sample_img_path = Path("dataset/test/images/patch_0047.png")
+            sample_msk_path = Path("dataset/test/masks/patch_0047.png")
+            if sample_img_path.exists():
+                image = Image.open(sample_img_path).convert("RGB")
+            if sample_msk_path.exists():
+                gt_mask = Image.open(sample_msk_path).convert("L")
+
+        if image is not None:
+            mask_img, binary_mask, latency_ms = run_inference(image, model_choice, threshold, backend)
+            overlay_img = create_overlay(image, mask_img)
+
+            # Calculate water coverage
+            water_pixels = int(np.sum(binary_mask > 0))
+            total_pixels = int(binary_mask.size)
+            water_coverage_pct = (water_pixels / total_pixels) * 100.0
+
+            # Estimate physical area (10m x 10m per pixel for Sentinel-2 = 100 m^2)
+            water_area_km2 = (water_pixels * 100) / 1e6
+
+            st.markdown("---")
+            # Metric Callouts
+            m1, m2, m3, m4 = st.columns(4)
+            m1.metric("Predicted Water Coverage", f"{water_coverage_pct:.2f}%")
+            m2.metric("Estimated Water Area", f"{water_area_km2:.3f} km²")
+            m3.metric("Inference Latency", f"{latency_ms:.2f} ms")
+            m4.metric("Active Backend", backend)
+
+            st.markdown("---")
+            # Visual Grid
+            if gt_mask is not None:
+                c1, c2, c3, c4 = st.columns(4)
+                c1.image(image, caption="Satellite Input Image", use_column_width=True)
+                c2.image(gt_mask, caption="Ground Truth Mask", use_column_width=True)
+                c3.image(mask_img, caption=f"Predicted Mask (Thresh={threshold})", use_column_width=True)
+                c4.image(overlay_img, caption="Segmentation Overlay", use_column_width=True)
+            else:
+                c1, c2, c3 = st.columns(3)
+                c1.image(image, caption="Satellite Input Image", use_column_width=True)
+                c2.image(mask_img, caption=f"Predicted Mask (Thresh={threshold})", use_column_width=True)
+                c3.image(overlay_img, caption="Segmentation Overlay", use_column_width=True)
+
+    with tab2:
+        st.subheader("Cross-Architecture Performance Evaluation")
+        csv_path = Path("benchmark_results.csv")
+        if csv_path.exists():
+            df_bench = pd.read_csv(csv_path)
+            st.dataframe(df_bench.style.highlight_max(axis=0, subset=["dice", "iou", "fps"]), use_container_width=True)
+
+            st.markdown("### Architecture Metrics Comparison")
+            c_left, c_right = st.columns(2)
+            with c_left:
+                st.bar_chart(df_bench.set_index("model_name")[["fps"]], use_container_width=True)
+                st.caption("Inference Speed (Frames Per Second)")
+            with c_right:
+                st.bar_chart(df_bench.set_index("model_name")[["dice", "iou"]], use_container_width=True)
+                st.caption("Segmentation Accuracy (Dice / IoU)")
+        else:
+            st.warning("Benchmark results file `benchmark_results.csv` not found. Run `python src/evaluate.py --save-csv` to generate.")
+
+    with tab3:
+        st.subheader("Technical Architecture & MAANG Design Decisions")
+        st.markdown("""
+        ### Architectural Breakdown
+
+        1. **Model Backbone Selection**:
+           - **UNet++**: Nested dense skip pathways reduce semantic gap between feature maps.
+           - **DeepLabV3+**: Atrous Spatial Pyramid Pooling (ASPP) captures multi-scale context.
+           - **SegFormer-B2**: Lightweight Transformer encoder with MLP decoder for global attention.
+
+        2. **Loss Function (Dice-Focal Hybrid)**:
+           $$\mathcal{L}_{total} = 0.5 \cdot \mathcal{L}_{Dice} + 0.5 \cdot \mathcal{L}_{Focal}$$
+           Designed to counteract extreme class imbalance (95.78% land vs 4.22% surface water).
+
+        3. **Water Coverage Computation**:
+           $$\text{Water Coverage (\%)} = \frac{\text{Count}(\text{Pixel}_{\text{pred}} \ge \tau)}{\text{Total Valid Pixels}} \times 100$$
+           *Note*: Water coverage represents physical surface area fraction, distinct from model accuracy or Dice score.
+        """)
+
+
+if __name__ == "__main__":
+    main()
