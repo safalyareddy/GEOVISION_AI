@@ -64,9 +64,9 @@ def load_dataset_config(config_path: Optional[Path] = None) -> Dict[str, Any]:
     return default_config
 
 
-def discover_files(directory: Path, extensions: List[str]) -> Dict[str, Path]:
+def discover_files(directory: Path, extensions: List[str], subfolder: Optional[str] = None) -> Dict[str, Path]:
     """
-    Discover files with supported extensions in the given directory.
+    Discover files with supported extensions in the given directory or subfolders.
     Returns a dictionary mapping filename stems (without extension) to file Path objects.
     Alphabetically sorted to guarantee deterministic discovery order.
     """
@@ -76,7 +76,12 @@ def discover_files(directory: Path, extensions: List[str]) -> Dict[str, Path]:
     if not directory.exists() or not directory.is_dir():
         return file_map
 
-    for filepath in sorted(directory.iterdir()):
+    if subfolder:
+        search_paths = list(directory.rglob(f"**/{subfolder}/*"))
+    else:
+        search_paths = list(directory.iterdir())
+
+    for filepath in sorted(search_paths):
         if filepath.is_file() and filepath.suffix.lower() in ext_set:
             stem = filepath.stem
             file_map[stem] = filepath
@@ -141,33 +146,52 @@ def validate_and_analyze_dataset(
     print(f"       Prepared Directory:      {prepared_dir}")
     print(f"       Supported Extensions:    {', '.join(extensions)}")
 
-    # Step 1: Validate prepared dataset directory existence
+    # Step 1: Validate prepared dataset or split directories existence
     if not prepared_dir.exists():
-        print(f"[ERROR] Prepared dataset directory does not exist: '{prepared_dir}'")
-        print("[ERROR] Prepared dataset is unavailable. Please run C4 preparation first.")
-        return False, {}
+        # Fall back to dataset root if train/val/test directories exist
+        dataset_root = Path(cfg.get("dataset_root", "dataset"))
+        if (dataset_root / "train").exists() and (dataset_root / "test").exists():
+            print(f"[INFO] Prepared dir '{prepared_dir}' not found. Falling back to split dataset root '{dataset_root}'.")
+            prepared_dir = dataset_root
+        else:
+            print(f"[ERROR] Prepared dataset directory does not exist: '{prepared_dir}'")
+            print("[ERROR] Prepared dataset is unavailable. Please run C4 preparation first.")
+            return False, {}
 
     if not prepared_dir.is_dir():
         print(f"[ERROR] Configured prepared dataset path is not a directory: '{prepared_dir}'")
         return False, {}
 
-    prep_img_dir = prepared_dir / img_subfolder
-    prep_msk_dir = prepared_dir / msk_subfolder
+    # Check for split subdirectories vs flat image/mask subdirectories
+    splits = ["train", "val", "test"]
+    split_mode = all((prepared_dir / s / img_subfolder).exists() for s in splits)
 
-    if not prep_img_dir.exists() or not prep_img_dir.is_dir():
-        print(f"[ERROR] Prepared image subfolder does not exist: '{prep_img_dir}'")
-        return False, {}
+    if split_mode:
+        print(f"[INFO] Scanning split dataset in: {prepared_dir} ({', '.join(splits)})")
+        prep_img_dir = prepared_dir
+        prep_msk_dir = prepared_dir
+    else:
+        prep_img_dir = prepared_dir / img_subfolder
+        prep_msk_dir = prepared_dir / msk_subfolder
 
-    if not prep_msk_dir.exists() or not prep_msk_dir.is_dir():
-        print(f"[ERROR] Prepared mask subfolder does not exist: '{prep_msk_dir}'")
-        return False, {}
+        if not prep_img_dir.exists() or not prep_img_dir.is_dir():
+            print(f"[ERROR] Prepared image subfolder does not exist: '{prep_img_dir}'")
+            return False, {}
 
-    print(f"[INFO] Scanning prepared images in: {prep_img_dir}")
-    print(f"[INFO] Scanning prepared masks in:  {prep_msk_dir}")
+        if not prep_msk_dir.exists() or not prep_msk_dir.is_dir():
+            print(f"[ERROR] Prepared mask subfolder does not exist: '{prep_msk_dir}'")
+            return False, {}
+
+        print(f"[INFO] Scanning prepared images in: {prep_img_dir}")
+        print(f"[INFO] Scanning prepared masks in:  {prep_msk_dir}")
 
     # Step 2: Discover image and mask files
-    image_files = discover_files(prep_img_dir, extensions)
-    mask_files = discover_files(prep_msk_dir, extensions)
+    if split_mode:
+        image_files = discover_files(prepared_dir, extensions, subfolder=img_subfolder)
+        mask_files = discover_files(prepared_dir, extensions, subfolder=msk_subfolder)
+    else:
+        image_files = discover_files(prep_img_dir, extensions)
+        mask_files = discover_files(prep_msk_dir, extensions)
 
     print(f"[INFO] Found {len(image_files)} image file(s) and {len(mask_files)} mask file(s).")
 
