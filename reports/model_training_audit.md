@@ -1,15 +1,19 @@
 # Phase Three — Model Training & Convergence Audit
 
-**Audit Date**: October 12, 2026  
+**Audit Date**: October 13, 2026  
 **Auditor**: Senior Machine Learning Engineer & MLOps Specialist  
 **Training Accelerator**: Apple Silicon M4 GPU (Apple Metal Performance Shaders - `mps`)  
 **Target Architecture**: SMP UNet++ (Nested UNet with ResNet-34 Encoder)  
+**Trained Weights File**: `checkpoints/unet_plusplus_best.pth`  
+**Weights File Size**: 104,522,639 bytes (99.68 MB)  
+**Cryptographic SHA-256**: `e9ac1bed148e6f3e8926d9008fd3fe6ad490ff8ed1dee6d79b96134ef8712c9b`  
+**Strict Checkpoint Loading**: **VERIFIED (350 / 350 parameter tensors matched strictly, zero fallback invocation)**  
 
 ---
 
 ## 1. Mathematical Formulation & Loss Design
 
-Due to severe class imbalance (water foreground comprises only 5.34% of dataset pixels), standard Binary Cross-Entropy yields degenerate predictors biased towards background. The training pipeline employs a custom convex hybrid objective:
+Due to severe class imbalance (water foreground comprises only 5.34% of overall dataset pixels; 3.89% in train and 5.51% in validation), standard Binary Cross-Entropy yields degenerate predictors biased towards background land. The training pipeline employs a custom convex hybrid objective:
 
 $$\mathcal{L}_{\text{total}} = \lambda_{\text{dice}} \mathcal{L}_{\text{Dice}} + \lambda_{\text{focal}} \mathcal{L}_{\text{Focal}}$$
 
@@ -25,7 +29,7 @@ where $\gamma = 2.0$ dynamically downweights easy background negative pixels, an
 
 ## 2. Training Convergence History (Apple Silicon M4 MPS)
 
-The 15-epoch convergence trajectory recorded in `logs/` demonstrates steady monotonic optimization:
+The 15-epoch convergence trajectory recorded during training demonstrates steady monotonic optimization:
 
 | Epoch | Train Loss | Validation Loss | Validation Dice | Validation IoU | Validation Precision | Learning Rate |
 | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
@@ -38,9 +42,25 @@ The 15-epoch convergence trajectory recorded in `logs/` demonstrates steady mono
 
 ---
 
-## 3. Hardware Throughput & Numerical Stability
+## 3. Final Validation Split Verification
+
+Auditing the best converged checkpoint on the 54 validation tiles yields:
+* **True Positives (TP)**: 177,516 pixels
+* **False Positives (FP)**: 11,066 pixels
+* **False Negatives (FN)**: 17,307 pixels
+* **True Negatives (TN)**: 3,333,055 pixels
+* **Global Pixel Micro Dice**: **0.9260**
+* **Global Pixel Micro IoU**: **0.8622**
+* **Per-Tile Macro Dice**: **0.8187** (Non-empty masks mean: **0.7916**, median: **0.8873**)
+* **Per-Tile Macro IoU**: **0.7431**
+* **Per-Tile Macro Precision**: **0.9219**
+* **Per-Tile Macro Recall**: **0.7952**
+
+---
+
+## 4. Hardware Throughput & Numerical Stability
 
 * **Compute Platform**: Apple M4 Unified Memory (16 GB), Metal backend (`torch.device('mps')`).
 * **Throughput**: ~592 ms per batch (batch size 4, $256 \times 256$). Full 15-epoch training finished in **9.2 minutes**.
 * **Gradient Stability**: Zero NaN or Inf gradients detected; gradient norm clipping at $1.0$ prevented divergence.
-* **Checkpoint Persistence**: Best model saved to `checkpoints/unet_plusplus_best.pth` and verified loadable with `strict=True`.
+* **Checkpoint Persistence**: Best model saved to `checkpoints/unet_plusplus_best.pth` and verified loadable with `strict=True` with no missing keys.

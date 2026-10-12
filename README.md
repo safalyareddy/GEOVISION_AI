@@ -99,7 +99,7 @@ Detailed technical architecture, security protocols, and operational guides:
 │   ├── split_dataset.py     # Reproducible 70/15/15 dataset splitter
 │   ├── export_onnx.py       # PyTorch model weight tracing to ONNX
 │   └── debug_inference.py   # PyTorch vs ONNX runtime parity validator
-├── tests/                   # Pytest Automated Test Suite (30 unit & integration tests)
+├── tests/                   # Pytest Automated Test Suite (35 unit & integration tests)
 │   ├── test_api.py          # FastAPI endpoint integration tests
 │   ├── test_dataset.py      # Dataset loader & pairing unit tests
 │   ├── test_evaluate.py     # Metric computation unit tests
@@ -165,7 +165,7 @@ PYTHONPATH=. uvicorn src.api.main:app --host 127.0.0.1 --port 8000
 
 ### 2. Launch Streamlit UI Dashboard
 ```bash
-streamlit run client/app.py
+streamlit run app.py
 ```
 *   **Dashboard URL**: [http://localhost:8501](http://localhost:8501)
 
@@ -195,18 +195,32 @@ Where:
 
 ---
 
-## 📊 Model Benchmarks & Performance
+## 📊 Model Benchmarks & Scientific Evaluation
 
-Evaluated on the Sentinel-2 validation partition:
+### Evaluation Protocol & Hardware Specifications
+* **Hardware Platform**: Apple Silicon M4 (16 GB Unified Memory) / CPU Execution
+* **Input Resolution**: $256 \times 256$ RGB (pixel values scaled to $[0, 1]$)
+* **Latency & Throughput Benchmark**: Single-frame inference (batch size = 1), 5 warm-up iterations, 20 measurement repetitions measured via `time.perf_counter()`
+* **Accuracy Evaluation**: Evaluated across 54 in-domain validation tiles and 54 frozen held-out test tiles, batch size = 4, decision threshold $\tau = 0.50$, Laplace smoothing $\epsilon = 10^{-6}$
 
-| Model Architecture | Dice Score (F1) | IoU Score (Jaccard) | Precision | Recall | Latency (ms) | FPS | Parameters | Model Size |
-| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **UNet++** | 0.2309 | 0.1305 | 0.1461 | 0.5512 | 25.77 ms | 38.8 | 26.08M | 99.48 MB |
-| **DeepLabV3+** | **0.2817** | **0.1639** | 0.2042 | 0.4538 | **12.40 ms** | **80.6** | 22.44M | **85.59 MB** |
-| **SegFormer-B2** | 0.1621 | 0.0882 | **0.3008** | 0.1110 | 25.85 ms | 38.7 | 27.35M | 104.32 MB |
+### 1. In-Domain Validation Split Performance (`dataset/val`, 54 tiles)
 
-*   *DeepLabV3+* strikes the best balance of low inference latency ($12.40\text{ ms}$) and segmentation F1 metrics.
-*   *ONNX compilation* provides up to a $70\%$ latency decrease on standard CPU systems compared to native PyTorch inferences.
+| Model Architecture | Backbone Encoder | Val Dice | Val IoU | Val Precision | Val Recall | Parameters | Weights Size |
+| :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
+| **UNet++** (Trained) | ResNet-34 | **0.8187** | **0.7431** | **0.9219** | **0.7952** | 26.08M | 99.68 MB |
+| **DeepLabV3+** | ResNet-34 | 0.2817 | 0.1639 | 0.2042 | 0.4538 | 22.44M | 85.59 MB |
+| **SegFormer-B2** | MiT-B2 | 0.1621 | 0.0882 | 0.3008 | 0.1110 | 27.35M | 104.32 MB |
+
+### 2. Held-Out Test Generalization & Latency Benchmark (`dataset/test`, 54 tiles)
+
+| Model Architecture | Test Dice | Test IoU | Test Precision | Test Recall | CPU Latency | Throughput | Failure Analysis / Notes |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :--- |
+| **UNet++** (Trained) | **0.1906** | **0.1131** | **0.3603** | 0.1854 | 90.05 ms | 11.1 FPS | Selective (2.68M TN); suffers from turbid coastal water blue reflectance shift (+31.5%). |
+| **DeepLabV3+** | 0.2124 | 0.1338 | 0.1338 | 1.0000 | 40.02 ms | 25.0 FPS | Degenerate all-foreground collapse (Recall = 1.0; Precision matches 13.38% prior). |
+| **SegFormer-B2** | 0.2149 | 0.1356 | 0.1356 | 0.9992 | 231.64 ms | 4.3 FPS | Degenerate all-foreground collapse (Recall = 0.9992; Precision matches 13.56% prior). |
+
+* Detailed cross-split diagnostics, spectral contrast analysis, and the remediation roadmap are documented in [`reports/heldout_test_evaluation.md`](file:///Users/safalyareddy/Desktop/Projects/GeoVision-AI-Satellite-Water-Body-Segmentation-Platform/reports/heldout_test_evaluation.md).
+
 
 ---
 
