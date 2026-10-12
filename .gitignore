@@ -1,27 +1,54 @@
+# Virtual Environment
 venv/
+env/
+.venv/
+
+# Python caches and bytecode
 __pycache__/
+*.py[cod]
+*$py.class
 .pytest_cache/
+
+# Datasets and Private Training Data
 dataset/
+
+# Model Checkpoints & Weights
 checkpoints/
-logs/
-mlflow.db
 *.pth
+*.pt
 *.ckpt
 *.onnx
 *.onnx.data
+
+# Training Logs & Telemetry
+logs/
+
+# Experiment Tracking
+mlflow.db
+mlruns/
+wandb/
+
+# Environment and Secrets (Permit safe template)
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+*.crt
+
+# Test Coverage
+.coverage
+.coverage.*
+htmlcov/
+
+# Backup Archives
+*.tar.gz
+*.tar
+*.zip
+*.tgz
+
+# OS & Editor Metadata
 .DS_Store
-
-# Model checkpoints
-checkpoints/
-
-# Training logs
-logs/
-
-# MLFlow
-mlflow.db
-
-# Model weights
-*.pth
-*.ckpt
-*.onnx
-*.onnx.data
+.idea/
+.vscode/
+*.swp

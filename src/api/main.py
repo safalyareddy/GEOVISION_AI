@@ -129,24 +129,59 @@ async def predict(
             detail=f"Invalid model '{model_name}'. Choose from: {SUPPORTED_MODELS}"
         )
 
+    if not (0.0 <= threshold <= 1.0):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Threshold must be a float between 0.0 and 1.0."
+        )
+
     # Validate uploaded content type
-    if file.content_type not in ["image/png", "image/jpeg", "image/jpg", "image/tiff", "application/octet-stream"]:
+    allowed_content_types = ["image/png", "image/jpeg", "image/jpg", "image/tiff", "application/octet-stream"]
+    if file.content_type not in allowed_content_types:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=f"Unsupported image file format '{file.content_type}'."
         )
 
-    try:
-        contents = await file.read()
-        if len(contents) > 10 * 1024 * 1024:  # 10 MB limit
+    # Enforce streaming size limit (10 MB max)
+    MAX_FILE_SIZE = 10 * 1024 * 1024
+    chunk_size = 65536
+    total_read = 0
+    buffer = io.BytesIO()
+
+    while True:
+        chunk = await file.read(chunk_size)
+        if not chunk:
+            break
+        total_read += len(chunk)
+        if total_read > MAX_FILE_SIZE:
             raise HTTPException(
                 status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE,
                 detail="Uploaded file exceeds maximum size limit of 10 MB."
             )
+        buffer.write(chunk)
 
-        image = Image.open(io.BytesIO(contents)).convert("RGB")
-        orig_w, orig_h = image.size
+    if total_read == 0:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Uploaded image file is empty (0 bytes)."
+        )
 
+    buffer.seek(0)
+    try:
+        image = Image.open(buffer)
+        image.verify()  # Verify image integrity
+        buffer.seek(0)
+        image = Image.open(buffer).convert("RGB")
+    except Exception:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid or corrupt image payload. Could not decode image."
+        )
+
+    orig_w, orig_h = image.size
+
+    try:
         # Preprocess tensor
         transform = T.Compose([
             T.Resize((256, 256)),
@@ -157,6 +192,12 @@ async def predict(
         # Inference
         start_time = time.perf_counter()
         model = get_cached_model(model_name)
+        if model is None:
+            raise HTTPException(
+                status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+                detail=f"Model architecture '{model_name}' could not be initialized."
+            )
+
         with torch.no_grad():
             logits = model(img_tensor)
             probs = torch.sigmoid(logits).squeeze().cpu().numpy()
@@ -192,5 +233,5 @@ async def predict(
             raise e
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Error processing image: {str(e)}"
+            detail="Internal inference failure while processing satellite imagery."
         )

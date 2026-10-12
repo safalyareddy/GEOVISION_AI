@@ -1,0 +1,80 @@
+path,local_tracked,origin_present,target_repo_present,status,notes
+"""GeoVision AI \342\200\224 Satellite Water Body Segmentation Platform.ipynb""",NO,NO,YES,TARGET_REMOTE_ONLY_DELETED_LOCALLY,Obsolete/refactored file present in target_repo/main; deleted locally
+.github/workflows/.gitkeep,YES,YES,NO,LOCAL_AHEAD_MISSING_IN_TARGET,Present locally and in origin/main; NOT in target_repo/main
+.github/workflows/ci.yml,YES,YES,YES,PRESENT_BOTH,Synchronized across local and target_repo
+.gitignore,YES,YES,YES,PRESENT_BOTH,Synchronized across local and target_repo
+.pre-commit-config.yaml,YES,YES,YES,PRESENT_BOTH,Synchronized across local and target_repo
+BENCHMARK.md,NO,NO,YES,TARGET_REMOTE_ONLY_DELETED_LOCALLY,Obsolete/refactored file present in target_repo/main; deleted locally
+README.md,YES,YES,YES,PRESENT_BOTH,Synchronized across local and target_repo
+app.py,YES,YES,NO,LOCAL_AHEAD_MISSING_IN_TARGET,Present locally and in origin/main; NOT in target_repo/main
+benchmark_comparison.png,NO,NO,YES,TARGET_REMOTE_ONLY_DELETED_LOCALLY,Obsolete/refactored file present in target_repo/main; deleted locally
+benchmark_results.csv,YES,YES,YES,PRESENT_BOTH,Synchronized across local and target_repo
+client/.gitkeep,YES,YES,NO,LOCAL_AHEAD_MISSING_IN_TARGET,Present locally and in origin/main; NOT in target_repo/main
+client/app.py,NO,NO,YES,TARGET_REMOTE_ONLY_DELETED_LOCALLY,Obsolete/refactored file present in target_repo/main; deleted locally
+config/config.yaml,YES,YES,YES,PRESENT_BOTH,Synchronized across local and target_repo
+config/dataset.yaml,YES,YES,NO,LOCAL_AHEAD_MISSING_IN_TARGET,Present locally and in origin/main; NOT in target_repo/main
+config/model/deeplabv3_plus.yaml,YES,YES,YES,PRESENT_BOTH,Synchronized across local and target_repo
+config/model/segformer.yaml,YES,YES,YES,PRESENT_BOTH,Synchronized across local and target_repo
+config/model/unet_plusplus.yaml,YES,YES,YES,PRESENT_BOTH,Synchronized across local and target_repo
+dataset/.gitkeep,YES,YES,NO,LOCAL_AHEAD_MISSING_IN_TARGET,Present locally and in origin/main; NOT in target_repo/main
+dataset_report.md,NO,NO,YES,TARGET_REMOTE_ONLY_DELETED_LOCALLY,Obsolete/refactored file present in target_repo/main; deleted locally
+docker-compose.yml,YES,YES,YES,PRESENT_BOTH,Synchronized across local and target_repo
+docker/.gitkeep,YES,YES,NO,LOCAL_AHEAD_MISSING_IN_TARGET,Present locally and in origin/main; NOT in target_repo/main
+docker/Dockerfile.api,YES,YES,YES,PRESENT_BOTH,Synchronized across local and target_repo
+docker/Dockerfile.ui,YES,YES,YES,PRESENT_BOTH,Synchronized across local and target_repo
+docs/dataset_report.md,YES,YES,NO,LOCAL_AHEAD_MISSING_IN_TARGET,Present locally and in origin/main; NOT in target_repo/main
+docs/images/.gitkeep,YES,YES,YES,PRESENT_BOTH,Synchronized across local and target_repo
+docs/images/benchmark_comparison.png,YES,YES,NO,LOCAL_AHEAD_MISSING_IN_TARGET,Present locally and in origin/main; NOT in target_repo/main
+install.sh,YES,YES,YES,PRESENT_BOTH,Synchronized across local and target_repo
+notebooks/GeoVision_AI_Segmentation.ipynb,YES,YES,NO,LOCAL_AHEAD_MISSING_IN_TARGET,Present locally and in origin/main; NOT in target_repo/main
+prediction_gallery/.gitkeep,YES,YES,NO,LOCAL_AHEAD_MISSING_IN_TARGET,Present locally and in origin/main; NOT in target_repo/main
+prediction_gallery/deeplabv3_plus_prediction.png,NO,NO,YES,TARGET_REMOTE_ONLY_DELETED_LOCALLY,Obsolete/refactored file present in target_repo/main; deleted locally
+prediction_gallery/segformer_prediction.png,NO,NO,YES,TARGET_REMOTE_ONLY_DELETED_LOCALLY,Obsolete/refactored file present in target_repo/main; deleted locally
+prediction_gallery/unet_plusplus_prediction.png,NO,NO,YES,TARGET_REMOTE_ONLY_DELETED_LOCALLY,Obsolete/refactored file present in target_repo/main; deleted locally
+pytest.ini,YES,YES,YES,PRESENT_BOTH,Synchronized across local and target_repo
+reports/dataset_audit.md,YES,YES,NO,LOCAL_AHEAD_MISSING_IN_TARGET,Present locally and in origin/main; NOT in target_repo/main
+reports/dataset_issues.csv,YES,YES,NO,LOCAL_AHEAD_MISSING_IN_TARGET,Present locally and in origin/main; NOT in target_repo/main
+reports/dataset_split_manifest.json,YES,YES,NO,LOCAL_AHEAD_MISSING_IN_TARGET,Present locally and in origin/main; NOT in target_repo/main
+reports/dataset_statistics.json,YES,YES,NO,LOCAL_AHEAD_MISSING_IN_TARGET,Present locally and in origin/main; NOT in target_repo/main
+reports/end_to_end_execution_report.md,YES,YES,NO,LOCAL_AHEAD_MISSING_IN_TARGET,Present locally and in origin/main; NOT in target_repo/main
+reports/github_vs_local_audit.md,YES,YES,NO,LOCAL_AHEAD_MISSING_IN_TARGET,Present locally and in origin/main; NOT in target_repo/main
+reports/initial_project_audit.md,YES,YES,NO,LOCAL_AHEAD_MISSING_IN_TARGET,Present locally and in origin/main; NOT in target_repo/main
+reports/ml_implementation_audit.md,YES,YES,NO,LOCAL_AHEAD_MISSING_IN_TARGET,Present locally and in origin/main; NOT in target_repo/main
+reports/private_backup_manifest.md,YES,YES,NO,LOCAL_AHEAD_MISSING_IN_TARGET,Present locally and in origin/main; NOT in target_repo/main
+reports/security_and_artifact_inventory.md,YES,YES,NO,LOCAL_AHEAD_MISSING_IN_TARGET,Present locally and in origin/main; NOT in target_repo/main
+requirements.txt,YES,YES,YES,PRESENT_BOTH,Synchronized across local and target_repo
+scripts/.gitkeep,YES,YES,NO,LOCAL_AHEAD_MISSING_IN_TARGET,Present locally and in origin/main; NOT in target_repo/main
+scripts/debug_inference.py,YES,YES,YES,PRESENT_BOTH,Synchronized across local and target_repo
+scripts/diagnose_onnx_inference.py,NO,NO,YES,TARGET_REMOTE_ONLY_DELETED_LOCALLY,Obsolete/refactored file present in target_repo/main; deleted locally
+scripts/export_all_onnx.py,NO,NO,YES,TARGET_REMOTE_ONLY_DELETED_LOCALLY,Obsolete/refactored file present in target_repo/main; deleted locally
+scripts/export_onnx.py,YES,YES,YES,PRESENT_BOTH,Synchronized across local and target_repo
+scripts/prepare_dataset.py,YES,YES,YES,PRESENT_BOTH,Synchronized across local and target_repo
+scripts/split_dataset.py,YES,YES,NO,LOCAL_AHEAD_MISSING_IN_TARGET,Present locally and in origin/main; NOT in target_repo/main
+scripts/test_specific_inferences.py,NO,NO,YES,TARGET_REMOTE_ONLY_DELETED_LOCALLY,Obsolete/refactored file present in target_repo/main; deleted locally
+scripts/validate_dataset.py,YES,YES,NO,LOCAL_AHEAD_MISSING_IN_TARGET,Present locally and in origin/main; NOT in target_repo/main
+src/__init__.py,YES,YES,YES,PRESENT_BOTH,Synchronized across local and target_repo
+src/api/__init__.py,YES,YES,YES,PRESENT_BOTH,Synchronized across local and target_repo
+src/api/main.py,YES,YES,YES,PRESENT_BOTH,Synchronized across local and target_repo
+src/api/schemas.py,NO,NO,YES,TARGET_REMOTE_ONLY_DELETED_LOCALLY,Obsolete/refactored file present in target_repo/main; deleted locally
+src/config.py,NO,NO,YES,TARGET_REMOTE_ONLY_DELETED_LOCALLY,Obsolete/refactored file present in target_repo/main; deleted locally
+src/data/__init__.py,YES,YES,NO,LOCAL_AHEAD_MISSING_IN_TARGET,Present locally and in origin/main; NOT in target_repo/main
+src/data/dataset.py,YES,YES,NO,LOCAL_AHEAD_MISSING_IN_TARGET,Present locally and in origin/main; NOT in target_repo/main
+src/dataset.py,NO,NO,YES,TARGET_REMOTE_ONLY_DELETED_LOCALLY,Obsolete/refactored file present in target_repo/main; deleted locally
+src/evaluate.py,YES,YES,YES,PRESENT_BOTH,Synchronized across local and target_repo
+src/loss.py,YES,YES,YES,PRESENT_BOTH,Synchronized across local and target_repo
+src/models.py,YES,YES,YES,PRESENT_BOTH,Synchronized across local and target_repo
+src/train.py,YES,YES,YES,PRESENT_BOTH,Synchronized across local and target_repo
+task.md,NO,NO,YES,TARGET_REMOTE_ONLY_DELETED_LOCALLY,Obsolete/refactored file present in target_repo/main; deleted locally
+test_imports.py,NO,NO,YES,TARGET_REMOTE_ONLY_DELETED_LOCALLY,Obsolete/refactored file present in target_repo/main; deleted locally
+tests/.gitkeep,YES,YES,NO,LOCAL_AHEAD_MISSING_IN_TARGET,Present locally and in origin/main; NOT in target_repo/main
+tests/test_api.py,YES,YES,YES,PRESENT_BOTH,Synchronized across local and target_repo
+tests/test_dataset.py,YES,YES,YES,PRESENT_BOTH,Synchronized across local and target_repo
+tests/test_evaluate.py,YES,YES,NO,LOCAL_AHEAD_MISSING_IN_TARGET,Present locally and in origin/main; NOT in target_repo/main
+tests/test_models.py,YES,YES,YES,PRESENT_BOTH,Synchronized across local and target_repo
+tests/test_onnx.py,YES,YES,NO,LOCAL_AHEAD_MISSING_IN_TARGET,Present locally and in origin/main; NOT in target_repo/main
+tests/test_train.py,YES,YES,NO,LOCAL_AHEAD_MISSING_IN_TARGET,Present locally and in origin/main; NOT in target_repo/main
+dataset/*.png (828 tiles),NO,NO,NO,IGNORED_PRIVATE_ARTIFACT,Raw & processed tiles; excluded by .gitignore
+"checkpoints/*.pth, *.ckpt, *.onnx (17 files, 2.2 GB)",NO,NO,NO,IGNORED_PRIVATE_ARTIFACT,Model weights; excluded by .gitignore
+logs/tensorboard/* (30 files),NO,NO,NO,IGNORED_LOGS,Training telemetry; excluded by .gitignore
+mlflow.db (SQLite database),NO,NO,NO,IGNORED_DATABASE,Experiment tracking database; excluded by .gitignore
+venv/* (358 files),NO,NO,NO,IGNORED_ENVIRONMENT,Python virtualenv binaries; excluded by .gitignore

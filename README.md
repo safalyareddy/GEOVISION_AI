@@ -1,7 +1,7 @@
 # 🛰️ GeoVision AI — Satellite Water Body Segmentation Platform
 
-[![CI Pipeline](https://github.com/safalyareddy/GeoVision-AI-Satellite-Water-Body-Segmentation-Platform/actions/workflows/ci.yml/badge.svg)](https://github.com/safalyareddy/GeoVision-AI-Satellite-Water-Body-Segmentation-Platform/actions/workflows/ci.yml)
-![Python](https://img.shields.io/badge/python-v3.9+-blue.svg)
+[![CI Pipeline](https://github.com/safalyareddy/GEOVISION_AI/actions/workflows/ci.yml/badge.svg)](https://github.com/safalyareddy/GEOVISION_AI/actions/workflows/ci.yml)
+![Python](https://img.shields.io/badge/python-v3.10%20%7C%20v3.11-blue.svg)
 ![FastAPI](https://img.shields.io/badge/FastAPI-0.100.0+-009688.svg?logo=fastapi&logoColor=white)
 ![Streamlit](https://img.shields.io/badge/Streamlit-1.25.0+-FF4B4B.svg?logo=streamlit&logoColor=white)
 ![ONNX Runtime](https://img.shields.io/badge/ONNX-Runtime-1.15.0+-005C99.svg?logo=onnx&logoColor=white)
@@ -9,7 +9,7 @@
 
 **GeoVision AI** is a production-grade machine learning platform designed for the automated detection and segmentation of surface water bodies on high-resolution Sentinel-2 satellite imagery. 
 
-Utilizing advanced deep learning architectures (Convolutional and Vision-Transformer based), the platform leverages an MLOps pipeline to train, benchmark, and serve optimized models. By compiling PyTorch weights into standard **ONNX Runtime** graphs, GeoVision AI achieves sub-30ms latencies suitable for integration directly into high-throughput Geographic Information Systems (GIS) environments.
+Utilizing advanced deep learning architectures (UNet++, DeepLabV3+, SegFormer), the platform leverages an MLOps pipeline to train, benchmark, and serve optimized models. By compiling PyTorch weights into standard **ONNX Runtime** graphs, GeoVision AI achieves sub-20ms latencies on Apple Silicon GPU (`mps`) and sub-75ms on CPU, suitable for integration into Geographic Information Systems (GIS) workflows.
 
 ---
 
@@ -59,6 +59,19 @@ graph TD
     F --> G[FastAPI Backend]
     G --> H[Streamlit Dashboard]
 ```
+
+## 📚 Documentation Sitemap
+Detailed technical architecture, security protocols, and operational guides:
+
+* [System Architecture & Subsystems](docs/architecture.md)
+* [Dataset Provenance & Forensics](docs/dataset_and_provenance.md)
+* [Model Training & Loss Engineering](docs/model_training.md)
+* [Held-Out Evaluation Protocol](docs/evaluation_protocol.md)
+* [FastAPI Microservice Reference](docs/api_reference.md)
+* [Docker & Production Deployment](docs/deployment.md)
+* [Security & Threat Model](docs/security.md)
+* [Environment Setup & Reproducibility](docs/reproducibility.md)
+* [Limitations & Multi-Spectral Roadmap](docs/limitations_and_roadmap.md)
 
 ---
 
