@@ -1,0 +1,4976 @@
+{
+  "train": [
+    {
+      "stem": "patch_0000",
+      "image_file": "patch_0000.png",
+      "mask_file": "patch_0000.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 1495,
+      "water_fraction": 0.0228118896484375,
+      "md5": "5b1ae34eff9d5d5eb3d37d343c0a4401"
+    },
+    {
+      "stem": "patch_0001",
+      "image_file": "patch_0001.png",
+      "mask_file": "patch_0001.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 12648,
+      "water_fraction": 0.1929931640625,
+      "md5": "e3c65c2629a8ccbd71e755a88f4b8eaa"
+    },
+    {
+      "stem": "patch_0002",
+      "image_file": "patch_0002.png",
+      "mask_file": "patch_0002.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 1659,
+      "water_fraction": 0.0253143310546875,
+      "md5": "e79ab27b55993ea84ade70b598ff4c32"
+    },
+    {
+      "stem": "patch_0003",
+      "image_file": "patch_0003.png",
+      "mask_file": "patch_0003.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 1617,
+      "water_fraction": 0.0246734619140625,
+      "md5": "f9c1ee3aaba9022bd656a5aebe01a8e0"
+    },
+    {
+      "stem": "patch_0004",
+      "image_file": "patch_0004.png",
+      "mask_file": "patch_0004.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 15,
+      "water_fraction": 0.0002288818359375,
+      "md5": "77f1cea6ae42d3e1e67ba4dac97549bf"
+    },
+    {
+      "stem": "patch_0005",
+      "image_file": "patch_0005.png",
+      "mask_file": "patch_0005.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 11891,
+      "water_fraction": 0.1814422607421875,
+      "md5": "51a2fdc79cdc19a6ab10a9c7f41038b5"
+    },
+    {
+      "stem": "patch_0006",
+      "image_file": "patch_0006.png",
+      "mask_file": "patch_0006.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 1785,
+      "water_fraction": 0.0272369384765625,
+      "md5": "f067f33903813c448944d6e555064df6"
+    },
+    {
+      "stem": "patch_0007",
+      "image_file": "patch_0007.png",
+      "mask_file": "patch_0007.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 0,
+      "water_fraction": 0.0,
+      "md5": "f88da30dcf9a476933fb4857b4406c2a"
+    },
+    {
+      "stem": "patch_0008",
+      "image_file": "patch_0008.png",
+      "mask_file": "patch_0008.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 2554,
+      "water_fraction": 0.038970947265625,
+      "md5": "d3989b088a900c2b8518756d73cc6cfd"
+    },
+    {
+      "stem": "patch_0009",
+      "image_file": "patch_0009.png",
+      "mask_file": "patch_0009.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 325,
+      "water_fraction": 0.0049591064453125,
+      "md5": "db6b3ee0c52489fc3e9d56d2c6febc7d"
+    },
+    {
+      "stem": "patch_0010",
+      "image_file": "patch_0010.png",
+      "mask_file": "patch_0010.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 4903,
+      "water_fraction": 0.0748138427734375,
+      "md5": "5988a7e11d13c4546a57e52b7e2dbf94"
+    },
+    {
+      "stem": "patch_0011",
+      "image_file": "patch_0011.png",
+      "mask_file": "patch_0011.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 1073,
+      "water_fraction": 0.0163726806640625,
+      "md5": "dcce735e1d7768fec25cb5cbbf7b6131"
+    },
+    {
+      "stem": "patch_0012",
+      "image_file": "patch_0012.png",
+      "mask_file": "patch_0012.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 29,
+      "water_fraction": 0.0004425048828125,
+      "md5": "34079c90a9e3cde36d752c031dcf900a"
+    },
+    {
+      "stem": "patch_0013",
+      "image_file": "patch_0013.png",
+      "mask_file": "patch_0013.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 2372,
+      "water_fraction": 0.03619384765625,
+      "md5": "2f1e58374bc25fb90705d1a30234b189"
+    },
+    {
+      "stem": "patch_0014",
+      "image_file": "patch_0014.png",
+      "mask_file": "patch_0014.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 567,
+      "water_fraction": 0.0086517333984375,
+      "md5": "d820d413518b7becdb1fea154f5d2fb3"
+    },
+    {
+      "stem": "patch_0015",
+      "image_file": "patch_0015.png",
+      "mask_file": "patch_0015.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 471,
+      "water_fraction": 0.0071868896484375,
+      "md5": "9b831854b9f1031d8dd36e4bf2e6b25c"
+    },
+    {
+      "stem": "patch_0016",
+      "image_file": "patch_0016.png",
+      "mask_file": "patch_0016.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 3391,
+      "water_fraction": 0.0517425537109375,
+      "md5": "08c3d470ab78a2b7069d01451a26158b"
+    },
+    {
+      "stem": "patch_0017",
+      "image_file": "patch_0017.png",
+      "mask_file": "patch_0017.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 2229,
+      "water_fraction": 0.0340118408203125,
+      "md5": "22440907b06b2beafeb07ffed87276af"
+    },
+    {
+      "stem": "patch_0018",
+      "image_file": "patch_0018.png",
+      "mask_file": "patch_0018.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 736,
+      "water_fraction": 0.01123046875,
+      "md5": "3e9b3eb1b4576fc09d2fe2e66bba0856"
+    },
+    {
+      "stem": "patch_0019",
+      "image_file": "patch_0019.png",
+      "mask_file": "patch_0019.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 0,
+      "water_fraction": 0.0,
+      "md5": "20a4d4e40b5c92a69c622bdb69aee104"
+    },
+    {
+      "stem": "patch_0020",
+      "image_file": "patch_0020.png",
+      "mask_file": "patch_0020.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 1003,
+      "water_fraction": 0.0153045654296875,
+      "md5": "2d4893e79461dd38f4018f857a546f09"
+    },
+    {
+      "stem": "patch_0021",
+      "image_file": "patch_0021.png",
+      "mask_file": "patch_0021.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 4,
+      "water_fraction": 6.103515625e-05,
+      "md5": "f029d64a70df1de9ba27ea2d37f2a264"
+    },
+    {
+      "stem": "patch_0022",
+      "image_file": "patch_0022.png",
+      "mask_file": "patch_0022.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 911,
+      "water_fraction": 0.0139007568359375,
+      "md5": "fc85d9f2e3c1a9647dfad43f5cd0dd41"
+    },
+    {
+      "stem": "patch_0023",
+      "image_file": "patch_0023.png",
+      "mask_file": "patch_0023.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 1530,
+      "water_fraction": 0.023345947265625,
+      "md5": "30f45c92dca046ab0a8e37950edba2fd"
+    },
+    {
+      "stem": "patch_0024",
+      "image_file": "patch_0024.png",
+      "mask_file": "patch_0024.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 745,
+      "water_fraction": 0.0113677978515625,
+      "md5": "ac6956c8052c7623c56fad8dc34bfe02"
+    },
+    {
+      "stem": "patch_0025",
+      "image_file": "patch_0025.png",
+      "mask_file": "patch_0025.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 247,
+      "water_fraction": 0.0037689208984375,
+      "md5": "59ce6833032fd96be426925fe67a3ddc"
+    },
+    {
+      "stem": "patch_0026",
+      "image_file": "patch_0026.png",
+      "mask_file": "patch_0026.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 3734,
+      "water_fraction": 0.056976318359375,
+      "md5": "62b9ccc1e2082b8c5592b6ad4548f387"
+    },
+    {
+      "stem": "patch_0027",
+      "image_file": "patch_0027.png",
+      "mask_file": "patch_0027.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 970,
+      "water_fraction": 0.014801025390625,
+      "md5": "23088f09eeb2947b43ebdfb71e100b91"
+    },
+    {
+      "stem": "patch_0028",
+      "image_file": "patch_0028.png",
+      "mask_file": "patch_0028.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 278,
+      "water_fraction": 0.004241943359375,
+      "md5": "4f9e0247945bfb290c4b9421693f418f"
+    },
+    {
+      "stem": "patch_0029",
+      "image_file": "patch_0029.png",
+      "mask_file": "patch_0029.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 266,
+      "water_fraction": 0.004058837890625,
+      "md5": "381d58fd1c2178b9f3f698329af21e7e"
+    },
+    {
+      "stem": "patch_0030",
+      "image_file": "patch_0030.png",
+      "mask_file": "patch_0030.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 45,
+      "water_fraction": 0.0006866455078125,
+      "md5": "258157580ca6e0cc1dd4654e6301438f"
+    },
+    {
+      "stem": "patch_0031",
+      "image_file": "patch_0031.png",
+      "mask_file": "patch_0031.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 661,
+      "water_fraction": 0.0100860595703125,
+      "md5": "964d4ffbac12ce5d9b646f37d5d4a068"
+    },
+    {
+      "stem": "patch_0032",
+      "image_file": "patch_0032.png",
+      "mask_file": "patch_0032.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 11396,
+      "water_fraction": 0.17388916015625,
+      "md5": "560e1f11a7fa38d90836cd3694e055e1"
+    },
+    {
+      "stem": "patch_0033",
+      "image_file": "patch_0033.png",
+      "mask_file": "patch_0033.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 3554,
+      "water_fraction": 0.054229736328125,
+      "md5": "ad696280eea0e3448c1a3251bb6a4991"
+    },
+    {
+      "stem": "patch_0034",
+      "image_file": "patch_0034.png",
+      "mask_file": "patch_0034.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 83,
+      "water_fraction": 0.0012664794921875,
+      "md5": "14cfff815a2377b563e7ca8945c30854"
+    },
+    {
+      "stem": "patch_0035",
+      "image_file": "patch_0035.png",
+      "mask_file": "patch_0035.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 1278,
+      "water_fraction": 0.019500732421875,
+      "md5": "27d4773c42faddbf7d64ac6b597f6e52"
+    },
+    {
+      "stem": "patch_0036",
+      "image_file": "patch_0036.png",
+      "mask_file": "patch_0036.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 884,
+      "water_fraction": 0.01348876953125,
+      "md5": "e9b2f975d658469a62aa5e62b4fe6518"
+    },
+    {
+      "stem": "patch_0037",
+      "image_file": "patch_0037.png",
+      "mask_file": "patch_0037.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 1234,
+      "water_fraction": 0.018829345703125,
+      "md5": "bb59e459964be94ac93b2189d92db658"
+    },
+    {
+      "stem": "patch_0038",
+      "image_file": "patch_0038.png",
+      "mask_file": "patch_0038.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 22915,
+      "water_fraction": 0.3496551513671875,
+      "md5": "c88578d4ed36c810b0baea5a2f7ac636"
+    },
+    {
+      "stem": "patch_0039",
+      "image_file": "patch_0039.png",
+      "mask_file": "patch_0039.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 5468,
+      "water_fraction": 0.08343505859375,
+      "md5": "d687fd729f3caca2253450e24c09acbb"
+    },
+    {
+      "stem": "patch_0040",
+      "image_file": "patch_0040.png",
+      "mask_file": "patch_0040.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 372,
+      "water_fraction": 0.00567626953125,
+      "md5": "6f112fa95c71a2a80410d78c4dfcc563"
+    },
+    {
+      "stem": "patch_0041",
+      "image_file": "patch_0041.png",
+      "mask_file": "patch_0041.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 1134,
+      "water_fraction": 0.017303466796875,
+      "md5": "7c2e9e7e618fa8359c2c8a2bda216cbe"
+    },
+    {
+      "stem": "patch_0042",
+      "image_file": "patch_0042.png",
+      "mask_file": "patch_0042.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 2009,
+      "water_fraction": 0.0306549072265625,
+      "md5": "9570334d8d32511ee2a91b595074e50b"
+    },
+    {
+      "stem": "patch_0043",
+      "image_file": "patch_0043.png",
+      "mask_file": "patch_0043.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 0,
+      "water_fraction": 0.0,
+      "md5": "8d72f13b1408ec44cbe395b00cbdfa13"
+    },
+    {
+      "stem": "patch_0044",
+      "image_file": "patch_0044.png",
+      "mask_file": "patch_0044.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 21,
+      "water_fraction": 0.0003204345703125,
+      "md5": "5d6bf05ee6804b30e1d62947204b2395"
+    },
+    {
+      "stem": "patch_0045",
+      "image_file": "patch_0045.png",
+      "mask_file": "patch_0045.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 3075,
+      "water_fraction": 0.0469207763671875,
+      "md5": "5802b046f5fa65633595c4bcece36d9d"
+    },
+    {
+      "stem": "patch_0046",
+      "image_file": "patch_0046.png",
+      "mask_file": "patch_0046.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 1270,
+      "water_fraction": 0.019378662109375,
+      "md5": "684209e7be3b4f913ecd9ba1be93f7d7"
+    },
+    {
+      "stem": "patch_0047",
+      "image_file": "patch_0047.png",
+      "mask_file": "patch_0047.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 692,
+      "water_fraction": 0.01055908203125,
+      "md5": "26ed5654a33de576d51095067dce0109"
+    },
+    {
+      "stem": "patch_0048",
+      "image_file": "patch_0048.png",
+      "mask_file": "patch_0048.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 642,
+      "water_fraction": 0.009796142578125,
+      "md5": "fc66c0c96d2e2eff8ea81223decb13f7"
+    },
+    {
+      "stem": "patch_0049",
+      "image_file": "patch_0049.png",
+      "mask_file": "patch_0049.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 1145,
+      "water_fraction": 0.0174713134765625,
+      "md5": "ae2a39b93d4d7e8c50fc4b7003631628"
+    },
+    {
+      "stem": "patch_0050",
+      "image_file": "patch_0050.png",
+      "mask_file": "patch_0050.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 2360,
+      "water_fraction": 0.0360107421875,
+      "md5": "c0223690ae8c29668cbb7bc9fa3706c7"
+    },
+    {
+      "stem": "patch_0051",
+      "image_file": "patch_0051.png",
+      "mask_file": "patch_0051.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 3332,
+      "water_fraction": 0.05084228515625,
+      "md5": "5024fd18586570a1c079a7008fbe6646"
+    },
+    {
+      "stem": "patch_0052",
+      "image_file": "patch_0052.png",
+      "mask_file": "patch_0052.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 3787,
+      "water_fraction": 0.0577850341796875,
+      "md5": "2ad77d71889f1639d913525228e25603"
+    },
+    {
+      "stem": "patch_0053",
+      "image_file": "patch_0053.png",
+      "mask_file": "patch_0053.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 1391,
+      "water_fraction": 0.0212249755859375,
+      "md5": "8fe57f9f4c6447a6cd7fb4531a27ab1b"
+    },
+    {
+      "stem": "patch_0054",
+      "image_file": "patch_0054.png",
+      "mask_file": "patch_0054.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 3067,
+      "water_fraction": 0.0467987060546875,
+      "md5": "815acf375243405a64bdeeb01c5c743a"
+    },
+    {
+      "stem": "patch_0055",
+      "image_file": "patch_0055.png",
+      "mask_file": "patch_0055.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 956,
+      "water_fraction": 0.01458740234375,
+      "md5": "f6ddb838ed22f8ac54c3abea82dc31aa"
+    },
+    {
+      "stem": "patch_0056",
+      "image_file": "patch_0056.png",
+      "mask_file": "patch_0056.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 3757,
+      "water_fraction": 0.0573272705078125,
+      "md5": "56027a01d72f58aa85dd7d7da4a8e8ee"
+    },
+    {
+      "stem": "patch_0057",
+      "image_file": "patch_0057.png",
+      "mask_file": "patch_0057.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 817,
+      "water_fraction": 0.0124664306640625,
+      "md5": "baa961f8ebced3120c72e1120183e324"
+    },
+    {
+      "stem": "patch_0058",
+      "image_file": "patch_0058.png",
+      "mask_file": "patch_0058.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 0,
+      "water_fraction": 0.0,
+      "md5": "c9e53897733856e3fb52c2399298ca68"
+    },
+    {
+      "stem": "patch_0059",
+      "image_file": "patch_0059.png",
+      "mask_file": "patch_0059.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 1460,
+      "water_fraction": 0.02227783203125,
+      "md5": "f2acc5cd36c2064e83e1adfa53c68c2b"
+    },
+    {
+      "stem": "patch_0060",
+      "image_file": "patch_0060.png",
+      "mask_file": "patch_0060.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 3568,
+      "water_fraction": 0.054443359375,
+      "md5": "85754fb0fe6aa68c019b0a070008ceef"
+    },
+    {
+      "stem": "patch_0061",
+      "image_file": "patch_0061.png",
+      "mask_file": "patch_0061.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 1329,
+      "water_fraction": 0.0202789306640625,
+      "md5": "ab35c2acbdcddaaac742ed48db0303be"
+    },
+    {
+      "stem": "patch_0062",
+      "image_file": "patch_0062.png",
+      "mask_file": "patch_0062.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 1264,
+      "water_fraction": 0.019287109375,
+      "md5": "0b79bc778620dfe214bd9d704c280c52"
+    },
+    {
+      "stem": "patch_0063",
+      "image_file": "patch_0063.png",
+      "mask_file": "patch_0063.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 2756,
+      "water_fraction": 0.04205322265625,
+      "md5": "0657cfc8591721b7c183010118da5d4a"
+    },
+    {
+      "stem": "patch_0064",
+      "image_file": "patch_0064.png",
+      "mask_file": "patch_0064.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 1285,
+      "water_fraction": 0.0196075439453125,
+      "md5": "d944836118be9c6ab36d7891972654a1"
+    },
+    {
+      "stem": "patch_0065",
+      "image_file": "patch_0065.png",
+      "mask_file": "patch_0065.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 3759,
+      "water_fraction": 0.0573577880859375,
+      "md5": "93d5e0659cb379cce802f3d442cec5e4"
+    },
+    {
+      "stem": "patch_0066",
+      "image_file": "patch_0066.png",
+      "mask_file": "patch_0066.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 1631,
+      "water_fraction": 0.0248870849609375,
+      "md5": "fd5bf5761e84266a98f5215bf661e0f8"
+    },
+    {
+      "stem": "patch_0067",
+      "image_file": "patch_0067.png",
+      "mask_file": "patch_0067.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 1904,
+      "water_fraction": 0.029052734375,
+      "md5": "a909ae51e4d54074a1fdb05e05a12258"
+    },
+    {
+      "stem": "patch_0068",
+      "image_file": "patch_0068.png",
+      "mask_file": "patch_0068.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 376,
+      "water_fraction": 0.0057373046875,
+      "md5": "b7c22d2b68380fb6c843f72d67219b4f"
+    },
+    {
+      "stem": "patch_0069",
+      "image_file": "patch_0069.png",
+      "mask_file": "patch_0069.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 1357,
+      "water_fraction": 0.0207061767578125,
+      "md5": "27deac9f461cf71ef02868a2b3c1fec5"
+    },
+    {
+      "stem": "patch_0070",
+      "image_file": "patch_0070.png",
+      "mask_file": "patch_0070.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 1970,
+      "water_fraction": 0.030059814453125,
+      "md5": "bc47ad9426d7a208311063bdaa84bda3"
+    },
+    {
+      "stem": "patch_0071",
+      "image_file": "patch_0071.png",
+      "mask_file": "patch_0071.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 0,
+      "water_fraction": 0.0,
+      "md5": "6d89c8eb4baa1da3ef77cd43fb777cfe"
+    },
+    {
+      "stem": "patch_0072",
+      "image_file": "patch_0072.png",
+      "mask_file": "patch_0072.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 53,
+      "water_fraction": 0.0008087158203125,
+      "md5": "42d460c6cc3b51220610e5cb8c031bb5"
+    },
+    {
+      "stem": "patch_0073",
+      "image_file": "patch_0073.png",
+      "mask_file": "patch_0073.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 4753,
+      "water_fraction": 0.0725250244140625,
+      "md5": "a01888aff710d8bfa07491705f2b5c45"
+    },
+    {
+      "stem": "patch_0074",
+      "image_file": "patch_0074.png",
+      "mask_file": "patch_0074.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 229,
+      "water_fraction": 0.0034942626953125,
+      "md5": "2a4779eeef4d5ca26f5f5908a4d5ab31"
+    },
+    {
+      "stem": "patch_0075",
+      "image_file": "patch_0075.png",
+      "mask_file": "patch_0075.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 2326,
+      "water_fraction": 0.035491943359375,
+      "md5": "b961c0a87fa8db03ee4013bc70ef7b35"
+    },
+    {
+      "stem": "patch_0076",
+      "image_file": "patch_0076.png",
+      "mask_file": "patch_0076.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 5389,
+      "water_fraction": 0.0822296142578125,
+      "md5": "423fc76b5ca04391662f4974256ec498"
+    },
+    {
+      "stem": "patch_0077",
+      "image_file": "patch_0077.png",
+      "mask_file": "patch_0077.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 669,
+      "water_fraction": 0.0102081298828125,
+      "md5": "b87131ebcc305c274f992d154f3d17ee"
+    },
+    {
+      "stem": "patch_0078",
+      "image_file": "patch_0078.png",
+      "mask_file": "patch_0078.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 2417,
+      "water_fraction": 0.0368804931640625,
+      "md5": "a62693388e3a6a035da10a487fb3fd47"
+    },
+    {
+      "stem": "patch_0079",
+      "image_file": "patch_0079.png",
+      "mask_file": "patch_0079.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 2403,
+      "water_fraction": 0.0366668701171875,
+      "md5": "8314badfa921557f3e16a7a7ee16b042"
+    },
+    {
+      "stem": "patch_0080",
+      "image_file": "patch_0080.png",
+      "mask_file": "patch_0080.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 0,
+      "water_fraction": 0.0,
+      "md5": "c08a29d525f20a443e20656bc1d7761e"
+    },
+    {
+      "stem": "patch_0081",
+      "image_file": "patch_0081.png",
+      "mask_file": "patch_0081.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 871,
+      "water_fraction": 0.0132904052734375,
+      "md5": "82f8ad7c9329a4be9483868e5ac6c1c3"
+    },
+    {
+      "stem": "patch_0082",
+      "image_file": "patch_0082.png",
+      "mask_file": "patch_0082.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 2199,
+      "water_fraction": 0.0335540771484375,
+      "md5": "fb0c1b1c18563dd7e091e83bc0c0900d"
+    },
+    {
+      "stem": "patch_0083",
+      "image_file": "patch_0083.png",
+      "mask_file": "patch_0083.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 265,
+      "water_fraction": 0.0040435791015625,
+      "md5": "27040f7ed6e3eb2bc9c7a6cff920689b"
+    },
+    {
+      "stem": "patch_0084",
+      "image_file": "patch_0084.png",
+      "mask_file": "patch_0084.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 4099,
+      "water_fraction": 0.0625457763671875,
+      "md5": "a30ec2a9d6cfe1d07336916bdc0268d2"
+    },
+    {
+      "stem": "patch_0085",
+      "image_file": "patch_0085.png",
+      "mask_file": "patch_0085.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 331,
+      "water_fraction": 0.0050506591796875,
+      "md5": "ee2352dd540f43613156f48834f01898"
+    },
+    {
+      "stem": "patch_0086",
+      "image_file": "patch_0086.png",
+      "mask_file": "patch_0086.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 748,
+      "water_fraction": 0.01141357421875,
+      "md5": "cb5677d34a1e1c0c1f1bb570d006d988"
+    },
+    {
+      "stem": "patch_0087",
+      "image_file": "patch_0087.png",
+      "mask_file": "patch_0087.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 2206,
+      "water_fraction": 0.033660888671875,
+      "md5": "3a7fdea2fe608d55cb0dd469535bbaa9"
+    },
+    {
+      "stem": "patch_0088",
+      "image_file": "patch_0088.png",
+      "mask_file": "patch_0088.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 478,
+      "water_fraction": 0.007293701171875,
+      "md5": "1302a537d20649cfbc4e0f6ea22b0b5e"
+    },
+    {
+      "stem": "patch_0089",
+      "image_file": "patch_0089.png",
+      "mask_file": "patch_0089.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 287,
+      "water_fraction": 0.0043792724609375,
+      "md5": "4d1c96e3c701c44146d1306c1da95b85"
+    },
+    {
+      "stem": "patch_0090",
+      "image_file": "patch_0090.png",
+      "mask_file": "patch_0090.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 1141,
+      "water_fraction": 0.0174102783203125,
+      "md5": "f0d89a5fc07b4071ec5d1eba423b8b79"
+    },
+    {
+      "stem": "patch_0091",
+      "image_file": "patch_0091.png",
+      "mask_file": "patch_0091.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 1252,
+      "water_fraction": 0.01910400390625,
+      "md5": "eabce9ff6c64fe724f03b619c4a5e62b"
+    },
+    {
+      "stem": "patch_0092",
+      "image_file": "patch_0092.png",
+      "mask_file": "patch_0092.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 271,
+      "water_fraction": 0.0041351318359375,
+      "md5": "8b31391e58fcde6f0965187a6edb42fe"
+    },
+    {
+      "stem": "patch_0093",
+      "image_file": "patch_0093.png",
+      "mask_file": "patch_0093.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 1119,
+      "water_fraction": 0.0170745849609375,
+      "md5": "dd828b9acfa21b45fa87dc2c25686ec8"
+    },
+    {
+      "stem": "patch_0094",
+      "image_file": "patch_0094.png",
+      "mask_file": "patch_0094.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 4826,
+      "water_fraction": 0.073638916015625,
+      "md5": "9574b34db36a335fe33675be047aec89"
+    },
+    {
+      "stem": "patch_0095",
+      "image_file": "patch_0095.png",
+      "mask_file": "patch_0095.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 2386,
+      "water_fraction": 0.036407470703125,
+      "md5": "e2424fe2e6b1bc07bf60a3ab7de6f555"
+    },
+    {
+      "stem": "patch_0096",
+      "image_file": "patch_0096.png",
+      "mask_file": "patch_0096.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 2871,
+      "water_fraction": 0.0438079833984375,
+      "md5": "6950cc445fb3ef47fdd437fc1e13c101"
+    },
+    {
+      "stem": "patch_0097",
+      "image_file": "patch_0097.png",
+      "mask_file": "patch_0097.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 6569,
+      "water_fraction": 0.1002349853515625,
+      "md5": "406052171ddc279f45d1b3f3e00eb577"
+    },
+    {
+      "stem": "patch_0098",
+      "image_file": "patch_0098.png",
+      "mask_file": "patch_0098.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 1807,
+      "water_fraction": 0.0275726318359375,
+      "md5": "8a4df9329a24447f228f1778854b8b4e"
+    },
+    {
+      "stem": "patch_0099",
+      "image_file": "patch_0099.png",
+      "mask_file": "patch_0099.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 419,
+      "water_fraction": 0.0063934326171875,
+      "md5": "9e8fe0220cffc95126c2bd4356912004"
+    },
+    {
+      "stem": "patch_0100",
+      "image_file": "patch_0100.png",
+      "mask_file": "patch_0100.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 0,
+      "water_fraction": 0.0,
+      "md5": "87277eed22dcb63ca480bbb1ca3f386b"
+    },
+    {
+      "stem": "patch_0101",
+      "image_file": "patch_0101.png",
+      "mask_file": "patch_0101.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 0,
+      "water_fraction": 0.0,
+      "md5": "5a7cf8c12440953809c8fbc3728f5514"
+    },
+    {
+      "stem": "patch_0102",
+      "image_file": "patch_0102.png",
+      "mask_file": "patch_0102.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 0,
+      "water_fraction": 0.0,
+      "md5": "4572024eea70f8e56c77c3b50359aede"
+    },
+    {
+      "stem": "patch_0103",
+      "image_file": "patch_0103.png",
+      "mask_file": "patch_0103.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 8450,
+      "water_fraction": 0.128936767578125,
+      "md5": "9bf7c97cc8a6ee565de19e1b3e1ef0ed"
+    },
+    {
+      "stem": "patch_0104",
+      "image_file": "patch_0104.png",
+      "mask_file": "patch_0104.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 162,
+      "water_fraction": 0.002471923828125,
+      "md5": "7fd4067dc50373d37a2ab31a24f4f813"
+    },
+    {
+      "stem": "patch_0105",
+      "image_file": "patch_0105.png",
+      "mask_file": "patch_0105.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 0,
+      "water_fraction": 0.0,
+      "md5": "d3e9d857be399cbbbbcae477a3e82fbd"
+    },
+    {
+      "stem": "patch_0106",
+      "image_file": "patch_0106.png",
+      "mask_file": "patch_0106.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 0,
+      "water_fraction": 0.0,
+      "md5": "4c99be404f2783ba991ec2d5e9a9be1f"
+    },
+    {
+      "stem": "patch_0107",
+      "image_file": "patch_0107.png",
+      "mask_file": "patch_0107.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 27,
+      "water_fraction": 0.0004119873046875,
+      "md5": "b72961498b38bea4307492bbfb73edfb"
+    },
+    {
+      "stem": "patch_0108",
+      "image_file": "patch_0108.png",
+      "mask_file": "patch_0108.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 278,
+      "water_fraction": 0.004241943359375,
+      "md5": "907524564d30e9c0c106a577175baacc"
+    },
+    {
+      "stem": "patch_0109",
+      "image_file": "patch_0109.png",
+      "mask_file": "patch_0109.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 29325,
+      "water_fraction": 0.4474639892578125,
+      "md5": "377899377b13edb988365feec950ad97"
+    },
+    {
+      "stem": "patch_0110",
+      "image_file": "patch_0110.png",
+      "mask_file": "patch_0110.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 2652,
+      "water_fraction": 0.04046630859375,
+      "md5": "1ec4bd52039eb14199dc103b362b14b1"
+    },
+    {
+      "stem": "patch_0111",
+      "image_file": "patch_0111.png",
+      "mask_file": "patch_0111.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 1518,
+      "water_fraction": 0.023162841796875,
+      "md5": "34ee557a0f628c343b740ad7998ec53d"
+    },
+    {
+      "stem": "patch_0112",
+      "image_file": "patch_0112.png",
+      "mask_file": "patch_0112.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 3870,
+      "water_fraction": 0.059051513671875,
+      "md5": "70f939e7958fc5476c5210d0369abded"
+    },
+    {
+      "stem": "patch_0113",
+      "image_file": "patch_0113.png",
+      "mask_file": "patch_0113.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 3371,
+      "water_fraction": 0.0514373779296875,
+      "md5": "d668b5f6c250cc825fcaf9c6179e986b"
+    },
+    {
+      "stem": "patch_0114",
+      "image_file": "patch_0114.png",
+      "mask_file": "patch_0114.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 122,
+      "water_fraction": 0.001861572265625,
+      "md5": "36ae6933b70076593067467d692b4632"
+    },
+    {
+      "stem": "patch_0115",
+      "image_file": "patch_0115.png",
+      "mask_file": "patch_0115.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 1944,
+      "water_fraction": 0.0296630859375,
+      "md5": "72243237a9f59c0494c5a9661d9ec669"
+    },
+    {
+      "stem": "patch_0116",
+      "image_file": "patch_0116.png",
+      "mask_file": "patch_0116.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 2907,
+      "water_fraction": 0.0443572998046875,
+      "md5": "fd0122920e9c0727387cb6113d323430"
+    },
+    {
+      "stem": "patch_0117",
+      "image_file": "patch_0117.png",
+      "mask_file": "patch_0117.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 1570,
+      "water_fraction": 0.023956298828125,
+      "md5": "59b1b6c172d304fc6a4933ce01d1ad5a"
+    },
+    {
+      "stem": "patch_0118",
+      "image_file": "patch_0118.png",
+      "mask_file": "patch_0118.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 1121,
+      "water_fraction": 0.0171051025390625,
+      "md5": "74eed8e2f829e7e213e54327985c2cfe"
+    },
+    {
+      "stem": "patch_0119",
+      "image_file": "patch_0119.png",
+      "mask_file": "patch_0119.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 514,
+      "water_fraction": 0.007843017578125,
+      "md5": "9be29d923349b0a0614111853886c282"
+    },
+    {
+      "stem": "patch_0120",
+      "image_file": "patch_0120.png",
+      "mask_file": "patch_0120.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 2244,
+      "water_fraction": 0.03424072265625,
+      "md5": "45659a39e3e94dd122b4a695a9b94110"
+    },
+    {
+      "stem": "patch_0121",
+      "image_file": "patch_0121.png",
+      "mask_file": "patch_0121.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 2549,
+      "water_fraction": 0.0388946533203125,
+      "md5": "7ccfa5bb4a45653715e6bebfbf1b9b4d"
+    },
+    {
+      "stem": "patch_0122",
+      "image_file": "patch_0122.png",
+      "mask_file": "patch_0122.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 1658,
+      "water_fraction": 0.025299072265625,
+      "md5": "3ec49b62a4f10105a40fd7532bc8a6bf"
+    },
+    {
+      "stem": "patch_0123",
+      "image_file": "patch_0123.png",
+      "mask_file": "patch_0123.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 996,
+      "water_fraction": 0.01519775390625,
+      "md5": "765c5fce009c7afefe53a52562cc925d"
+    },
+    {
+      "stem": "patch_0124",
+      "image_file": "patch_0124.png",
+      "mask_file": "patch_0124.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 2,
+      "water_fraction": 3.0517578125e-05,
+      "md5": "3132b301968225b2088dda482fbc624f"
+    },
+    {
+      "stem": "patch_0125",
+      "image_file": "patch_0125.png",
+      "mask_file": "patch_0125.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 30286,
+      "water_fraction": 0.462127685546875,
+      "md5": "1c5f5f34e3de892656811e1fbe8df527"
+    },
+    {
+      "stem": "patch_0126",
+      "image_file": "patch_0126.png",
+      "mask_file": "patch_0126.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 0,
+      "water_fraction": 0.0,
+      "md5": "7a663f5944aa021e2769d7ec618f29d5"
+    },
+    {
+      "stem": "patch_0127",
+      "image_file": "patch_0127.png",
+      "mask_file": "patch_0127.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 689,
+      "water_fraction": 0.0105133056640625,
+      "md5": "f9f50d68aea022a4ba6410f95897cf9f"
+    },
+    {
+      "stem": "patch_0128",
+      "image_file": "patch_0128.png",
+      "mask_file": "patch_0128.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 771,
+      "water_fraction": 0.0117645263671875,
+      "md5": "72dc3cbab6ddf49322379c536c666115"
+    },
+    {
+      "stem": "patch_0129",
+      "image_file": "patch_0129.png",
+      "mask_file": "patch_0129.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 14209,
+      "water_fraction": 0.2168121337890625,
+      "md5": "917ad105ddfefaf39c67e290bdcea068"
+    },
+    {
+      "stem": "patch_0130",
+      "image_file": "patch_0130.png",
+      "mask_file": "patch_0130.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 2032,
+      "water_fraction": 0.031005859375,
+      "md5": "495062cc6628f643879afc79f32c486c"
+    },
+    {
+      "stem": "patch_0131",
+      "image_file": "patch_0131.png",
+      "mask_file": "patch_0131.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 1002,
+      "water_fraction": 0.015289306640625,
+      "md5": "89655220d9c374dfd87b8b80bb445d6f"
+    },
+    {
+      "stem": "patch_0132",
+      "image_file": "patch_0132.png",
+      "mask_file": "patch_0132.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 2412,
+      "water_fraction": 0.03680419921875,
+      "md5": "17011b279f34479916fddd3c6b1a8aef"
+    },
+    {
+      "stem": "patch_0133",
+      "image_file": "patch_0133.png",
+      "mask_file": "patch_0133.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 3481,
+      "water_fraction": 0.0531158447265625,
+      "md5": "68bdc17b65a3c21b70dbb5c1145fc98c"
+    },
+    {
+      "stem": "patch_0134",
+      "image_file": "patch_0134.png",
+      "mask_file": "patch_0134.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 0,
+      "water_fraction": 0.0,
+      "md5": "ab3712e989d97b3ca47ae2cd0b7af57c"
+    },
+    {
+      "stem": "patch_0135",
+      "image_file": "patch_0135.png",
+      "mask_file": "patch_0135.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 566,
+      "water_fraction": 0.008636474609375,
+      "md5": "9281b41f795d8623ceb7622eda0fe36a"
+    },
+    {
+      "stem": "patch_0136",
+      "image_file": "patch_0136.png",
+      "mask_file": "patch_0136.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 1668,
+      "water_fraction": 0.02545166015625,
+      "md5": "eb1682f9738dc370fb1877ebc05d5013"
+    },
+    {
+      "stem": "patch_0137",
+      "image_file": "patch_0137.png",
+      "mask_file": "patch_0137.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 1207,
+      "water_fraction": 0.0184173583984375,
+      "md5": "ec6c504eba2bff315711adec29cc366d"
+    },
+    {
+      "stem": "patch_0138",
+      "image_file": "patch_0138.png",
+      "mask_file": "patch_0138.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 1,
+      "water_fraction": 1.52587890625e-05,
+      "md5": "6abdb6ff06229f8ae4e1e8ac4957ced7"
+    },
+    {
+      "stem": "patch_0139",
+      "image_file": "patch_0139.png",
+      "mask_file": "patch_0139.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 1336,
+      "water_fraction": 0.0203857421875,
+      "md5": "46784e32a7787ebf9890d198116c9da9"
+    },
+    {
+      "stem": "patch_0140",
+      "image_file": "patch_0140.png",
+      "mask_file": "patch_0140.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 1014,
+      "water_fraction": 0.015472412109375,
+      "md5": "6f25b42a2f60560a1461e43571c6c79c"
+    },
+    {
+      "stem": "patch_0141",
+      "image_file": "patch_0141.png",
+      "mask_file": "patch_0141.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 1861,
+      "water_fraction": 0.0283966064453125,
+      "md5": "1905adb67677954d96485eb653a79e1b"
+    },
+    {
+      "stem": "patch_0142",
+      "image_file": "patch_0142.png",
+      "mask_file": "patch_0142.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 1834,
+      "water_fraction": 0.027984619140625,
+      "md5": "95be546fc7346f4aba0bac1ef059e1bb"
+    },
+    {
+      "stem": "patch_0143",
+      "image_file": "patch_0143.png",
+      "mask_file": "patch_0143.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 570,
+      "water_fraction": 0.008697509765625,
+      "md5": "dfdd387db9dfcaf06225a6c579289888"
+    },
+    {
+      "stem": "patch_0144",
+      "image_file": "patch_0144.png",
+      "mask_file": "patch_0144.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 35,
+      "water_fraction": 0.0005340576171875,
+      "md5": "9cd9485e1ea75d87ba8b27c1c1a5253b"
+    },
+    {
+      "stem": "patch_0145",
+      "image_file": "patch_0145.png",
+      "mask_file": "patch_0145.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 3775,
+      "water_fraction": 0.0576019287109375,
+      "md5": "06e4d73a9773071feb71a6eacf883c77"
+    },
+    {
+      "stem": "patch_0146",
+      "image_file": "patch_0146.png",
+      "mask_file": "patch_0146.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 0,
+      "water_fraction": 0.0,
+      "md5": "efcea75cb7df5f142f84b6e64a0d8825"
+    },
+    {
+      "stem": "patch_0147",
+      "image_file": "patch_0147.png",
+      "mask_file": "patch_0147.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 4656,
+      "water_fraction": 0.071044921875,
+      "md5": "87b675da806149adb3a52c44b15ed170"
+    },
+    {
+      "stem": "patch_0148",
+      "image_file": "patch_0148.png",
+      "mask_file": "patch_0148.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 0,
+      "water_fraction": 0.0,
+      "md5": "6a4a7024a9f2421536a90d2fa53ad8d8"
+    },
+    {
+      "stem": "patch_0149",
+      "image_file": "patch_0149.png",
+      "mask_file": "patch_0149.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 555,
+      "water_fraction": 0.0084686279296875,
+      "md5": "8a967ee37756acaf1f68744cf0e31d0f"
+    },
+    {
+      "stem": "patch_0150",
+      "image_file": "patch_0150.png",
+      "mask_file": "patch_0150.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 62,
+      "water_fraction": 0.000946044921875,
+      "md5": "3028c6dcb6990af4fb11cd3c6b45584c"
+    },
+    {
+      "stem": "patch_0151",
+      "image_file": "patch_0151.png",
+      "mask_file": "patch_0151.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 1766,
+      "water_fraction": 0.026947021484375,
+      "md5": "9963f1b61fee2c72cb3eeef9d710cca1"
+    },
+    {
+      "stem": "patch_0152",
+      "image_file": "patch_0152.png",
+      "mask_file": "patch_0152.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 1017,
+      "water_fraction": 0.0155181884765625,
+      "md5": "e914998dba39ff9aa99d2523807faaf4"
+    },
+    {
+      "stem": "patch_0153",
+      "image_file": "patch_0153.png",
+      "mask_file": "patch_0153.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 3106,
+      "water_fraction": 0.047393798828125,
+      "md5": "43ffcb392ed44be0553c26e498785e05"
+    },
+    {
+      "stem": "patch_0154",
+      "image_file": "patch_0154.png",
+      "mask_file": "patch_0154.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 1757,
+      "water_fraction": 0.0268096923828125,
+      "md5": "5035711ce2c2034ad7f17976c08e335c"
+    },
+    {
+      "stem": "patch_0155",
+      "image_file": "patch_0155.png",
+      "mask_file": "patch_0155.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 333,
+      "water_fraction": 0.0050811767578125,
+      "md5": "539af1a1cc70899d2dce5d8198619ab6"
+    },
+    {
+      "stem": "patch_0156",
+      "image_file": "patch_0156.png",
+      "mask_file": "patch_0156.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 1296,
+      "water_fraction": 0.019775390625,
+      "md5": "dbd74ae9c7a422873ee70cfc2987bc42"
+    },
+    {
+      "stem": "patch_0157",
+      "image_file": "patch_0157.png",
+      "mask_file": "patch_0157.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 944,
+      "water_fraction": 0.014404296875,
+      "md5": "e4d70b4e411212a53b4e9249bc518e2f"
+    },
+    {
+      "stem": "patch_0158",
+      "image_file": "patch_0158.png",
+      "mask_file": "patch_0158.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 1141,
+      "water_fraction": 0.0174102783203125,
+      "md5": "8d5994044d3cfee60c25004a8991fee2"
+    },
+    {
+      "stem": "patch_0159",
+      "image_file": "patch_0159.png",
+      "mask_file": "patch_0159.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 3275,
+      "water_fraction": 0.0499725341796875,
+      "md5": "e32dfc529a61f273ac4d6c6bb53209da"
+    },
+    {
+      "stem": "patch_0160",
+      "image_file": "patch_0160.png",
+      "mask_file": "patch_0160.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 0,
+      "water_fraction": 0.0,
+      "md5": "967c15d8e59a80a775c0fadd6e487edc"
+    },
+    {
+      "stem": "patch_0161",
+      "image_file": "patch_0161.png",
+      "mask_file": "patch_0161.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 625,
+      "water_fraction": 0.0095367431640625,
+      "md5": "a6006c31d53ed57144d860b8c89db690"
+    },
+    {
+      "stem": "patch_0162",
+      "image_file": "patch_0162.png",
+      "mask_file": "patch_0162.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 0,
+      "water_fraction": 0.0,
+      "md5": "b9e6947efe4e2ea551f1b1c4c28d427e"
+    },
+    {
+      "stem": "patch_0163",
+      "image_file": "patch_0163.png",
+      "mask_file": "patch_0163.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 3524,
+      "water_fraction": 0.05377197265625,
+      "md5": "0cb82191ed0f6fed152570083c734e05"
+    },
+    {
+      "stem": "patch_0164",
+      "image_file": "patch_0164.png",
+      "mask_file": "patch_0164.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 2761,
+      "water_fraction": 0.0421295166015625,
+      "md5": "fab4eba9c81028e5da412b89b5d95a2c"
+    },
+    {
+      "stem": "patch_0165",
+      "image_file": "patch_0165.png",
+      "mask_file": "patch_0165.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 449,
+      "water_fraction": 0.0068511962890625,
+      "md5": "1e73bf292265c4907470ed5b5f2c310e"
+    },
+    {
+      "stem": "patch_0166",
+      "image_file": "patch_0166.png",
+      "mask_file": "patch_0166.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 79,
+      "water_fraction": 0.0012054443359375,
+      "md5": "ea19ae8ef51d36ccb8a2f933e5b8b5a2"
+    },
+    {
+      "stem": "patch_0167",
+      "image_file": "patch_0167.png",
+      "mask_file": "patch_0167.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 1178,
+      "water_fraction": 0.017974853515625,
+      "md5": "01dff44190ece4df9ce3e426330908dd"
+    },
+    {
+      "stem": "patch_0168",
+      "image_file": "patch_0168.png",
+      "mask_file": "patch_0168.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 14,
+      "water_fraction": 0.000213623046875,
+      "md5": "0855308efc82807e1abc6377ac98ec1c"
+    },
+    {
+      "stem": "patch_0169",
+      "image_file": "patch_0169.png",
+      "mask_file": "patch_0169.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 1623,
+      "water_fraction": 0.0247650146484375,
+      "md5": "792fc618caec941dc7e9badac6fcc692"
+    },
+    {
+      "stem": "patch_0170",
+      "image_file": "patch_0170.png",
+      "mask_file": "patch_0170.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 0,
+      "water_fraction": 0.0,
+      "md5": "09e689b6826d6e6f15d3127b2d04138f"
+    },
+    {
+      "stem": "patch_0171",
+      "image_file": "patch_0171.png",
+      "mask_file": "patch_0171.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 1136,
+      "water_fraction": 0.017333984375,
+      "md5": "33587dfda1c1da8ecdbd9b01ba7c9bbb"
+    },
+    {
+      "stem": "patch_0172",
+      "image_file": "patch_0172.png",
+      "mask_file": "patch_0172.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 1772,
+      "water_fraction": 0.02703857421875,
+      "md5": "ea3995121c404a3111d94380b918e212"
+    },
+    {
+      "stem": "patch_0173",
+      "image_file": "patch_0173.png",
+      "mask_file": "patch_0173.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 539,
+      "water_fraction": 0.0082244873046875,
+      "md5": "a86d81f31812f1a568215bd1ba04b4a7"
+    },
+    {
+      "stem": "patch_0174",
+      "image_file": "patch_0174.png",
+      "mask_file": "patch_0174.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 3046,
+      "water_fraction": 0.046478271484375,
+      "md5": "63a733a172c9fbd70e03bf3a3737111f"
+    },
+    {
+      "stem": "patch_0175",
+      "image_file": "patch_0175.png",
+      "mask_file": "patch_0175.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 20608,
+      "water_fraction": 0.314453125,
+      "md5": "b494a9533d43e298aa2f1f28ffcfab3a"
+    },
+    {
+      "stem": "patch_0176",
+      "image_file": "patch_0176.png",
+      "mask_file": "patch_0176.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 1321,
+      "water_fraction": 0.0201568603515625,
+      "md5": "b43c8e0aa62d1ca809f950ebe8f7e9e6"
+    },
+    {
+      "stem": "patch_0177",
+      "image_file": "patch_0177.png",
+      "mask_file": "patch_0177.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 2230,
+      "water_fraction": 0.034027099609375,
+      "md5": "cbb426eee769366ce260067d5df5b708"
+    },
+    {
+      "stem": "patch_0178",
+      "image_file": "patch_0178.png",
+      "mask_file": "patch_0178.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 2622,
+      "water_fraction": 0.040008544921875,
+      "md5": "e602fcba78b0b3100c45fb9368a03934"
+    },
+    {
+      "stem": "patch_0179",
+      "image_file": "patch_0179.png",
+      "mask_file": "patch_0179.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 484,
+      "water_fraction": 0.00738525390625,
+      "md5": "cc32df9db33a4d251c2eae38b8b61137"
+    },
+    {
+      "stem": "patch_0180",
+      "image_file": "patch_0180.png",
+      "mask_file": "patch_0180.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 74,
+      "water_fraction": 0.001129150390625,
+      "md5": "875148e8bfda1baab65a695a2540afb5"
+    },
+    {
+      "stem": "patch_0181",
+      "image_file": "patch_0181.png",
+      "mask_file": "patch_0181.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 1719,
+      "water_fraction": 0.0262298583984375,
+      "md5": "007012dfd75605ebf89724429910bf3a"
+    },
+    {
+      "stem": "patch_0182",
+      "image_file": "patch_0182.png",
+      "mask_file": "patch_0182.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 265,
+      "water_fraction": 0.0040435791015625,
+      "md5": "d1bd4e1e35e1388e25decb7dde27f7e1"
+    },
+    {
+      "stem": "patch_0183",
+      "image_file": "patch_0183.png",
+      "mask_file": "patch_0183.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 4063,
+      "water_fraction": 0.0619964599609375,
+      "md5": "ed8f1846249e4b92673d3e05cf1b4867"
+    },
+    {
+      "stem": "patch_0184",
+      "image_file": "patch_0184.png",
+      "mask_file": "patch_0184.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 214,
+      "water_fraction": 0.003265380859375,
+      "md5": "3d7f1e66d91beebb1938678f4ad98f64"
+    },
+    {
+      "stem": "patch_0185",
+      "image_file": "patch_0185.png",
+      "mask_file": "patch_0185.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 1314,
+      "water_fraction": 0.020050048828125,
+      "md5": "12cd24f5ed0d10867f9b7d12b32c8649"
+    },
+    {
+      "stem": "patch_0186",
+      "image_file": "patch_0186.png",
+      "mask_file": "patch_0186.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 25708,
+      "water_fraction": 0.39227294921875,
+      "md5": "8cf4f96e8074ccf2be11537efb3d203b"
+    },
+    {
+      "stem": "patch_0187",
+      "image_file": "patch_0187.png",
+      "mask_file": "patch_0187.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 2888,
+      "water_fraction": 0.0440673828125,
+      "md5": "addfa16218566b64a8a9a0cab8c0fe8c"
+    },
+    {
+      "stem": "patch_0188",
+      "image_file": "patch_0188.png",
+      "mask_file": "patch_0188.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 1711,
+      "water_fraction": 0.0261077880859375,
+      "md5": "7b25c0352e93826a6abf5fc2ad3d444c"
+    },
+    {
+      "stem": "patch_0189",
+      "image_file": "patch_0189.png",
+      "mask_file": "patch_0189.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 350,
+      "water_fraction": 0.005340576171875,
+      "md5": "ce3f3b89995f98898254e027b473b343"
+    },
+    {
+      "stem": "patch_0190",
+      "image_file": "patch_0190.png",
+      "mask_file": "patch_0190.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 2212,
+      "water_fraction": 0.03375244140625,
+      "md5": "63966fd104350b357258a00c5b4ed46c"
+    },
+    {
+      "stem": "patch_0191",
+      "image_file": "patch_0191.png",
+      "mask_file": "patch_0191.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 128,
+      "water_fraction": 0.001953125,
+      "md5": "38265207105ed563a2fbf87040e0ac3a"
+    },
+    {
+      "stem": "patch_0192",
+      "image_file": "patch_0192.png",
+      "mask_file": "patch_0192.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 538,
+      "water_fraction": 0.008209228515625,
+      "md5": "6bf17db981c5091568c7f7aa50a8bd7e"
+    },
+    {
+      "stem": "patch_0193",
+      "image_file": "patch_0193.png",
+      "mask_file": "patch_0193.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 2118,
+      "water_fraction": 0.032318115234375,
+      "md5": "60bae4a13af20a9b66143f16792b2d26"
+    },
+    {
+      "stem": "patch_0194",
+      "image_file": "patch_0194.png",
+      "mask_file": "patch_0194.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 2701,
+      "water_fraction": 0.0412139892578125,
+      "md5": "7ad9e4bd768d45ec58e82f7b8f077956"
+    },
+    {
+      "stem": "patch_0195",
+      "image_file": "patch_0195.png",
+      "mask_file": "patch_0195.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 1,
+      "water_fraction": 1.52587890625e-05,
+      "md5": "cf980a116b03d227cd64be3a8157bc82"
+    },
+    {
+      "stem": "patch_0196",
+      "image_file": "patch_0196.png",
+      "mask_file": "patch_0196.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 0,
+      "water_fraction": 0.0,
+      "md5": "88b21a4eba5a2ef87ba8cd9b8ccb04a6"
+    },
+    {
+      "stem": "patch_0197",
+      "image_file": "patch_0197.png",
+      "mask_file": "patch_0197.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 2468,
+      "water_fraction": 0.03765869140625,
+      "md5": "18a2eb2620f95f8e4959ab6c3adcde58"
+    },
+    {
+      "stem": "patch_0198",
+      "image_file": "patch_0198.png",
+      "mask_file": "patch_0198.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 2604,
+      "water_fraction": 0.03973388671875,
+      "md5": "fd0df51456eefc10a80563111fa1aab9"
+    },
+    {
+      "stem": "patch_0199",
+      "image_file": "patch_0199.png",
+      "mask_file": "patch_0199.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 1013,
+      "water_fraction": 0.0154571533203125,
+      "md5": "58eadcc56c2476b959502c2bf2684301"
+    },
+    {
+      "stem": "patch_0200",
+      "image_file": "patch_0200.png",
+      "mask_file": "patch_0200.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 10341,
+      "water_fraction": 0.1577911376953125,
+      "md5": "0d9e15d4c61d6082876fb810c1ddbeee"
+    },
+    {
+      "stem": "patch_0201",
+      "image_file": "patch_0201.png",
+      "mask_file": "patch_0201.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 2787,
+      "water_fraction": 0.0425262451171875,
+      "md5": "0b632a668083f91ec24d891f47afeb11"
+    },
+    {
+      "stem": "patch_0202",
+      "image_file": "patch_0202.png",
+      "mask_file": "patch_0202.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 10712,
+      "water_fraction": 0.1634521484375,
+      "md5": "349bff0345dd530baffc70d5a9b4bf0a"
+    },
+    {
+      "stem": "patch_0203",
+      "image_file": "patch_0203.png",
+      "mask_file": "patch_0203.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 1903,
+      "water_fraction": 0.0290374755859375,
+      "md5": "72cb2b65662142a72b91ffb8fab8bb38"
+    },
+    {
+      "stem": "patch_0204",
+      "image_file": "patch_0204.png",
+      "mask_file": "patch_0204.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 456,
+      "water_fraction": 0.0069580078125,
+      "md5": "ec03f12792fe9a272da66a8af5a9fdac"
+    },
+    {
+      "stem": "patch_0205",
+      "image_file": "patch_0205.png",
+      "mask_file": "patch_0205.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 791,
+      "water_fraction": 0.0120697021484375,
+      "md5": "36b326aab19a8ddb041872d1aff2f580"
+    },
+    {
+      "stem": "patch_0206",
+      "image_file": "patch_0206.png",
+      "mask_file": "patch_0206.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 43,
+      "water_fraction": 0.0006561279296875,
+      "md5": "93f3a52271b5d38b5384fa01adfae896"
+    },
+    {
+      "stem": "patch_0207",
+      "image_file": "patch_0207.png",
+      "mask_file": "patch_0207.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 7564,
+      "water_fraction": 0.11541748046875,
+      "md5": "6ebcbb3b52b79a4394a22e81e9adb04d"
+    },
+    {
+      "stem": "patch_0208",
+      "image_file": "patch_0208.png",
+      "mask_file": "patch_0208.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 594,
+      "water_fraction": 0.009063720703125,
+      "md5": "ad2addc4d0b441bb919fff44c005595f"
+    },
+    {
+      "stem": "patch_0209",
+      "image_file": "patch_0209.png",
+      "mask_file": "patch_0209.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 0,
+      "water_fraction": 0.0,
+      "md5": "8d4a154cc840e55eb2e3c07081466ae8"
+    },
+    {
+      "stem": "patch_0210",
+      "image_file": "patch_0210.png",
+      "mask_file": "patch_0210.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 202,
+      "water_fraction": 0.003082275390625,
+      "md5": "a64c02ff0037026bbc3c7f93867b5db0"
+    },
+    {
+      "stem": "patch_0211",
+      "image_file": "patch_0211.png",
+      "mask_file": "patch_0211.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 4047,
+      "water_fraction": 0.0617523193359375,
+      "md5": "f2891014d434b6326f4bc183e745beff"
+    },
+    {
+      "stem": "patch_0212",
+      "image_file": "patch_0212.png",
+      "mask_file": "patch_0212.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 579,
+      "water_fraction": 0.0088348388671875,
+      "md5": "5fc2706e7b52378d7b6a1235987dfaf0"
+    },
+    {
+      "stem": "patch_0213",
+      "image_file": "patch_0213.png",
+      "mask_file": "patch_0213.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 1913,
+      "water_fraction": 0.0291900634765625,
+      "md5": "9901ba08b5d3c07eb0bd9fff445b5e07"
+    },
+    {
+      "stem": "patch_0214",
+      "image_file": "patch_0214.png",
+      "mask_file": "patch_0214.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 1168,
+      "water_fraction": 0.017822265625,
+      "md5": "24c3293122897f8e748bf75e79a9d35e"
+    },
+    {
+      "stem": "patch_0215",
+      "image_file": "patch_0215.png",
+      "mask_file": "patch_0215.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 3460,
+      "water_fraction": 0.05279541015625,
+      "md5": "bec241a5323ce495aa1be145d98ce15f"
+    },
+    {
+      "stem": "patch_0216",
+      "image_file": "patch_0216.png",
+      "mask_file": "patch_0216.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 348,
+      "water_fraction": 0.00531005859375,
+      "md5": "6d4ed01d2ffad6e1e48eec4a363be82d"
+    },
+    {
+      "stem": "patch_0217",
+      "image_file": "patch_0217.png",
+      "mask_file": "patch_0217.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 10320,
+      "water_fraction": 0.157470703125,
+      "md5": "8ad2bc9fa514e253d148209e315884f4"
+    },
+    {
+      "stem": "patch_0218",
+      "image_file": "patch_0218.png",
+      "mask_file": "patch_0218.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 691,
+      "water_fraction": 0.0105438232421875,
+      "md5": "51e34f0d419e3d9f2c613555faa5312c"
+    },
+    {
+      "stem": "patch_0219",
+      "image_file": "patch_0219.png",
+      "mask_file": "patch_0219.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 2049,
+      "water_fraction": 0.0312652587890625,
+      "md5": "413acb28fa33d93d32572d23a90e7d02"
+    },
+    {
+      "stem": "patch_0220",
+      "image_file": "patch_0220.png",
+      "mask_file": "patch_0220.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 1925,
+      "water_fraction": 0.0293731689453125,
+      "md5": "ecaf91c032a67e45e797f886ee666f7c"
+    },
+    {
+      "stem": "patch_0221",
+      "image_file": "patch_0221.png",
+      "mask_file": "patch_0221.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 1395,
+      "water_fraction": 0.0212860107421875,
+      "md5": "9e6bb88b9e27b33b1598a7acf0c97bf4"
+    },
+    {
+      "stem": "patch_0222",
+      "image_file": "patch_0222.png",
+      "mask_file": "patch_0222.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 4267,
+      "water_fraction": 0.0651092529296875,
+      "md5": "9c2118787aebe89f52517d467a646cc4"
+    },
+    {
+      "stem": "patch_0223",
+      "image_file": "patch_0223.png",
+      "mask_file": "patch_0223.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 572,
+      "water_fraction": 0.00872802734375,
+      "md5": "52077582306b978e343a060ed532c564"
+    },
+    {
+      "stem": "patch_0224",
+      "image_file": "patch_0224.png",
+      "mask_file": "patch_0224.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 3267,
+      "water_fraction": 0.0498504638671875,
+      "md5": "e3284e6f8fa39bb2c3c8ff201f5dec20"
+    },
+    {
+      "stem": "patch_0225",
+      "image_file": "patch_0225.png",
+      "mask_file": "patch_0225.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 2904,
+      "water_fraction": 0.0443115234375,
+      "md5": "d7d2911ad4336bab97b40adefb579a15"
+    },
+    {
+      "stem": "patch_0226",
+      "image_file": "patch_0226.png",
+      "mask_file": "patch_0226.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 1165,
+      "water_fraction": 0.0177764892578125,
+      "md5": "a84d3d36e3cf2856c047d6fcb36d8c2b"
+    },
+    {
+      "stem": "patch_0227",
+      "image_file": "patch_0227.png",
+      "mask_file": "patch_0227.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 3618,
+      "water_fraction": 0.055206298828125,
+      "md5": "b250ecac526346104be184ba2b703131"
+    },
+    {
+      "stem": "patch_0228",
+      "image_file": "patch_0228.png",
+      "mask_file": "patch_0228.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 2280,
+      "water_fraction": 0.0347900390625,
+      "md5": "1fe56fe44e9eb1314fc083dbfe072ad0"
+    },
+    {
+      "stem": "patch_0229",
+      "image_file": "patch_0229.png",
+      "mask_file": "patch_0229.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 0,
+      "water_fraction": 0.0,
+      "md5": "b4bc478e2f09142bab3ce3913bda5234"
+    },
+    {
+      "stem": "patch_0230",
+      "image_file": "patch_0230.png",
+      "mask_file": "patch_0230.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 1719,
+      "water_fraction": 0.0262298583984375,
+      "md5": "b005fd0fec84af6e64fe2f1bae36aec9"
+    },
+    {
+      "stem": "patch_0231",
+      "image_file": "patch_0231.png",
+      "mask_file": "patch_0231.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 352,
+      "water_fraction": 0.00537109375,
+      "md5": "ecfee9826019b1d3250aa1e1cbcf4fb8"
+    },
+    {
+      "stem": "patch_0232",
+      "image_file": "patch_0232.png",
+      "mask_file": "patch_0232.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 1629,
+      "water_fraction": 0.0248565673828125,
+      "md5": "c6b9e9ea148d80ac0a6507c41a401c5c"
+    },
+    {
+      "stem": "patch_0233",
+      "image_file": "patch_0233.png",
+      "mask_file": "patch_0233.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 67,
+      "water_fraction": 0.0010223388671875,
+      "md5": "41ce067ccad45bbea4e3862b306980ac"
+    },
+    {
+      "stem": "patch_0234",
+      "image_file": "patch_0234.png",
+      "mask_file": "patch_0234.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 5406,
+      "water_fraction": 0.082489013671875,
+      "md5": "83897064266372a417f14873cdc013b3"
+    },
+    {
+      "stem": "patch_0235",
+      "image_file": "patch_0235.png",
+      "mask_file": "patch_0235.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 1120,
+      "water_fraction": 0.01708984375,
+      "md5": "1ca60a6943243e401a21f5f2131d7abf"
+    },
+    {
+      "stem": "patch_0236",
+      "image_file": "patch_0236.png",
+      "mask_file": "patch_0236.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 200,
+      "water_fraction": 0.0030517578125,
+      "md5": "50ecc092331cd6144488aa72a6ec016b"
+    },
+    {
+      "stem": "patch_0237",
+      "image_file": "patch_0237.png",
+      "mask_file": "patch_0237.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 3552,
+      "water_fraction": 0.05419921875,
+      "md5": "240f435a68962f725f1cf51988d2fcaa"
+    },
+    {
+      "stem": "patch_0238",
+      "image_file": "patch_0238.png",
+      "mask_file": "patch_0238.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 4099,
+      "water_fraction": 0.0625457763671875,
+      "md5": "63dfd46d0107eb73ebf577478d2147e8"
+    },
+    {
+      "stem": "patch_0239",
+      "image_file": "patch_0239.png",
+      "mask_file": "patch_0239.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 72,
+      "water_fraction": 0.0010986328125,
+      "md5": "b665a3d9f739c253676b081939da2d21"
+    },
+    {
+      "stem": "patch_0240",
+      "image_file": "patch_0240.png",
+      "mask_file": "patch_0240.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 4919,
+      "water_fraction": 0.0750579833984375,
+      "md5": "9227877a097389b085a7d826a14c45ec"
+    },
+    {
+      "stem": "patch_0241",
+      "image_file": "patch_0241.png",
+      "mask_file": "patch_0241.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 648,
+      "water_fraction": 0.0098876953125,
+      "md5": "168667a26cde252fd1926fe52ee82170"
+    },
+    {
+      "stem": "patch_0242",
+      "image_file": "patch_0242.png",
+      "mask_file": "patch_0242.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 421,
+      "water_fraction": 0.0064239501953125,
+      "md5": "7d7c843d34c950b31464a9dd1abfef41"
+    },
+    {
+      "stem": "patch_0243",
+      "image_file": "patch_0243.png",
+      "mask_file": "patch_0243.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 20,
+      "water_fraction": 0.00030517578125,
+      "md5": "cbdbcc0bc01c984a3bb14b1aff8f944f"
+    },
+    {
+      "stem": "patch_0244",
+      "image_file": "patch_0244.png",
+      "mask_file": "patch_0244.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 0,
+      "water_fraction": 0.0,
+      "md5": "db4553c2291f96941330238b72127cb1"
+    },
+    {
+      "stem": "patch_0245",
+      "image_file": "patch_0245.png",
+      "mask_file": "patch_0245.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 343,
+      "water_fraction": 0.0052337646484375,
+      "md5": "e49d7dcd038884b0d7dce0cebfd97682"
+    },
+    {
+      "stem": "patch_0246",
+      "image_file": "patch_0246.png",
+      "mask_file": "patch_0246.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 1561,
+      "water_fraction": 0.0238189697265625,
+      "md5": "2596428f0a190fa5673e6ae078d5090b"
+    },
+    {
+      "stem": "patch_0247",
+      "image_file": "patch_0247.png",
+      "mask_file": "patch_0247.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 23383,
+      "water_fraction": 0.3567962646484375,
+      "md5": "06b10dc605f058bdae38b1ed7a6ac787"
+    },
+    {
+      "stem": "patch_0248",
+      "image_file": "patch_0248.png",
+      "mask_file": "patch_0248.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 3016,
+      "water_fraction": 0.0460205078125,
+      "md5": "0f9dd7cc9345bc3b045541e775d932a5"
+    },
+    {
+      "stem": "patch_0249",
+      "image_file": "patch_0249.png",
+      "mask_file": "patch_0249.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 1758,
+      "water_fraction": 0.026824951171875,
+      "md5": "4616c0de733983d200e5a8540227d292"
+    },
+    {
+      "stem": "patch_0250",
+      "image_file": "patch_0250.png",
+      "mask_file": "patch_0250.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 2786,
+      "water_fraction": 0.042510986328125,
+      "md5": "016e2fbbfd9f9024a3c47e4abb9e60cf"
+    },
+    {
+      "stem": "patch_0251",
+      "image_file": "patch_0251.png",
+      "mask_file": "patch_0251.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 137,
+      "water_fraction": 0.0020904541015625,
+      "md5": "9ae8db4ff200017cf1d43a49d2d23fd9"
+    },
+    {
+      "stem": "patch_0252",
+      "image_file": "patch_0252.png",
+      "mask_file": "patch_0252.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 4174,
+      "water_fraction": 0.063690185546875,
+      "md5": "c9f6e4c06212de21a52f4b5169cfd117"
+    },
+    {
+      "stem": "patch_0253",
+      "image_file": "patch_0253.png",
+      "mask_file": "patch_0253.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 2574,
+      "water_fraction": 0.039276123046875,
+      "md5": "f2f06ef4d15f0146686a34d3d0dcd7b4"
+    },
+    {
+      "stem": "patch_0254",
+      "image_file": "patch_0254.png",
+      "mask_file": "patch_0254.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 1560,
+      "water_fraction": 0.0238037109375,
+      "md5": "db22be7443396f4c2f2463af8189a9b8"
+    },
+    {
+      "stem": "patch_0255",
+      "image_file": "patch_0255.png",
+      "mask_file": "patch_0255.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 397,
+      "water_fraction": 0.0060577392578125,
+      "md5": "114ac45cd32d3d33c0f66c0ee3b01d69"
+    },
+    {
+      "stem": "patch_0256",
+      "image_file": "patch_0256.png",
+      "mask_file": "patch_0256.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 995,
+      "water_fraction": 0.0151824951171875,
+      "md5": "67046de94a17a36590a391d9b428e4b1"
+    },
+    {
+      "stem": "patch_0257",
+      "image_file": "patch_0257.png",
+      "mask_file": "patch_0257.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 725,
+      "water_fraction": 0.0110626220703125,
+      "md5": "50bc4ed5f45e4830df6be6ebb906a45b"
+    },
+    {
+      "stem": "patch_0258",
+      "image_file": "patch_0258.png",
+      "mask_file": "patch_0258.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 1251,
+      "water_fraction": 0.0190887451171875,
+      "md5": "f765ac5c421475e322bee8d8dfae40ab"
+    },
+    {
+      "stem": "patch_0259",
+      "image_file": "patch_0259.png",
+      "mask_file": "patch_0259.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 721,
+      "water_fraction": 0.0110015869140625,
+      "md5": "671a421b75fea4f63b9ced67de1aebef"
+    },
+    {
+      "stem": "patch_0260",
+      "image_file": "patch_0260.png",
+      "mask_file": "patch_0260.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 0,
+      "water_fraction": 0.0,
+      "md5": "639d2cba19381a03b09b0a3ccd970f0b"
+    },
+    {
+      "stem": "patch_0261",
+      "image_file": "patch_0261.png",
+      "mask_file": "patch_0261.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 1017,
+      "water_fraction": 0.0155181884765625,
+      "md5": "7a67b1e6d61a0bbd0a60cfe1d5618ac7"
+    },
+    {
+      "stem": "patch_0262",
+      "image_file": "patch_0262.png",
+      "mask_file": "patch_0262.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 1797,
+      "water_fraction": 0.0274200439453125,
+      "md5": "e6038bbf102d326f90b927bff794c691"
+    },
+    {
+      "stem": "patch_0263",
+      "image_file": "patch_0263.png",
+      "mask_file": "patch_0263.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 728,
+      "water_fraction": 0.0111083984375,
+      "md5": "75605db77edf8e20a46aea07923ca9ce"
+    },
+    {
+      "stem": "patch_0264",
+      "image_file": "patch_0264.png",
+      "mask_file": "patch_0264.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 2830,
+      "water_fraction": 0.043182373046875,
+      "md5": "70a0fcf5801930104c03d1942e0dc284"
+    },
+    {
+      "stem": "patch_0265",
+      "image_file": "patch_0265.png",
+      "mask_file": "patch_0265.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 5844,
+      "water_fraction": 0.08917236328125,
+      "md5": "0e7a9f31e82eea232aff60d57cd9b11c"
+    },
+    {
+      "stem": "patch_0266",
+      "image_file": "patch_0266.png",
+      "mask_file": "patch_0266.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 6198,
+      "water_fraction": 0.094573974609375,
+      "md5": "d1732fe0212d8fbabe308dddc2b6b37a"
+    },
+    {
+      "stem": "patch_0267",
+      "image_file": "patch_0267.png",
+      "mask_file": "patch_0267.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 2949,
+      "water_fraction": 0.0449981689453125,
+      "md5": "8525543d35d61b476d1be99dccd3bf27"
+    },
+    {
+      "stem": "patch_0268",
+      "image_file": "patch_0268.png",
+      "mask_file": "patch_0268.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 1840,
+      "water_fraction": 0.028076171875,
+      "md5": "c4f1e2e9d4b976afbdefb0a38078a7ca"
+    },
+    {
+      "stem": "patch_0269",
+      "image_file": "patch_0269.png",
+      "mask_file": "patch_0269.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 1586,
+      "water_fraction": 0.024200439453125,
+      "md5": "5c427a58c4464e27917b461474129782"
+    },
+    {
+      "stem": "patch_0270",
+      "image_file": "patch_0270.png",
+      "mask_file": "patch_0270.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 0,
+      "water_fraction": 0.0,
+      "md5": "2c2b245bdfb02690b0eefaa146135e86"
+    },
+    {
+      "stem": "patch_0271",
+      "image_file": "patch_0271.png",
+      "mask_file": "patch_0271.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 3934,
+      "water_fraction": 0.060028076171875,
+      "md5": "031c05d7943d4c98761ca35ac3711ff2"
+    },
+    {
+      "stem": "patch_0272",
+      "image_file": "patch_0272.png",
+      "mask_file": "patch_0272.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 131,
+      "water_fraction": 0.0019989013671875,
+      "md5": "8614b9a839e49f30ebbe6db034bd513d"
+    },
+    {
+      "stem": "patch_0273",
+      "image_file": "patch_0273.png",
+      "mask_file": "patch_0273.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 11599,
+      "water_fraction": 0.1769866943359375,
+      "md5": "f7a6447631ae10c0c9f1e1f04ac03bb9"
+    },
+    {
+      "stem": "patch_0274",
+      "image_file": "patch_0274.png",
+      "mask_file": "patch_0274.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 595,
+      "water_fraction": 0.0090789794921875,
+      "md5": "8638ed2ababf4cc7f7470285f9fde4b2"
+    },
+    {
+      "stem": "patch_0275",
+      "image_file": "patch_0275.png",
+      "mask_file": "patch_0275.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 2014,
+      "water_fraction": 0.030731201171875,
+      "md5": "2c5d6cc2b46ed1c5dbd8f2cad5113fe9"
+    },
+    {
+      "stem": "patch_0276",
+      "image_file": "patch_0276.png",
+      "mask_file": "patch_0276.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 486,
+      "water_fraction": 0.007415771484375,
+      "md5": "836c3c652f09b1e149e43570a0d90bae"
+    },
+    {
+      "stem": "patch_0277",
+      "image_file": "patch_0277.png",
+      "mask_file": "patch_0277.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 817,
+      "water_fraction": 0.0124664306640625,
+      "md5": "15c2be921047c0216457c6ae56021d7e"
+    },
+    {
+      "stem": "patch_0278",
+      "image_file": "patch_0278.png",
+      "mask_file": "patch_0278.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 2309,
+      "water_fraction": 0.0352325439453125,
+      "md5": "834a45f1d2f30dec83b60abc914ff8c1"
+    },
+    {
+      "stem": "patch_0279",
+      "image_file": "patch_0279.png",
+      "mask_file": "patch_0279.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 79,
+      "water_fraction": 0.0012054443359375,
+      "md5": "48b3f18491b6cda0143be7fc1f4f05b9"
+    },
+    {
+      "stem": "patch_0280",
+      "image_file": "patch_0280.png",
+      "mask_file": "patch_0280.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 21617,
+      "water_fraction": 0.3298492431640625,
+      "md5": "936a46a6a70d65386efab2524f011526"
+    },
+    {
+      "stem": "patch_0281",
+      "image_file": "patch_0281.png",
+      "mask_file": "patch_0281.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 4201,
+      "water_fraction": 0.0641021728515625,
+      "md5": "b79883565dafb0d538c6d5815db8f27e"
+    },
+    {
+      "stem": "patch_0282",
+      "image_file": "patch_0282.png",
+      "mask_file": "patch_0282.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 0,
+      "water_fraction": 0.0,
+      "md5": "4eea3b79e2cb82baac00d2453ed12448"
+    },
+    {
+      "stem": "patch_0283",
+      "image_file": "patch_0283.png",
+      "mask_file": "patch_0283.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 158,
+      "water_fraction": 0.002410888671875,
+      "md5": "092c97e5465a8980fc16b96ce62cfa65"
+    },
+    {
+      "stem": "patch_0284",
+      "image_file": "patch_0284.png",
+      "mask_file": "patch_0284.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 20,
+      "water_fraction": 0.00030517578125,
+      "md5": "98e73decd1a2c74ef34930dae029c061"
+    },
+    {
+      "stem": "patch_0285",
+      "image_file": "patch_0285.png",
+      "mask_file": "patch_0285.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 4446,
+      "water_fraction": 0.067840576171875,
+      "md5": "5f203cd1e556b16c36fbe11eda599e34"
+    },
+    {
+      "stem": "patch_0286",
+      "image_file": "patch_0286.png",
+      "mask_file": "patch_0286.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 2318,
+      "water_fraction": 0.035369873046875,
+      "md5": "810598858b633b0cb501dcea5ab29b24"
+    },
+    {
+      "stem": "patch_0287",
+      "image_file": "patch_0287.png",
+      "mask_file": "patch_0287.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 2218,
+      "water_fraction": 0.033843994140625,
+      "md5": "70dbbb6b64afff3ca370caf92f2c7079"
+    },
+    {
+      "stem": "patch_0288",
+      "image_file": "patch_0288.png",
+      "mask_file": "patch_0288.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 8754,
+      "water_fraction": 0.133575439453125,
+      "md5": "fbe30df9d1145e6568096756213f0974"
+    },
+    {
+      "stem": "patch_0289",
+      "image_file": "patch_0289.png",
+      "mask_file": "patch_0289.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 8505,
+      "water_fraction": 0.1297760009765625,
+      "md5": "14ea3415dd9addd50584efa29dc6efdb"
+    },
+    {
+      "stem": "patch_0290",
+      "image_file": "patch_0290.png",
+      "mask_file": "patch_0290.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 37657,
+      "water_fraction": 0.5746002197265625,
+      "md5": "24f942e0b72136ad8bd9629292bc9dbb"
+    },
+    {
+      "stem": "patch_0291",
+      "image_file": "patch_0291.png",
+      "mask_file": "patch_0291.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 1380,
+      "water_fraction": 0.02105712890625,
+      "md5": "2793a58c45245a91200b4002981e2a65"
+    },
+    {
+      "stem": "patch_0292",
+      "image_file": "patch_0292.png",
+      "mask_file": "patch_0292.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 1721,
+      "water_fraction": 0.0262603759765625,
+      "md5": "50a7d302031083db2f5aede3a83c8665"
+    },
+    {
+      "stem": "patch_0293",
+      "image_file": "patch_0293.png",
+      "mask_file": "patch_0293.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 11703,
+      "water_fraction": 0.1785736083984375,
+      "md5": "3a44439ba3960a630e149d3a69b63d1f"
+    },
+    {
+      "stem": "patch_0294",
+      "image_file": "patch_0294.png",
+      "mask_file": "patch_0294.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 3877,
+      "water_fraction": 0.0591583251953125,
+      "md5": "5418b21d5a10d697e8ff263201ae182d"
+    },
+    {
+      "stem": "patch_0295",
+      "image_file": "patch_0295.png",
+      "mask_file": "patch_0295.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 5671,
+      "water_fraction": 0.0865325927734375,
+      "md5": "8e985c205697bfe0b06cbc1046e9f2a8"
+    },
+    {
+      "stem": "patch_0296",
+      "image_file": "patch_0296.png",
+      "mask_file": "patch_0296.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 1185,
+      "water_fraction": 0.0180816650390625,
+      "md5": "468080e7981e1c7b577cd9689e494362"
+    },
+    {
+      "stem": "patch_0297",
+      "image_file": "patch_0297.png",
+      "mask_file": "patch_0297.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 1732,
+      "water_fraction": 0.02642822265625,
+      "md5": "d3bf683e443bd376d04b743df85f7da8"
+    },
+    {
+      "stem": "patch_0298",
+      "image_file": "patch_0298.png",
+      "mask_file": "patch_0298.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 220,
+      "water_fraction": 0.00335693359375,
+      "md5": "5ef0510c0ff75d3a2240f3d66cf14fd7"
+    },
+    {
+      "stem": "patch_0299",
+      "image_file": "patch_0299.png",
+      "mask_file": "patch_0299.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 0,
+      "water_fraction": 0.0,
+      "md5": "04b4fd406d6dfcdeaab96c301d1f2afe"
+    },
+    {
+      "stem": "patch_0300",
+      "image_file": "patch_0300.png",
+      "mask_file": "patch_0300.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 189,
+      "water_fraction": 0.0028839111328125,
+      "md5": "423d45adc39e36e33da66fcd91815036"
+    },
+    {
+      "stem": "patch_0301",
+      "image_file": "patch_0301.png",
+      "mask_file": "patch_0301.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 447,
+      "water_fraction": 0.0068206787109375,
+      "md5": "5398869902c0cf6082fe7fd3ebeb9a14"
+    },
+    {
+      "stem": "patch_0302",
+      "image_file": "patch_0302.png",
+      "mask_file": "patch_0302.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 1996,
+      "water_fraction": 0.03045654296875,
+      "md5": "7fe364cff33f3ee21b7d75580650f278"
+    },
+    {
+      "stem": "patch_0303",
+      "image_file": "patch_0303.png",
+      "mask_file": "patch_0303.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 199,
+      "water_fraction": 0.0030364990234375,
+      "md5": "8a51c58fbf2d676602c84d3754b1ebba"
+    },
+    {
+      "stem": "patch_0304",
+      "image_file": "patch_0304.png",
+      "mask_file": "patch_0304.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 38,
+      "water_fraction": 0.000579833984375,
+      "md5": "f7d493a0188f2b6f717d3d079d0be6e2"
+    },
+    {
+      "stem": "patch_0305",
+      "image_file": "patch_0305.png",
+      "mask_file": "patch_0305.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 0,
+      "water_fraction": 0.0,
+      "md5": "7df1dc7364499606cfcc7a3917eb36a7"
+    }
+  ],
+  "val": [
+    {
+      "stem": "patch_0000",
+      "image_file": "patch_0000.png",
+      "mask_file": "patch_0000.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 2651,
+      "water_fraction": 0.0404510498046875,
+      "md5": "91b6b2394d255340ff484671628bbad4"
+    },
+    {
+      "stem": "patch_0001",
+      "image_file": "patch_0001.png",
+      "mask_file": "patch_0001.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 912,
+      "water_fraction": 0.013916015625,
+      "md5": "430555d05f715a6b187ed54f0f633b4c"
+    },
+    {
+      "stem": "patch_0002",
+      "image_file": "patch_0002.png",
+      "mask_file": "patch_0002.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 1666,
+      "water_fraction": 0.025421142578125,
+      "md5": "3cfadbe043369220f989d7e52ddec26d"
+    },
+    {
+      "stem": "patch_0003",
+      "image_file": "patch_0003.png",
+      "mask_file": "patch_0003.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 3276,
+      "water_fraction": 0.04998779296875,
+      "md5": "358d768708ff04758763944906a5ae06"
+    },
+    {
+      "stem": "patch_0004",
+      "image_file": "patch_0004.png",
+      "mask_file": "patch_0004.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 4474,
+      "water_fraction": 0.068267822265625,
+      "md5": "4d0b4a035f1b078947f39bcc333d1ae0"
+    },
+    {
+      "stem": "patch_0005",
+      "image_file": "patch_0005.png",
+      "mask_file": "patch_0005.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 0,
+      "water_fraction": 0.0,
+      "md5": "5e9d343d66053bcf1b6971a89946e8bc"
+    },
+    {
+      "stem": "patch_0006",
+      "image_file": "patch_0006.png",
+      "mask_file": "patch_0006.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 1165,
+      "water_fraction": 0.0177764892578125,
+      "md5": "52ab6e877245bffb1fcc4f488fca0569"
+    },
+    {
+      "stem": "patch_0007",
+      "image_file": "patch_0007.png",
+      "mask_file": "patch_0007.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 3601,
+      "water_fraction": 0.0549468994140625,
+      "md5": "af29d20a750a27ffd554d192108e43b1"
+    },
+    {
+      "stem": "patch_0008",
+      "image_file": "patch_0008.png",
+      "mask_file": "patch_0008.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 2194,
+      "water_fraction": 0.033477783203125,
+      "md5": "48fe19a86cf549e320396cbe41ed65e3"
+    },
+    {
+      "stem": "patch_0009",
+      "image_file": "patch_0009.png",
+      "mask_file": "patch_0009.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 37952,
+      "water_fraction": 0.5791015625,
+      "md5": "a2ebd783dd65662ddd719d01ecbbe133"
+    },
+    {
+      "stem": "patch_0010",
+      "image_file": "patch_0010.png",
+      "mask_file": "patch_0010.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 2512,
+      "water_fraction": 0.038330078125,
+      "md5": "142ff2fc89cea43cd75f52af7838fc0f"
+    },
+    {
+      "stem": "patch_0011",
+      "image_file": "patch_0011.png",
+      "mask_file": "patch_0011.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 7329,
+      "water_fraction": 0.1118316650390625,
+      "md5": "f572208057b27117983453a028c17470"
+    },
+    {
+      "stem": "patch_0012",
+      "image_file": "patch_0012.png",
+      "mask_file": "patch_0012.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 9866,
+      "water_fraction": 0.150543212890625,
+      "md5": "74d42b78316b8b7042af7f7a4f306bbb"
+    },
+    {
+      "stem": "patch_0013",
+      "image_file": "patch_0013.png",
+      "mask_file": "patch_0013.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 0,
+      "water_fraction": 0.0,
+      "md5": "39428e8d48cf1f96e7d5ca8c74674096"
+    },
+    {
+      "stem": "patch_0014",
+      "image_file": "patch_0014.png",
+      "mask_file": "patch_0014.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 727,
+      "water_fraction": 0.0110931396484375,
+      "md5": "9198d3287f026a18b533f43c2ee9fe80"
+    },
+    {
+      "stem": "patch_0015",
+      "image_file": "patch_0015.png",
+      "mask_file": "patch_0015.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 10363,
+      "water_fraction": 0.1581268310546875,
+      "md5": "e6869f6f1af17c207d7186438cdbe238"
+    },
+    {
+      "stem": "patch_0016",
+      "image_file": "patch_0016.png",
+      "mask_file": "patch_0016.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 495,
+      "water_fraction": 0.0075531005859375,
+      "md5": "84336e1c434cf328c786a5b247b86e4a"
+    },
+    {
+      "stem": "patch_0017",
+      "image_file": "patch_0017.png",
+      "mask_file": "patch_0017.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 915,
+      "water_fraction": 0.0139617919921875,
+      "md5": "030492313b61f1b5d417be0bc2233992"
+    },
+    {
+      "stem": "patch_0018",
+      "image_file": "patch_0018.png",
+      "mask_file": "patch_0018.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 2330,
+      "water_fraction": 0.035552978515625,
+      "md5": "22d51c5d73117b045d9a9faad06510d8"
+    },
+    {
+      "stem": "patch_0019",
+      "image_file": "patch_0019.png",
+      "mask_file": "patch_0019.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 2454,
+      "water_fraction": 0.037445068359375,
+      "md5": "891c2b2cd67b229ad7462e9e01bb9e38"
+    },
+    {
+      "stem": "patch_0020",
+      "image_file": "patch_0020.png",
+      "mask_file": "patch_0020.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 2452,
+      "water_fraction": 0.03741455078125,
+      "md5": "f6cb20112ef46b79ae0ff032bd791b44"
+    },
+    {
+      "stem": "patch_0021",
+      "image_file": "patch_0021.png",
+      "mask_file": "patch_0021.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 2038,
+      "water_fraction": 0.031097412109375,
+      "md5": "e938f6abf0f24f996784662b507c1791"
+    },
+    {
+      "stem": "patch_0022",
+      "image_file": "patch_0022.png",
+      "mask_file": "patch_0022.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 38,
+      "water_fraction": 0.000579833984375,
+      "md5": "6c56a3f9279a0ab942b4440d89381922"
+    },
+    {
+      "stem": "patch_0023",
+      "image_file": "patch_0023.png",
+      "mask_file": "patch_0023.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 4115,
+      "water_fraction": 0.0627899169921875,
+      "md5": "c5bde20fec60df403bd6584178cf8070"
+    },
+    {
+      "stem": "patch_0024",
+      "image_file": "patch_0024.png",
+      "mask_file": "patch_0024.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 1279,
+      "water_fraction": 0.0195159912109375,
+      "md5": "615353e6d5081164e79720c6d55b65f7"
+    },
+    {
+      "stem": "patch_0025",
+      "image_file": "patch_0025.png",
+      "mask_file": "patch_0025.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 1807,
+      "water_fraction": 0.0275726318359375,
+      "md5": "6aeb1337a86dc3468a555b6787a6a513"
+    },
+    {
+      "stem": "patch_0026",
+      "image_file": "patch_0026.png",
+      "mask_file": "patch_0026.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 14052,
+      "water_fraction": 0.21441650390625,
+      "md5": "e97e32dc87fd8f6bf918d42343c00144"
+    },
+    {
+      "stem": "patch_0027",
+      "image_file": "patch_0027.png",
+      "mask_file": "patch_0027.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 0,
+      "water_fraction": 0.0,
+      "md5": "e40b9a56bd34237b438afe7074896964"
+    },
+    {
+      "stem": "patch_0028",
+      "image_file": "patch_0028.png",
+      "mask_file": "patch_0028.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 233,
+      "water_fraction": 0.0035552978515625,
+      "md5": "4318ec44f7e8b6245092113e18fccc16"
+    },
+    {
+      "stem": "patch_0029",
+      "image_file": "patch_0029.png",
+      "mask_file": "patch_0029.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 4843,
+      "water_fraction": 0.0738983154296875,
+      "md5": "ca7c8509a498832de488f1ba969bdc66"
+    },
+    {
+      "stem": "patch_0030",
+      "image_file": "patch_0030.png",
+      "mask_file": "patch_0030.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 0,
+      "water_fraction": 0.0,
+      "md5": "6e9029a8ca13f062c2f9babd2df7d366"
+    },
+    {
+      "stem": "patch_0031",
+      "image_file": "patch_0031.png",
+      "mask_file": "patch_0031.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 3451,
+      "water_fraction": 0.0526580810546875,
+      "md5": "f8cf6dd60b58bd8bf76613b2adfeb478"
+    },
+    {
+      "stem": "patch_0032",
+      "image_file": "patch_0032.png",
+      "mask_file": "patch_0032.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 1926,
+      "water_fraction": 0.029388427734375,
+      "md5": "a2960e5c6e060aab23fdf50810765b34"
+    },
+    {
+      "stem": "patch_0033",
+      "image_file": "patch_0033.png",
+      "mask_file": "patch_0033.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 30162,
+      "water_fraction": 0.460235595703125,
+      "md5": "32660a65bc295ffd35d65cc8b746b4c2"
+    },
+    {
+      "stem": "patch_0034",
+      "image_file": "patch_0034.png",
+      "mask_file": "patch_0034.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 1706,
+      "water_fraction": 0.026031494140625,
+      "md5": "15f3d8b32cb29bbd190994f452329c34"
+    },
+    {
+      "stem": "patch_0035",
+      "image_file": "patch_0035.png",
+      "mask_file": "patch_0035.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 1300,
+      "water_fraction": 0.01983642578125,
+      "md5": "5a4f1985054beccf9786742ff18c7f31"
+    },
+    {
+      "stem": "patch_0036",
+      "image_file": "patch_0036.png",
+      "mask_file": "patch_0036.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 0,
+      "water_fraction": 0.0,
+      "md5": "c299ab19c39c5dd4cbcc9062fd6e62ef"
+    },
+    {
+      "stem": "patch_0037",
+      "image_file": "patch_0037.png",
+      "mask_file": "patch_0037.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 357,
+      "water_fraction": 0.0054473876953125,
+      "md5": "24f225336123958bc294d719fa39e9f8"
+    },
+    {
+      "stem": "patch_0038",
+      "image_file": "patch_0038.png",
+      "mask_file": "patch_0038.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 214,
+      "water_fraction": 0.003265380859375,
+      "md5": "39169bbe126c29ed830f6a5451bd8baa"
+    },
+    {
+      "stem": "patch_0039",
+      "image_file": "patch_0039.png",
+      "mask_file": "patch_0039.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 0,
+      "water_fraction": 0.0,
+      "md5": "bd782cbe59feaf6ed3aa07466b5198bb"
+    },
+    {
+      "stem": "patch_0040",
+      "image_file": "patch_0040.png",
+      "mask_file": "patch_0040.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 1282,
+      "water_fraction": 0.019561767578125,
+      "md5": "6b6246b28764fac3c986a6da852e6867"
+    },
+    {
+      "stem": "patch_0041",
+      "image_file": "patch_0041.png",
+      "mask_file": "patch_0041.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 3350,
+      "water_fraction": 0.051116943359375,
+      "md5": "cfac4f0d55175cd234dec74b241e85b8"
+    },
+    {
+      "stem": "patch_0042",
+      "image_file": "patch_0042.png",
+      "mask_file": "patch_0042.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 991,
+      "water_fraction": 0.0151214599609375,
+      "md5": "ec498c45eeeae03df07dfa34468c12d6"
+    },
+    {
+      "stem": "patch_0043",
+      "image_file": "patch_0043.png",
+      "mask_file": "patch_0043.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 1300,
+      "water_fraction": 0.01983642578125,
+      "md5": "041b14e4a47407e243fdc69f9e0eb8f9"
+    },
+    {
+      "stem": "patch_0044",
+      "image_file": "patch_0044.png",
+      "mask_file": "patch_0044.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 3426,
+      "water_fraction": 0.052276611328125,
+      "md5": "d7eeaa9241e2522a6dc3ee12a6015bce"
+    },
+    {
+      "stem": "patch_0045",
+      "image_file": "patch_0045.png",
+      "mask_file": "patch_0045.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 806,
+      "water_fraction": 0.012298583984375,
+      "md5": "f1ac47e0b0206bd9e368b3e50ea40c5c"
+    },
+    {
+      "stem": "patch_0046",
+      "image_file": "patch_0046.png",
+      "mask_file": "patch_0046.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 4567,
+      "water_fraction": 0.0696868896484375,
+      "md5": "3bf75c747f55950da5dd9a3165202754"
+    },
+    {
+      "stem": "patch_0047",
+      "image_file": "patch_0047.png",
+      "mask_file": "patch_0047.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 3595,
+      "water_fraction": 0.0548553466796875,
+      "md5": "ec582949757b6bb8d974a6a27e4ef726"
+    },
+    {
+      "stem": "patch_0048",
+      "image_file": "patch_0048.png",
+      "mask_file": "patch_0048.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 0,
+      "water_fraction": 0.0,
+      "md5": "9e24223fa350da6015d14d561f651de6"
+    },
+    {
+      "stem": "patch_0049",
+      "image_file": "patch_0049.png",
+      "mask_file": "patch_0049.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 34,
+      "water_fraction": 0.000518798828125,
+      "md5": "fe4c606a8f87503cf1b23bfcadf91d4d"
+    },
+    {
+      "stem": "patch_0050",
+      "image_file": "patch_0050.png",
+      "mask_file": "patch_0050.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 93,
+      "water_fraction": 0.0014190673828125,
+      "md5": "11a80772d961552a4c5a27b6b550fa11"
+    },
+    {
+      "stem": "patch_0051",
+      "image_file": "patch_0051.png",
+      "mask_file": "patch_0051.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 1233,
+      "water_fraction": 0.0188140869140625,
+      "md5": "8d6d927186c33826851e7a10510b86a6"
+    },
+    {
+      "stem": "patch_0052",
+      "image_file": "patch_0052.png",
+      "mask_file": "patch_0052.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 7312,
+      "water_fraction": 0.111572265625,
+      "md5": "f957fee4c436b6a22db4a66f1b814e65"
+    },
+    {
+      "stem": "patch_0053",
+      "image_file": "patch_0053.png",
+      "mask_file": "patch_0053.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 1979,
+      "water_fraction": 0.0301971435546875,
+      "md5": "0ed280cb78cc96f0caa4065d389c3f43"
+    }
+  ],
+  "test": [
+    {
+      "stem": "patch_0000",
+      "image_file": "patch_0000.png",
+      "mask_file": "patch_0000.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 17862,
+      "water_fraction": 0.272552490234375,
+      "md5": "12ef8f55e9a497e9963220b3fa812adf"
+    },
+    {
+      "stem": "patch_0001",
+      "image_file": "patch_0001.png",
+      "mask_file": "patch_0001.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 17794,
+      "water_fraction": 0.271514892578125,
+      "md5": "c3c26395c9f565c6b42cb9680d9f6e3e"
+    },
+    {
+      "stem": "patch_0002",
+      "image_file": "patch_0002.png",
+      "mask_file": "patch_0002.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 4501,
+      "water_fraction": 0.0686798095703125,
+      "md5": "327e039f2a9002554f9f8de830f21e65"
+    },
+    {
+      "stem": "patch_0003",
+      "image_file": "patch_0003.png",
+      "mask_file": "patch_0003.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 11588,
+      "water_fraction": 0.17681884765625,
+      "md5": "43d5adee1be7d8824202eff16b799e1f"
+    },
+    {
+      "stem": "patch_0004",
+      "image_file": "patch_0004.png",
+      "mask_file": "patch_0004.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 25555,
+      "water_fraction": 0.3899383544921875,
+      "md5": "2192d29e2be83867aa0fb6f23a101bac"
+    },
+    {
+      "stem": "patch_0005",
+      "image_file": "patch_0005.png",
+      "mask_file": "patch_0005.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 1458,
+      "water_fraction": 0.022247314453125,
+      "md5": "6b0728736f7734f3d49babb69f9d5913"
+    },
+    {
+      "stem": "patch_0006",
+      "image_file": "patch_0006.png",
+      "mask_file": "patch_0006.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 722,
+      "water_fraction": 0.011016845703125,
+      "md5": "950221faa95708a9bce4690f0312be9a"
+    },
+    {
+      "stem": "patch_0007",
+      "image_file": "patch_0007.png",
+      "mask_file": "patch_0007.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 3056,
+      "water_fraction": 0.046630859375,
+      "md5": "b1124466d0ae9a4bb9077d92e4fab3d8"
+    },
+    {
+      "stem": "patch_0008",
+      "image_file": "patch_0008.png",
+      "mask_file": "patch_0008.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 3819,
+      "water_fraction": 0.0582733154296875,
+      "md5": "5aa2ebdb1d46c9ba087f4809e930f35b"
+    },
+    {
+      "stem": "patch_0009",
+      "image_file": "patch_0009.png",
+      "mask_file": "patch_0009.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 10101,
+      "water_fraction": 0.1541290283203125,
+      "md5": "52ed213dbc931405ff194c48cca42941"
+    },
+    {
+      "stem": "patch_0010",
+      "image_file": "patch_0010.png",
+      "mask_file": "patch_0010.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 6852,
+      "water_fraction": 0.10455322265625,
+      "md5": "5b768abb1a9cbeca1886fd173bd7ea03"
+    },
+    {
+      "stem": "patch_0011",
+      "image_file": "patch_0011.png",
+      "mask_file": "patch_0011.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 25437,
+      "water_fraction": 0.3881378173828125,
+      "md5": "df530bea349ad61d005ea08ee923e129"
+    },
+    {
+      "stem": "patch_0012",
+      "image_file": "patch_0012.png",
+      "mask_file": "patch_0012.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 30597,
+      "water_fraction": 0.4668731689453125,
+      "md5": "1cfd2b409be63874121a3044904390c8"
+    },
+    {
+      "stem": "patch_0013",
+      "image_file": "patch_0013.png",
+      "mask_file": "patch_0013.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 354,
+      "water_fraction": 0.005401611328125,
+      "md5": "42a61591667b2d51bfb087b536cb11e2"
+    },
+    {
+      "stem": "patch_0014",
+      "image_file": "patch_0014.png",
+      "mask_file": "patch_0014.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 873,
+      "water_fraction": 0.0133209228515625,
+      "md5": "f951c9d53f5d805b95b25c56efbb33b2"
+    },
+    {
+      "stem": "patch_0015",
+      "image_file": "patch_0015.png",
+      "mask_file": "patch_0015.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 6,
+      "water_fraction": 9.1552734375e-05,
+      "md5": "787ff2300394ba0d9033383b8b7d0147"
+    },
+    {
+      "stem": "patch_0016",
+      "image_file": "patch_0016.png",
+      "mask_file": "patch_0016.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 1094,
+      "water_fraction": 0.016693115234375,
+      "md5": "c840af3250fc10dfabf55c4f9e341962"
+    },
+    {
+      "stem": "patch_0017",
+      "image_file": "patch_0017.png",
+      "mask_file": "patch_0017.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 459,
+      "water_fraction": 0.0070037841796875,
+      "md5": "aa7ac7a5fcad3301f2f391121d78b05f"
+    },
+    {
+      "stem": "patch_0018",
+      "image_file": "patch_0018.png",
+      "mask_file": "patch_0018.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 9635,
+      "water_fraction": 0.1470184326171875,
+      "md5": "ca422c9eb6d97f0870fd74c55daecf10"
+    },
+    {
+      "stem": "patch_0019",
+      "image_file": "patch_0019.png",
+      "mask_file": "patch_0019.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 7918,
+      "water_fraction": 0.120819091796875,
+      "md5": "cad0d705618b4b842dcb2041a576bbbd"
+    },
+    {
+      "stem": "patch_0020",
+      "image_file": "patch_0020.png",
+      "mask_file": "patch_0020.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 5689,
+      "water_fraction": 0.0868072509765625,
+      "md5": "486a2d02fab61135a758d9c4eafbd014"
+    },
+    {
+      "stem": "patch_0021",
+      "image_file": "patch_0021.png",
+      "mask_file": "patch_0021.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 32226,
+      "water_fraction": 0.491729736328125,
+      "md5": "78ea6729a130a37f3ff46f91d1cdb4e5"
+    },
+    {
+      "stem": "patch_0022",
+      "image_file": "patch_0022.png",
+      "mask_file": "patch_0022.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 10929,
+      "water_fraction": 0.1667633056640625,
+      "md5": "db24a73f36374e80d4b892c07c7c69e8"
+    },
+    {
+      "stem": "patch_0023",
+      "image_file": "patch_0023.png",
+      "mask_file": "patch_0023.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 95,
+      "water_fraction": 0.0014495849609375,
+      "md5": "63c28c0aefe40d1387b3fdaea598c019"
+    },
+    {
+      "stem": "patch_0024",
+      "image_file": "patch_0024.png",
+      "mask_file": "patch_0024.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 1917,
+      "water_fraction": 0.0292510986328125,
+      "md5": "79db6ae9350b8450ea70c4de2209f54e"
+    },
+    {
+      "stem": "patch_0025",
+      "image_file": "patch_0025.png",
+      "mask_file": "patch_0025.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 3565,
+      "water_fraction": 0.0543975830078125,
+      "md5": "e02cc95420891286845eb660ba7a368e"
+    },
+    {
+      "stem": "patch_0026",
+      "image_file": "patch_0026.png",
+      "mask_file": "patch_0026.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 2020,
+      "water_fraction": 0.03082275390625,
+      "md5": "a311e0880984a4fb55b54d596a9d3aa3"
+    },
+    {
+      "stem": "patch_0027",
+      "image_file": "patch_0027.png",
+      "mask_file": "patch_0027.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 2294,
+      "water_fraction": 0.035003662109375,
+      "md5": "c7d799b5dc00691e638717d65a0405f2"
+    },
+    {
+      "stem": "patch_0028",
+      "image_file": "patch_0028.png",
+      "mask_file": "patch_0028.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 3521,
+      "water_fraction": 0.0537261962890625,
+      "md5": "722fa84e278a1d66eb4073aaeb417029"
+    },
+    {
+      "stem": "patch_0029",
+      "image_file": "patch_0029.png",
+      "mask_file": "patch_0029.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 8280,
+      "water_fraction": 0.1263427734375,
+      "md5": "a0a304d25f917f6157e0078f6d6f1f5a"
+    },
+    {
+      "stem": "patch_0030",
+      "image_file": "patch_0030.png",
+      "mask_file": "patch_0030.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 12634,
+      "water_fraction": 0.192779541015625,
+      "md5": "dd3b552ef665d068e212817878d81e98"
+    },
+    {
+      "stem": "patch_0031",
+      "image_file": "patch_0031.png",
+      "mask_file": "patch_0031.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 30446,
+      "water_fraction": 0.464569091796875,
+      "md5": "4947717913941835b5efe8da11b9abd3"
+    },
+    {
+      "stem": "patch_0032",
+      "image_file": "patch_0032.png",
+      "mask_file": "patch_0032.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 27933,
+      "water_fraction": 0.4262237548828125,
+      "md5": "c524bbe2af2e8b4e36de2367ed7fcd77"
+    },
+    {
+      "stem": "patch_0033",
+      "image_file": "patch_0033.png",
+      "mask_file": "patch_0033.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 3137,
+      "water_fraction": 0.0478668212890625,
+      "md5": "46c9391a12c0f92760dbad978b4b3368"
+    },
+    {
+      "stem": "patch_0034",
+      "image_file": "patch_0034.png",
+      "mask_file": "patch_0034.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 3220,
+      "water_fraction": 0.04913330078125,
+      "md5": "a5728e72fcde1a54a62de486b86ed91f"
+    },
+    {
+      "stem": "patch_0035",
+      "image_file": "patch_0035.png",
+      "mask_file": "patch_0035.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 3883,
+      "water_fraction": 0.0592498779296875,
+      "md5": "fff90a1d31bfc93de69aff64b96eecee"
+    },
+    {
+      "stem": "patch_0036",
+      "image_file": "patch_0036.png",
+      "mask_file": "patch_0036.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 1563,
+      "water_fraction": 0.0238494873046875,
+      "md5": "949ec9f8d5b1d0dacd73551a5b0a2f6e"
+    },
+    {
+      "stem": "patch_0037",
+      "image_file": "patch_0037.png",
+      "mask_file": "patch_0037.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 4734,
+      "water_fraction": 0.072235107421875,
+      "md5": "e55b4fd4a2a93c4744266b59ce0b99f3"
+    },
+    {
+      "stem": "patch_0038",
+      "image_file": "patch_0038.png",
+      "mask_file": "patch_0038.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 3145,
+      "water_fraction": 0.0479888916015625,
+      "md5": "08301921eaa7ad72196931dc0e10b2a5"
+    },
+    {
+      "stem": "patch_0039",
+      "image_file": "patch_0039.png",
+      "mask_file": "patch_0039.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 1234,
+      "water_fraction": 0.018829345703125,
+      "md5": "00096bb60e9c75b1c588ef21ab2be141"
+    },
+    {
+      "stem": "patch_0040",
+      "image_file": "patch_0040.png",
+      "mask_file": "patch_0040.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 2581,
+      "water_fraction": 0.0393829345703125,
+      "md5": "3e02e77e8475fa49a4d6d365119d2da9"
+    },
+    {
+      "stem": "patch_0041",
+      "image_file": "patch_0041.png",
+      "mask_file": "patch_0041.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 16057,
+      "water_fraction": 0.2450103759765625,
+      "md5": "6819b8df33792a92dcd7aca376d63732"
+    },
+    {
+      "stem": "patch_0042",
+      "image_file": "patch_0042.png",
+      "mask_file": "patch_0042.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 12945,
+      "water_fraction": 0.1975250244140625,
+      "md5": "9826568fe1d2376d3804863e5765f8c6"
+    },
+    {
+      "stem": "patch_0043",
+      "image_file": "patch_0043.png",
+      "mask_file": "patch_0043.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 5878,
+      "water_fraction": 0.089691162109375,
+      "md5": "ec370471f7f490d45f096d31868e522f"
+    },
+    {
+      "stem": "patch_0044",
+      "image_file": "patch_0044.png",
+      "mask_file": "patch_0044.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 17134,
+      "water_fraction": 0.261444091796875,
+      "md5": "f35dd9ab082e8ccd6cd831af50d4f377"
+    },
+    {
+      "stem": "patch_0045",
+      "image_file": "patch_0045.png",
+      "mask_file": "patch_0045.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 539,
+      "water_fraction": 0.0082244873046875,
+      "md5": "98f2fdb1f24d61070ca9c6ff3fe4cf89"
+    },
+    {
+      "stem": "patch_0046",
+      "image_file": "patch_0046.png",
+      "mask_file": "patch_0046.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 1757,
+      "water_fraction": 0.0268096923828125,
+      "md5": "0a77fd8b70a3c772e5f37a657ff77147"
+    },
+    {
+      "stem": "patch_0047",
+      "image_file": "patch_0047.png",
+      "mask_file": "patch_0047.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 5326,
+      "water_fraction": 0.081268310546875,
+      "md5": "8ba59cc446e2f0f42cb22c5eeacbb5fb"
+    },
+    {
+      "stem": "patch_0048",
+      "image_file": "patch_0048.png",
+      "mask_file": "patch_0048.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 4287,
+      "water_fraction": 0.0654144287109375,
+      "md5": "ab3a0f4f13e09935f26264e4d423bbd8"
+    },
+    {
+      "stem": "patch_0049",
+      "image_file": "patch_0049.png",
+      "mask_file": "patch_0049.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 3418,
+      "water_fraction": 0.052154541015625,
+      "md5": "043f69260d549b7ae4af6c840e294806"
+    },
+    {
+      "stem": "patch_0050",
+      "image_file": "patch_0050.png",
+      "mask_file": "patch_0050.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 13705,
+      "water_fraction": 0.2091217041015625,
+      "md5": "6bf4155c4f813fd8961af62b268b33cf"
+    },
+    {
+      "stem": "patch_0051",
+      "image_file": "patch_0051.png",
+      "mask_file": "patch_0051.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 26628,
+      "water_fraction": 0.40631103515625,
+      "md5": "2a61a0e925b9e3a297c8249665b33ffd"
+    },
+    {
+      "stem": "patch_0052",
+      "image_file": "patch_0052.png",
+      "mask_file": "patch_0052.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 17766,
+      "water_fraction": 0.271087646484375,
+      "md5": "255b8e7ecde22ce9dd223ad27ca0b9a7"
+    },
+    {
+      "stem": "patch_0053",
+      "image_file": "patch_0053.png",
+      "mask_file": "patch_0053.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "water_pixels": 3479,
+      "water_fraction": 0.0530853271484375,
+      "md5": "64dfb1f7e46074fee764b610721c5625"
+    }
+  ]
+}

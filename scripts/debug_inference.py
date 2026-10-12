@@ -31,6 +31,7 @@ from src.models import build_model
 def compare_pytorch_and_onnx_inference(
     model_name: str = "unet_plusplus",
     onnx_path: str = "checkpoints/weights.onnx",
+    checkpoint_path: Optional[str] = None,
     img_size: int = 256,
     num_runs: int = 20,
     atol: float = 1e-3
@@ -58,7 +59,13 @@ def compare_pytorch_and_onnx_inference(
     torch_out_np = None
     if HAS_TORCH:
         try:
-            model = build_model(model_name=model_name)
+            model = build_model(model_name=model_name, encoder_weights=None)
+            if checkpoint_path and Path(checkpoint_path).exists():
+                state_dict = torch.load(checkpoint_path, map_location="cpu", weights_only=True)
+                if "state_dict" in state_dict:
+                    state_dict = state_dict["state_dict"]
+                model.load_state_dict(state_dict, strict=False)
+                print(f"[INFO] Loaded checkpoint weights from '{checkpoint_path}'.")
             model.eval()
             input_tensor = torch.from_numpy(dummy_np)
 
@@ -121,6 +128,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="GeoVision AI Inference Debug Script")
     parser.add_argument("--model", type=str, default="unet_plusplus", help="Model architecture")
     parser.add_argument("--onnx", type=str, default="checkpoints/weights.onnx", help="ONNX model path")
+    parser.add_argument("--checkpoint", type=str, default=None, help="PyTorch checkpoint path")
     parser.add_argument("--size", type=int, default=256, help="Input spatial size")
     parser.add_argument("--runs", type=int, default=20, help="Benchmark run count")
 
@@ -128,6 +136,7 @@ if __name__ == "__main__":
     compare_pytorch_and_onnx_inference(
         model_name=args.model,
         onnx_path=args.onnx,
+        checkpoint_path=args.checkpoint,
         img_size=args.size,
         num_runs=args.runs
     )
