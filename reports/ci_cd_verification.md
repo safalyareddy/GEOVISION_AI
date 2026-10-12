@@ -64,27 +64,22 @@ jobs:
 ## 3. Remote Verification Completed on GitHub Actions
 
 ### A. Latest HEAD Commit Verification
-* **Commit SHA**: `ee4fe5251e808cf0dd4a5ab12ddedb813b55ba29` (`ee4fe52`)
+* **Commit SHA**: `2835ce71d66954a301464c56019468b2c5871b5e` (`2835ce7`)
 * **Workflow Name**: `CI Pipeline`
-* **GitHub Actions Run ID**: `38292254716`
-* **Run URL**: [https://github.com/safalyareddy/GEOVISION_AI/actions/runs/38292254716](https://github.com/safalyareddy/GEOVISION_AI/actions/runs/38292254716)
-* **Job Database ID**: `114954881154` (`test` on `ubuntu-latest`)
-* **Execution Timestamp**: Started `2026-10-12T18:38:18Z`, Completed `2026-10-12T18:41:06Z` (Total: 2m 48s)
+* **GitHub Actions Run ID**: `38298362711`
+* **Run URL**: [https://github.com/safalyareddy/GEOVISION_AI/actions/runs/38298362711](https://github.com/safalyareddy/GEOVISION_AI/actions/runs/38298362711)
+* **Job Database ID**: `114974888427` (`test` on `ubuntu-latest`)
+* **Execution Timestamp**: Started `2026-10-12T19:32:50Z`, Completed `2026-10-12T19:35:06Z` (Total: 2m 16s)
 * **Job Result**: **PASSED (Green Check `✓`)**
-* **Test Summary**: **35 passed, 3 warnings in 56.53s** across all 6 test modules (`test_api.py`, `test_dataset.py`, `test_evaluate.py`, `test_models.py`, `test_onnx.py`, `test_train.py`).
+* **Test Summary**: **35 passed, 3 warnings in 43.14s** across all 6 test modules (`test_api.py`, `test_dataset.py`, `test_evaluate.py`, `test_models.py`, `test_onnx.py`, `test_train.py`).
 * **Warnings Captured**:
   1. `scripts/export_onnx.py:84`: `UserWarning: dynamic_axes is not recommended when dynamo=True...`
   2. `torch/onnx/_internal/exporter/_compat.py:112`: `DeprecationWarning: from_dynamic_axes_to_dynamic_shapes is deprecated...`
   3. `lightning/pytorch/core/module.py:451`: `UserWarning: You are trying to self.log() but the self.trainer reference is not registered...`
 * **Status**: **100% VERIFIED SUCCESSFUL ON LATEST REPOSITORY COMMIT**
 
-### B. Preceding Remediation Commit Verification
-* **Commit SHA**: `c55693fa5320f19f9fcf6ac8abe533aa3966d980` (`c55693f`)
-* **Workflow Name**: `CI Pipeline`
-* **GitHub Actions Run ID**: `38290205291`
-* **Run URL**: [https://github.com/safalyareddy/GEOVISION_AI/actions/runs/38290205291](https://github.com/safalyareddy/GEOVISION_AI/actions/runs/38290205291)
-* **Execution Timestamp**: Started `2026-10-12T18:20:09Z`, Completed `2026-10-12T18:23:03Z` (Total: 2m 54s)
-* **Job Result**: **PASSED (Green Check `✓`)**
-* **Test Summary**: **35 passed, 3 warnings in 68.76s**
-* **Status**: **VERIFIED PASS**
+### B. Preceding Commit Verification History
+* **Commit `ee4fe52`**: Run ID `38292254716` ([URL](https://github.com/safalyareddy/GEOVISION_AI/actions/runs/38292254716)) | **PASSED** (35 passed, 3 warnings in 56.53s) | Started `2026-10-12T18:38:18Z`
+* **Commit `c55693f`**: Run ID `38290205291` ([URL](https://github.com/safalyareddy/GEOVISION_AI/actions/runs/38290205291)) | **PASSED** (35 passed, 3 warnings in 68.76s) | Started `2026-10-12T18:20:09Z`
+
 

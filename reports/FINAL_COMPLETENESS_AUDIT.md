@@ -4,7 +4,7 @@
 **Auditor**: Senior Machine Learning Engineer, DevSecOps & Production Auditor  
 **Repository Target**: [`safalyareddy/GeoVision-AI-Satellite-Water-Body-Segmentation-Platform`](https://github.com/safalyareddy/GeoVision-AI-Satellite-Water-Body-Segmentation-Platform)  
 **Primary Remote**: [`safalyareddy/GEOVISION_AI`](https://github.com/safalyareddy/GEOVISION_AI)  
-**Current Baseline Commit**: `ee4fe52` (Verified passing CI Run ID `38292254716`)  
+**Current Baseline Commit**: `2835ce7` (Verified passing CI Run ID `38298362711`)  
 
 ---
 
