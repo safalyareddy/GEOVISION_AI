@@ -22,7 +22,7 @@
 | **Streamlit Frontend** | **PASS** | Actively running at `http://localhost:8501`. Verified live in browser with real inference overlays and responsive UI. |
 | **Automated Test Suite** | **PASS** | **30 passed / 0 failed** in 25.31s across all test modules (`pytest tests/`). |
 | **Docker Configuration** | **PASS** | Created `.dockerignore` (excludes 2.2 GB checkpoints & venv). Fixed `docker/Dockerfile.ui` CMD to run `app.py`. Corrected `docker-compose.yml` to mount `./checkpoints:/app/checkpoints:ro`. |
-| **CI/CD Pipeline** | **PARTIAL** | Root cause identified and remediated locally (`httpx>=0.24.0` added to `requirements.txt`; `ci.yml` modernized). Pending authorized commit & push to verify green GitHub Actions check. |
+| **CI/CD Pipeline** | **PASS** | GitHub Actions Run `#38290205291` passed (`✓`) in 2m 54s on commit `c55693f` with all 35 tests passing on `ubuntu-latest`. |
 | **Config & Dependency Reproducibility** | **PASS** | `requirements.txt` updated with `httpx>=0.24.0`; safe `.env.example` created. |
 | **Security Controls** | **PASS** | Zero secrets in files or Git history. Deserialization safe (`weights_only=True`). Hardened `.gitignore` with `.env*`, archive, and key exclusions. |
 | **Artifact Preservation & Backup** | **PASS** | Verified 855 MB archive created in `~/GeoVision_Backups/geovision_artifacts_20261012_231459.tar.gz` with verified SHA-256 checksum. |
