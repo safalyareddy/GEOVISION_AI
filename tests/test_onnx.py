@@ -48,3 +48,28 @@ def test_compare_pytorch_and_onnx_inference_missing_onnx_file(tmp_path):
 
     assert "model_name" in res
     assert res["model_name"] == "unet_plusplus"
+
+
+def test_export_to_onnx_with_saved_checkpoint(tmp_path):
+    """Test ONNX export pipeline with a saved PyTorch checkpoint verifying safe weights_only loading."""
+    if not HAS_TORCH:
+        pytest.skip("PyTorch not available for ONNX export test.")
+
+    from src.models import build_model
+    model = build_model("unet_plusplus")
+    ckpt_file = tmp_path / "dummy_weights.pth"
+    torch.save({"state_dict": model.state_dict()}, str(ckpt_file))
+
+    out_file = tmp_path / "test_model_with_ckpt.onnx"
+    success = export_to_onnx(
+        model_name="unet_plusplus",
+        checkpoint_path=str(ckpt_file),
+        output_path=str(out_file),
+        img_size=32,
+        batch_size=1
+    )
+
+    assert success is True
+    assert out_file.exists()
+    assert out_file.stat().st_size > 0
+

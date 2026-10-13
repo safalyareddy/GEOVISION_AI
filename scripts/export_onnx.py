@@ -63,10 +63,13 @@ def export_to_onnx(
     try:
         model = build_model(model_name=model_name)
         if checkpoint_path and Path(checkpoint_path).exists():
-            state_dict = torch.load(checkpoint_path, map_location="cpu")
-            if "state_dict" in state_dict:
+            state_dict = torch.load(checkpoint_path, map_location="cpu", weights_only=True)
+            if isinstance(state_dict, dict) and "state_dict" in state_dict:
                 state_dict = state_dict["state_dict"]
-            model.load_state_dict(state_dict, strict=False)
+            try:
+                model.load_state_dict(state_dict, strict=True)
+            except Exception:
+                model.load_state_dict(state_dict, strict=False)
             print(f"[INFO] Loaded checkpoint weights from '{checkpoint_path}'.")
         else:
             print(f"[INFO] Using unweighted model architecture '{model_name}' for graph tracing.")
