@@ -18,6 +18,8 @@ services:
       dockerfile: docker/Dockerfile.ui
     ports:
       - "8501:8501"
+    volumes:
+      - ./checkpoints:/app/checkpoints:ro
     environment:
       - API_URL=http://api:8000
     depends_on:

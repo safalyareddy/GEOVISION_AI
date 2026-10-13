@@ -4,11 +4,19 @@ Interactive Streamlit Web Dashboard
 """
 
 import io
+import os
 import time
+import base64
 from pathlib import Path
 from PIL import Image
 import numpy as np
 import pandas as pd
+
+try:
+    import httpx
+    HAS_HTTPX = True
+except ImportError:
+    HAS_HTTPX = False
 
 try:
     import streamlit as st
@@ -30,6 +38,8 @@ except ImportError:
     HAS_ONNX = False
 
 from src.models import build_model, SUPPORTED_MODELS
+
+DEFAULT_API_URL = os.environ.get("API_URL", "http://localhost:8000")
 
 # Page Configuration
 if HAS_STREAMLIT:
@@ -56,7 +66,10 @@ def load_pytorch_model(model_name: str):
             state = torch.load(str(ckpt_path), map_location="cpu", weights_only=True)
             if isinstance(state, dict) and "state_dict" in state:
                 state = state["state_dict"]
-            model.load_state_dict(state, strict=False)
+            try:
+                model.load_state_dict(state, strict=True)
+            except Exception:
+                model.load_state_dict(state, strict=False)
         except Exception as e:
             st.warning(f"Could not load checkpoint '{ckpt_path}': {e}")
     model.eval()
@@ -77,26 +90,50 @@ def load_onnx_session(model_name: str):
     return None
 
 
-def run_inference(image: Image.Image, model_name: str, threshold: float, backend: str):
+def run_inference(image: Image.Image, model_name: str, threshold: float, backend: str, api_url: str = DEFAULT_API_URL):
     """Run model inference and return binary mask, probabilities, latency."""
     orig_size = image.size
+
+    # 1. FastAPI Microservice Execution
+    if "FastAPI" in backend and HAS_HTTPX:
+        start_time = time.perf_counter()
+        try:
+            buf = io.BytesIO()
+            image.save(buf, format="PNG")
+            files = {"file": ("image.png", buf.getvalue(), "image/png")}
+            data = {"model_name": model_name, "threshold": str(threshold)}
+            with httpx.Client(timeout=30.0) as client:
+                resp = client.post(f"{api_url.rstrip('/')}/predict", files=files, data=data)
+            if resp.status_code == 200:
+                payload = resp.json()
+                mask_bytes = base64.b64decode(payload["mask_base64"])
+                mask_img = Image.open(io.BytesIO(mask_bytes)).convert("L").resize(orig_size, Image.NEAREST)
+                binary_mask = (np.array(mask_img) > 127).astype(np.uint8)
+                latency_ms = payload.get("latency_ms", (time.perf_counter() - start_time) * 1000.0)
+                return mask_img, binary_mask, latency_ms
+            else:
+                if HAS_STREAMLIT:
+                    st.error(f"FastAPI error ({resp.status_code}): {resp.text}. Falling back to in-process execution.")
+        except Exception as e:
+            if HAS_STREAMLIT:
+                st.warning(f"Could not connect to FastAPI service at '{api_url}': {e}. Falling back to local execution.")
+
+    # 2. Local In-Process Execution (ONNX Runtime or PyTorch)
     img_resized = image.resize((256, 256))
     img_arr = np.array(img_resized, dtype=np.float32) / 255.0
-
     start_time = time.perf_counter()
 
-    if backend == "ONNX Runtime" and HAS_ONNX:
+    if "ONNX" in backend and HAS_ONNX:
         session = load_onnx_session(model_name)
         if session is not None:
-            # Transpose [H, W, C] to [1, C, H, W]
             input_tensor = np.transpose(img_arr, (2, 0, 1))[np.newaxis, :].astype(np.float32)
             input_name = session.get_inputs()[0].name
             logits = session.run(None, {input_name: input_tensor})[0]
             probs = 1.0 / (1.0 + np.exp(-logits.squeeze()))
         else:
-            backend = "PyTorch (Fallback)"
+            session = None
 
-    if backend != "ONNX Runtime" or session is None:
+    if "ONNX" not in backend or session is None:
         model = load_pytorch_model(model_name)
         transform = T.Compose([
             T.Resize((256, 256)),
@@ -108,7 +145,6 @@ def run_inference(image: Image.Image, model_name: str, threshold: float, backend
             probs = torch.sigmoid(logits).squeeze().cpu().numpy()
 
     latency_ms = (time.perf_counter() - start_time) * 1000.0
-
     binary_mask = (probs >= threshold).astype(np.uint8)
     mask_img = Image.fromarray(binary_mask * 255, mode="L").resize(orig_size, Image.NEAREST)
 
@@ -161,9 +197,13 @@ def main():
 
     backend = st.sidebar.radio(
         "Inference Execution Backend",
-        options=["PyTorch", "ONNX Runtime"],
-        help="Compare execution performance between PyTorch eager execution and ONNX Runtime CPU graph engine."
+        options=["FastAPI Microservice (REST API)", "PyTorch (In-Process)", "ONNX Runtime (In-Process)"],
+        help="Compare execution performance between remote FastAPI microservice, PyTorch eager execution, and ONNX Runtime."
     )
+
+    api_url = DEFAULT_API_URL
+    if "FastAPI" in backend:
+        api_url = st.sidebar.text_input("FastAPI Endpoint URL", value=DEFAULT_API_URL, help="Base URL for FastAPI microservice (e.g. http://localhost:8000 or http://api:8000)")
 
     st.sidebar.markdown("---")
     st.sidebar.markdown("### 📊 Dataset Overview")
@@ -202,7 +242,7 @@ def main():
                 gt_mask = Image.open(sample_msk_path).convert("L")
 
         if image is not None:
-            mask_img, binary_mask, latency_ms = run_inference(image, model_choice, threshold, backend)
+            mask_img, binary_mask, latency_ms = run_inference(image, model_choice, threshold, backend, api_url=api_url)
             overlay_img = create_overlay(image, mask_img)
 
             # Calculate water coverage

@@ -201,8 +201,12 @@ def run_benchmark_suite(
                     state = torch.load(str(ckpt_path), map_location="cpu", weights_only=True)
                     if isinstance(state, dict) and "state_dict" in state:
                         state = state["state_dict"]
-                    model.load_state_dict(state, strict=False)
-                    print(f"[INFO] Loaded checkpoint '{ckpt_path}' for model '{model_key}'.")
+                    try:
+                        model.load_state_dict(state, strict=True)
+                        print(f"[INFO] Loaded checkpoint '{ckpt_path}' for model '{model_key}' (strict=True, 0 missing/unexpected).")
+                    except Exception as strict_err:
+                        model.load_state_dict(state, strict=False)
+                        print(f"[WARNING] Non-strict load fallback for '{ckpt_path}': {strict_err}")
                 except Exception as ex:
                     print(f"[WARNING] Failed loading checkpoint '{ckpt_path}': {ex}.")
 

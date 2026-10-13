@@ -159,3 +159,19 @@ def test_predict_endpoint_unsupported_mime():
     )
     assert response.status_code == 400
     assert "Unsupported image file format" in response.json()["detail"]
+
+
+@pytest.mark.skipif(not HAS_TESTCLIENT, reason="FastAPI TestClient required for API tests.")
+def test_predict_endpoint_oversized_file():
+    """Test prediction endpoint rejecting payload exceeding 10 MB limit."""
+    client = TestClient(app)
+    # 10 MB + 1 KB payload
+    oversized_buf = io.BytesIO(b"X" * (10 * 1024 * 1024 + 1024))
+
+    response = client.post(
+        "/predict",
+        files={"file": ("large.png", oversized_buf, "image/png")},
+        data={"model_name": "unet_plusplus", "threshold": 0.5}
+    )
+    assert response.status_code == 413
+    assert "exceeds maximum size limit" in response.json()["detail"].lower()

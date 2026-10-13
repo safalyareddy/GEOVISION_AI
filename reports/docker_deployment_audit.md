@@ -49,33 +49,42 @@ graph LR
   - `/var/run/docker.sock` (Symlink pointing to `/Users/safalyareddy/.docker/run/docker.sock`)
 * **Docker Context**: `desktop-linux` (`unix:///Users/safalyareddy/.docker/run/docker.sock`)
 
-### B. Daemon Socket Responsiveness & Timeout Tests
-To verify live daemon connectivity, empirical tests were executed against the active Docker socket:
-1. **HTTP Ping Test**:
+### B. Daemon Socket Responsiveness & Build Attempt Tests
+To verify live daemon connectivity and container image building, empirical tests were executed against the active Docker environment:
+
+1. **Initial Socket Probe**:
    ```bash
    curl --max-time 5 -s --unix-socket /Users/safalyareddy/.docker/run/docker.sock http://localhost/_ping
    ```
-   * **Result**: Connection timed out after 5.0 seconds (curl exit code 28). Zero HTTP bytes returned.
-2. **CLI Version Probe**:
-   ```bash
-   docker version
-   ```
-   * **Result**: Process hung indefinitely; terminated via `TimeoutExpired` after 5.0 seconds.
-3. **Console Log Inspection**:
-   Inspecting `/Users/safalyareddy/Library/Containers/com.docker.docker/Data/log/vm/console.log` revealed underlying LinuxKit VM proxy dropped connections:
+   * **Result**: Connection timed out after 5.0 seconds (curl exit code 28). Underlying LinuxKit proxy `initd.libproxy` dropped host connections.
+
+2. **Container Build Progression (`docker compose build api`)**:
+   - Docker build executed through context transfer (129.3 kB), base layer pull (`python:3.9-slim`), dependency installation (`pip install -r requirements.txt`, 557.1s), and application file copy.
+   - At image export step (`exporting to image ... exporting layers 24.3s`), host physical disk reached 99.9% capacity with only **233 MiB** remaining (`/dev/disk3s1s1`).
+
+3. **LinuxKit Virtual Machine Kernel Log (`console.log`)**:
+   Inspecting `/Users/safalyareddy/Library/Containers/com.docker.docker/Data/log/vm/console.log` revealed physical APFS block allocation failure resulting in EXT4 kernel I/O errors (`-EIO`):
    ```text
-   [initd.libproxy] discarded 230 bytes from host/41 Data length 230
-   [initd.libproxy] discarded 230 bytes from host/121 Data length 230
-   [initd.libproxy] discarded 230 bytes from host/151 Data length 230
-   ...
-   [initd.libproxy] discarded 230 bytes from host/1021 Data length 230
+   [ 9752.435773] EXT4-fs (vda1): failed to convert unwritten extents to written extents -- potential data loss!  (inode 54125, error -5)
+   [ 9770.667777] EXT4-fs (vda1): failed to convert unwritten extents to written extents -- potential data loss!  (inode 24064, error -5)
+   [ 9776.032702] EXT4-fs (vda1): failed to convert unwritten extents to written extents -- potential data loss!  (inode 24064, error -5)
+   ```
+   * Error `-5` corresponds to Linux kernel `-EIO` (I/O error) when the host hypervisor fails to grow `/Users/safalyareddy/Library/Containers/com.docker.docker/Data/vms/0/data/Docker.raw`.
+
+4. **Host Disk Pressure Verification**:
+   ```bash
+   df -h /
+   Filesystem        Size    Used   Avail Capacity iused ifree %iused  Mounted on
+   /dev/disk3s1s1   228Gi    12Gi   233Mi    99%    459k  2.4M   16%   /
    ```
 
-### C. Formal Audit Verdict
+### C. Formal Audit Verdict & Operational Requirements
 * **Static Container Configuration**: **PASS**
   - Syntactically valid Dockerfiles for both services (`docker/Dockerfile.api` and `docker/Dockerfile.ui`).
   - Hardened `.dockerignore` blocking ~2.2 GB checkpoints and local caches from context bloat.
   - Read-only volume mount configured for checkpoints in `docker-compose.yml`.
-* **Container Runtime Execution**: **BLOCKED / NOT VERIFIED**
-  - Because the Docker Desktop virtualization proxy is unresponsive and dropping host socket traffic, building container images and running `docker compose up` cannot execute in the current host environment.
-  - In strict compliance with audit standards, deployment is designated **BLOCKED / NOT VERIFIED** rather than claiming verified deployment based solely on static files.
+* **Container Runtime Execution**: **BLOCKED BY HOST PHYSICAL DISK EXHAUSTION**
+  - Building and running containerized ML workloads requires at least **5–10 GB** of free host disk space to store PyTorch container layers.
+  - With host storage at 233 MiB, virtual disk extent conversion fails with kernel I/O errors.
+  - **Host Operator Remediation**: Free 10+ GB on macOS host root partition and restart Docker Desktop to execute container runtime integration tests. Static configuration is fully hardened and production-ready.
+

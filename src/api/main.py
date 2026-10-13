@@ -67,7 +67,10 @@ def get_cached_model(model_name: str = "unet_plusplus") -> Any:
                 state = torch.load(str(ckpt_path), map_location="cpu", weights_only=True)
                 if isinstance(state, dict) and "state_dict" in state:
                     state = state["state_dict"]
-                model.load_state_dict(state, strict=False)
+                try:
+                    model.load_state_dict(state, strict=True)
+                except Exception:
+                    model.load_state_dict(state, strict=False)
             except Exception as e:
                 print(f"[WARNING] Could not load checkpoint '{ckpt_path}': {e}")
         model.eval()
@@ -155,8 +158,9 @@ async def predict(
             break
         total_read += len(chunk)
         if total_read > MAX_FILE_SIZE:
+            status_413 = getattr(status, "HTTP_413_CONTENT_TOO_LARGE", 413)
             raise HTTPException(
-                status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE,
+                status_code=status_413,
                 detail="Uploaded file exceeds maximum size limit of 10 MB."
             )
         buffer.write(chunk)

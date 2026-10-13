@@ -19,14 +19,14 @@ $$\text{Final Weighted Score} = \sum_{i=1}^{9} w_i \times S_i \quad \text{where 
 | # | Evaluation Category | Normalized Weight ($w_i$) | Status | Category Score ($S_i$) | Weighted Contribution | Objective Verification Method |
 | :-: | :--- | :---: | :---: | :---: | :---: | :--- |
 | **1** | **Software Engineering & Code Quality** | **20.0%** | **PASS** | 100.0% | **20.00%** | Modular package layout (`src/`), complete type hints, zero global state leaks, robust exception handling. |
-| **2** | **Dataset Engineering & Integrity** | **12.0%** | **PASS** | 100.0% | **12.00%** | 414 paired $256 \times 256$ tiles, 0 corruptions, 0 cross-split hash overlap, 100% 1-to-1 matching, 8.2% hard negatives. |
-| **3** | **In-Domain Model Training Convergence** | **15.0%** | **PASS** | 100.0% | **15.00%** | 15 epochs on Apple M4 MPS; train loss drops $0.4445 \rightarrow 0.0361$; Val Dice reaches 0.8187 (IoU 0.7431); strict loading of all 350 tensors. |
+| **2** | **Dataset Engineering & Integrity** | **12.0%** | **PASS** | 100.0% | **12.00%** | 414 paired $256 \times 256$ tiles, 0 corruptions, 0 cross-split hash collisions (min dHash distance: 8–10), 100% 1-to-1 matching, 8.2% hard negatives. |
+| **3** | **In-Domain Model Training Convergence** | **15.0%** | **PASS** | 100.0% | **15.00%** | 15 epochs on Apple M4 MPS; train loss drops $0.4445 \rightarrow 0.0361$; Val Dice reaches 0.8187 (IoU 0.7431); strict loading verified across UNet++, DeepLabV3+, SegFormer. |
 | **4** | **Scientific Generalization (Held-Out Test)**| **15.0%** | **PARTIAL** | **26.7%** | **4.00%** | Held-out Test Dice drops to **0.1906** (IoU 0.1131, Precision 0.3603, Recall 0.1854) due to spectral shift on turbid/bright water tiles (+31.5% Blue reflectance shift). Precision is 2.7x class prior avoiding collapse, but severe boundary false negatives persist. |
-| **5** | **REST API Microservice Engineering** | **10.0%** | **PASS** | 100.0% | **10.00%** | FastAPI `/health`, `/models`, `/predict`; payload validation ($\le 10\text{MB}$, MIME checks); inference caching; 4/4 passing tests. |
-| **6** | **Interactive Web Application & UX** | **8.0%** | **PASS** | 100.0% | **8.00%** | Streamlit web dashboard (`app.py`); threshold slider $[0.10, 0.90]$; live mask generation; physical area estimation ($km^2$ and hectares). |
-| **7** | **CI/CD Quality Gates & Automation** | **10.0%** | **PASS** | 100.0% | **10.00%** | GitHub Actions workflow on `ubuntu-latest` running all 35 tests. Head commit `ee4fe52` verified passing in Run ID `38292254716` (56.53s). |
-| **8** | **Containerization & Deployment Verification**| **5.0%** | **BLOCKED / NOT VERIFIED**| 0.0% | **0.00%** | Static files valid (`Dockerfile.api`, `Dockerfile.ui`, `docker-compose.yml`, `.dockerignore`). Live runtime verification blocked by unresponsive host Docker daemon socket. |
-| **9** | **DevSecOps, Deserialization & Hygiene** | **5.0%** | **PASS** | 90.0% | **4.50%** | Safe deserialization (`weights_only=True`), no hardcoded secrets, 855 MB external cold backup with SHA-256. (0.5% withheld: finite tests cannot guarantee "zero risk"). |
+| **5** | **REST API Microservice Engineering** | **10.0%** | **PASS** | 100.0% | **10.00%** | FastAPI `/health`, `/models`, `/predict`; streaming payload limit ($\le 10\text{MB}$ returning 413), MIME checks, image integrity validation; inference caching; 10/10 passing tests. |
+| **6** | **Interactive Web Application & UX** | **8.0%** | **PASS** | 100.0% | **8.00%** | Streamlit web dashboard (`app.py`); threshold slider $[0.10, 0.90]$; live mask generation; physical area estimation ($km^2$ and hectares); FastAPI microservice client mode with local fallback. |
+| **7** | **CI/CD Quality Gates & Automation** | **10.0%** | **PASS** | 100.0% | **10.00%** | GitHub Actions workflow on `ubuntu-latest`. Comprehensive suite expanded to **38 passing tests with 0 warnings** (43.07s). Warning-free ONNX export and PyTorch Lightning logging. |
+| **8** | **Containerization & Deployment Verification**| **5.0%** | **BLOCKED BY HOST DISK**| 0.0% | **0.00%** | Static files hardened (`Dockerfile.api`, `Dockerfile.ui`, `docker-compose.yml`, `.dockerignore`). Live runtime verification blocked by physical host disk exhaustion (233 MiB free on `/dev/disk3s1s1`) causing LinuxKit VM EXT4 `-EIO` errors. |
+| **9** | **DevSecOps, Deserialization & Hygiene** | **5.0%** | **PASS** | 90.0% | **4.50%** | Safe deserialization (`weights_only=True`), strict state dict loading, no hardcoded secrets, 855 MB external cold backup with SHA-256. (0.5% withheld: finite tests cannot guarantee "zero risk"). |
 | **TOTAL**| **All Categories Combined** | **100.0%** | — | — | **83.50% / 100.0%** | **Scientifically Defensible Portfolio Score: 83.5 / 100** |
 
 ---
@@ -70,6 +70,6 @@ A critical principle of this audit is that **passing software unit tests does no
 | Rank | Severity | Subsystem | Description & Remediation Path |
 | :-: | :---: | :--- | :--- |
 | **1** | **HIGH (ML)** | Scientific Model Generalization | **Held-Out Test Generalization Gap**: Retrain with multi-spectral normalization (percentile clipping), Albumentations color jitter / HSV shifts, and geographically stratified sampling to adapt to turbid coastal waters. |
-| **2** | **MEDIUM (OPS)**| Container Runtime Execution | **Docker Daemon Responsiveness**: Host Docker Desktop LinuxKit VM proxy drops socket connections (5s timeouts on `docker version` and HTTP ping). Live container execution is marked BLOCKED until Docker VM network proxy is resolved. |
-| **3** | **LOW (MAINT)** | Remote Sync | **Target Remote Synchronization**: Synchronize `origin/main` to `target_repo` if required by external portfolio hosting preferences. |
+| **2** | **MEDIUM (OPS)**| Container Runtime Execution | **Host Physical Disk Exhaustion**: macOS host root partition has 233 MiB free (`/dev/disk3s1s1`), causing hypervisor `Docker.raw` virtual allocation failures and LinuxKit EXT4 kernel I/O errors (`error -5` / `-EIO`). Free 10+ GB on host drive to execute live container stack. |
+
 

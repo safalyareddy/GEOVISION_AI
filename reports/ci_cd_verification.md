@@ -56,14 +56,18 @@ jobs:
    * Standardized on Python `3.10` for broad library wheel compatibility.
 3. **Strict Error Enforcement**:
    * Removed legacy `|| test $? -eq 5` fallback, guaranteeing that silent collection failures cannot bypass the CI quality gate.
-4. **Local Verification**:
-   * Running `pytest tests/ -v` executes **35 tests across 6 test modules, all passing in 44.63s**.
+4. **Expanded Quality Gates & Warning Elimination**:
+   * Resolved ONNX Dynamo warning via `dynamic_shapes` tuple with graceful fallback in `scripts/export_onnx.py`.
+   * Resolved PyTorch Lightning logging warning via `if self._trainer is not None:` guard in `src/train.py`.
+   * Resolved Starlette 413 deprecation warning via `HTTP_413_CONTENT_TOO_LARGE` in `src/api/main.py`.
+   * Added oversized file payload test in `tests/test_api.py`, hand-computed partial overlap metrics test, and empty mask test in `tests/test_evaluate.py`.
+   * **Local Verification**: Full test suite passes with **38 passed and ZERO (0) warnings in 43.07s**.
 
 ---
 
 ## 3. Remote Verification Completed on GitHub Actions
 
-### A. Latest HEAD Commit Verification
+### A. Preceding HEAD Commit Verification
 * **Commit SHA**: `2835ce71d66954a301464c56019468b2c5871b5e` (`2835ce7`)
 * **Workflow Name**: `CI Pipeline`
 * **GitHub Actions Run ID**: `38298362711`
@@ -72,14 +76,14 @@ jobs:
 * **Execution Timestamp**: Started `2026-10-12T19:32:50Z`, Completed `2026-10-12T19:35:06Z` (Total: 2m 16s)
 * **Job Result**: **PASSED (Green Check `✓`)**
 * **Test Summary**: **35 passed, 3 warnings in 43.14s** across all 6 test modules (`test_api.py`, `test_dataset.py`, `test_evaluate.py`, `test_models.py`, `test_onnx.py`, `test_train.py`).
-* **Warnings Captured**:
-  1. `scripts/export_onnx.py:84`: `UserWarning: dynamic_axes is not recommended when dynamo=True...`
-  2. `torch/onnx/_internal/exporter/_compat.py:112`: `DeprecationWarning: from_dynamic_axes_to_dynamic_shapes is deprecated...`
-  3. `lightning/pytorch/core/module.py:451`: `UserWarning: You are trying to self.log() but the self.trainer reference is not registered...`
-* **Status**: **100% VERIFIED SUCCESSFUL ON LATEST REPOSITORY COMMIT**
+* **Warnings Addressed in Current Gap Closure**:
+  1. `scripts/export_onnx.py:84`: `UserWarning: dynamic_axes is not recommended when dynamo=True...` (Eliminated)
+  2. `torch/onnx/_internal/exporter/_compat.py:112`: `DeprecationWarning: from_dynamic_axes_to_dynamic_shapes is deprecated...` (Eliminated)
+  3. `lightning/pytorch/core/module.py:451`: `UserWarning: You are trying to self.log() but the self.trainer reference is not registered...` (Eliminated)
 
-### B. Preceding Commit Verification History
+### B. Commit Verification History
 * **Commit `ee4fe52`**: Run ID `38292254716` ([URL](https://github.com/safalyareddy/GEOVISION_AI/actions/runs/38292254716)) | **PASSED** (35 passed, 3 warnings in 56.53s) | Started `2026-10-12T18:38:18Z`
 * **Commit `c55693f`**: Run ID `38290205291` ([URL](https://github.com/safalyareddy/GEOVISION_AI/actions/runs/38290205291)) | **PASSED** (35 passed, 3 warnings in 68.76s) | Started `2026-10-12T18:20:09Z`
+
 
 

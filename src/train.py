@@ -103,7 +103,8 @@ if HAS_TORCH and HAS_LIGHTNING:
             masks = batch["mask"]
             logits = self(images)
             loss = self.loss_fn(logits, masks)
-            self.log("train_loss", loss, on_step=True, on_epoch=True, prog_bar=True)
+            if self._trainer is not None:
+                self.log("train_loss", loss, on_step=True, on_epoch=True, prog_bar=True)
             return loss
 
         def validation_step(self, batch, batch_idx):
@@ -113,9 +114,10 @@ if HAS_TORCH and HAS_LIGHTNING:
             loss = self.loss_fn(logits, masks)
             metrics = self._compute_metrics(logits, masks)
 
-            self.log("val_loss", loss, on_epoch=True, prog_bar=True)
-            self.log("val_dice", metrics["dice"], on_epoch=True, prog_bar=True)
-            self.log("val_iou", metrics["iou"], on_epoch=True, prog_bar=True)
+            if self._trainer is not None:
+                self.log("val_loss", loss, on_epoch=True, prog_bar=True)
+                self.log("val_dice", metrics["dice"], on_epoch=True, prog_bar=True)
+                self.log("val_iou", metrics["iou"], on_epoch=True, prog_bar=True)
             return loss
 
         def configure_optimizers(self):

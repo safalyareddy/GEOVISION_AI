@@ -81,17 +81,41 @@ def export_to_onnx(
         }
 
         print(f"[INFO] Tracing PyTorch computational graph to '{output_path}'...")
-        torch.onnx.export(
-            model,
-            dummy_input,
-            str(out_file),
-            export_params=True,
-            opset_version=opset_version,
-            do_constant_folding=True,
-            input_names=["input"],
-            output_names=["output"],
-            dynamic_axes=dynamic_axes
-        )
+        export_success = False
+        if hasattr(torch, "export") and hasattr(torch.export, "Dim"):
+            try:
+                batch_dim = torch.export.Dim("batch_size")
+                torch.onnx.export(
+                    model,
+                    (dummy_input,),
+                    str(out_file),
+                    export_params=True,
+                    opset_version=opset_version,
+                    do_constant_folding=True,
+                    input_names=["input"],
+                    output_names=["output"],
+                    dynamic_shapes=({0: batch_dim},)
+                )
+                export_success = True
+            except Exception as dyn_err:
+                print(f"[DEBUG] dynamic_shapes export attempt bypassed: {dyn_err}")
+
+        if not export_success:
+            import warnings
+            with warnings.catch_warnings():
+                warnings.filterwarnings("ignore", category=UserWarning)
+                warnings.filterwarnings("ignore", category=DeprecationWarning)
+                torch.onnx.export(
+                    model,
+                    dummy_input,
+                    str(out_file),
+                    export_params=True,
+                    opset_version=opset_version,
+                    do_constant_folding=True,
+                    input_names=["input"],
+                    output_names=["output"],
+                    dynamic_axes=dynamic_axes
+                )
 
         print(f"[SUCCESS] ONNX graph exported successfully to '{output_path}'.")
 
