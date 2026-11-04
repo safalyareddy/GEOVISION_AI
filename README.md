@@ -1,256 +1,210 @@
-# 🛰️ GeoVision AI — Satellite Water Body Segmentation Platform
+# GeoVision AI — Satellite Water Body Segmentation Platform
 
-[![CI Pipeline](https://github.com/safalyareddy/GEOVISION_AI/actions/workflows/ci.yml/badge.svg)](https://github.com/safalyareddy/GEOVISION_AI/actions/workflows/ci.yml)
-![Python](https://img.shields.io/badge/python-v3.10%20%7C%20v3.11-blue.svg)
-![FastAPI](https://img.shields.io/badge/FastAPI-0.100.0+-009688.svg?logo=fastapi&logoColor=white)
-![Streamlit](https://img.shields.io/badge/Streamlit-1.25.0+-FF4B4B.svg?logo=streamlit&logoColor=white)
-![ONNX Runtime](https://img.shields.io/badge/ONNX-Runtime-1.15.0+-005C99.svg?logo=onnx&logoColor=white)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-
-**GeoVision AI** is a production-grade machine learning platform designed for the automated detection and segmentation of surface water bodies on high-resolution Sentinel-2 satellite imagery. 
-
-Utilizing advanced deep learning architectures (UNet++, DeepLabV3+, SegFormer), the platform leverages an MLOps pipeline to train, benchmark, and serve optimized models. By compiling PyTorch weights into standard **ONNX Runtime** graphs, GeoVision AI achieves sub-20ms latencies on Apple Silicon GPU (`mps`) and sub-75ms on CPU, suitable for integration into Geographic Information Systems (GIS) workflows.
+A modular computer vision platform for high-resolution surface water detection, segmentation, and hydrological surface area quantification from optical satellite imagery (Sentinel-2).
 
 ---
 
-## 🎥 Demo
+## 1. Problem Statement
 
-<!-- TODO: Replace with the GitHub-hosted demo video link after upload -->
-> [!NOTE]
-> Demo video will be added here after uploading it to the GitHub repository.
+Automated water body detection from optical remote sensing imagery is a critical capability for flood monitoring, reservoir storage tracking, and drought assessment. However, applying standard deep learning segmentation models directly to satellite tiles reveals fundamental technical challenges:
 
----
+1. **Extreme Class Imbalance**: In optical satellite imagery, land dominates over water. In our Sentinel-2 dataset, water covers only **4.22%** of all pixels across the dataset (a **24.7:1 land-to-water ratio**).
+2. **The Accuracy Paradox**: Under severe imbalance, a trivial classifier predicting all background achieves **86.6% to 89.5% pixel accuracy** while capturing **0% to 24% of actual water bodies**, completely failing as a detection system.
+3. **Fine-Boundary & Thin-Stream Degradation**: Standard segmentation decoders (such as ASPP in DeepLabV3+ or downsampled Transformer patches in SegFormer) lose narrow river tributaries and coastal boundaries through successive spatial pooling.
 
-## 📸 Screenshots
-
-### Homepage Configuration Panel
-<!-- TODO: Homepage Screenshot -->
-![Homepage Screenshot](docs/images/homepage.png)
-
-### Model Prediction Dashboard
-<!-- TODO: Prediction Dashboard -->
-![Prediction Dashboard](docs/images/prediction_dashboard.png)
-
-### Real-Time Segmentation Overlay
-<!-- TODO: Segmentation Output -->
-![Segmentation Output](docs/images/segmentation_output.png)
-
-### Interactive FastAPI Docs
-<!-- TODO: API Documentation -->
-![API Documentation](docs/images/api_documentation.png)
-
-### Performance Evaluation Curves
-<!-- TODO: Benchmark Results -->
-![Benchmark Results](docs/images/benchmark_results.png)
+GeoVision AI evaluates multi-architecture segmentation models (**Feature Pyramid Networks (FPN)**, **UNet++**, **DeepLabV3+**, **SegFormer**), diagnoses systematic false negatives, and implements asymmetric recall-prioritized loss functions (**Tversky Loss** and **Focal Tversky Loss**) to achieve balanced precision and recall.
 
 ---
 
-## 🏗️ Architecture
-
-The platform uses a modular decoupled architecture where the user dashboard, API service, training orchestrator, and model compilation graphs are isolated:
+## 2. System Architecture
 
 ```mermaid
 graph TD
-    A[Satellite Image] --> B[Image Preprocessing]
-    B --> C["Deep Learning Segmentation Model (ONNX)"]
-    C --> D[Inference Engine]
-    D --> E[Water Body Segmentation Mask]
-    E --> F[Area Analysis]
-    F --> G[FastAPI Backend]
-    G --> H[Streamlit Dashboard]
-```
+    subgraph Data Pipeline
+        S2[Sentinel-2 10m Imagery & Binary Water Masks] --> Split[scripts/split_dataset.py<br/>306 Train / 54 Val / 54 Test]
+        Split --> DatasetLoader[src/data/dataset.py<br/>SatelliteWaterDataset]
+    end
 
-## 📚 Documentation Sitemap
-Detailed technical architecture, security protocols, and operational guides:
+    subgraph Modeling & Loss Engine
+        DatasetLoader --> Models[src/models.py<br/>build_model]
+        Models --> FPN[Feature Pyramid Network<br/>ResNet-34 Backbone]
+        Models --> UNetPP[UNet++<br/>Nested Dense Skips]
+        Models --> DeepLab[DeepLabV3+<br/>Atrous Spatial Pyramid Pooling]
+        Models --> SegFormer[SegFormer<br/>Vision Transformer]
+        FPN & UNetPP & DeepLab & SegFormer --> Losses[src/loss.py<br/>Hybrid Dice-Focal / Focal Tversky Loss]
+    end
 
-* [System Architecture & Subsystems](docs/architecture.md)
-* [Dataset Provenance & Forensics](docs/dataset_and_provenance.md)
-* [Model Training & Loss Engineering](docs/model_training.md)
-* [Held-Out Evaluation Protocol](docs/evaluation_protocol.md)
-* [FastAPI Microservice Reference](docs/api_reference.md)
-* [Docker & Production Deployment](docs/deployment.md)
-* [Security & Threat Model](docs/security.md)
-* [Environment Setup & Reproducibility](docs/reproducibility.md)
-* [Limitations & Multi-Spectral Roadmap](docs/limitations_and_roadmap.md)
+    subgraph Optimization & Serialization
+        Losses --> Trainer[src/train.py<br/>PyTorch Lightning]
+        Trainer --> Checkpoints[checkpoints/<br/>State Dicts .pth]
+        Checkpoints --> ONNX[scripts/export_onnx.py<br/>ONNX Graph Export]
+    end
 
----
-
-## 📂 Project Structure
-
-```
-.
-├── app.py                   # Interactive Streamlit Web Application
-├── benchmark_results.csv    # Exported evaluation benchmark results
-├── config/                  # Configuration files
-│   └── dataset.yaml         # Dataset loader configuration
-├── src/                     # Core Deep Learning Package
-│   ├── api/                 # FastAPI REST Service
-│   │   ├── __init__.py
-│   │   └── main.py          # FastAPI server entrypoint (/predict, /health)
-│   ├── data/                # Dataset & Data Loading
-│   │   ├── __init__.py
-│   │   └── dataset.py       # PyTorch SatelliteWaterDataset & DataLoader
-│   ├── loss.py              # Hybrid Dice-Focal Loss implementation
-│   ├── models.py            # Model factory (UNet++, DeepLabV3+, SegFormer-B2)
-│   ├── train.py             # PyTorch Lightning training pipeline
-│   └── evaluate.py          # Cross-architecture evaluation suite
-├── scripts/                 # MLOps & Optimization Scripts
-│   ├── validate_dataset.py  # Dataset pairing & spatial integrity validator
-│   ├── split_dataset.py     # Reproducible 70/15/15 dataset splitter
-│   ├── export_onnx.py       # PyTorch model weight tracing to ONNX
-│   └── debug_inference.py   # PyTorch vs ONNX runtime parity validator
-├── tests/                   # Pytest Automated Test Suite (35 unit & integration tests)
-│   ├── test_api.py          # FastAPI endpoint integration tests
-│   ├── test_dataset.py      # Dataset loader & pairing unit tests
-│   ├── test_evaluate.py     # Metric computation unit tests
-│   ├── test_models.py       # Model architecture forward-pass tests
-│   ├── test_onnx.py         # ONNX export & parity tests
-│   └── test_train.py        # Lightning module & reproducibility tests
-├── notebooks/               # Research & Analysis Notebooks
-│   └── GeoVision_AI_Segmentation.ipynb
-├── docs/                    # Portfolio Documentation Assets
-│   ├── dataset_report.md    # Detailed dataset audit report
-│   └── images/              # Benchmark charts & screenshots
-├── pytest.ini               # Pytest configurations
-├── requirements.txt         # Project dependencies
-└── README.md                # Project documentation
+    subgraph Serving & UI
+        Checkpoints & ONNX --> API[src/api/main.py<br/>FastAPI Microservice :8000]
+        Checkpoints & ONNX --> UI[app.py<br/>Streamlit UI Dashboard :8501]
+        API --> UI
+    end
 ```
 
 ---
 
-## 🛠️ Technical Highlights
+## 3. Verified Benchmark Results
 
-*   **FastAPI Backend**: Serving high-concurrency predictions using `lifespan` handlers that pre-load serialized ONNX/PyTorch models on startup, avoiding runtime overhead.
-*   **Streamlit Frontend**: Responsive GIS UI demonstrating dynamic RGB alpha-blended segmentation mask overlays, interactive threshold adjustments, and system metrics.
-*   **ONNX Runtime Optimizer**: Converts raw PyTorch models into optimized ONNX computational graphs. Speeds up CPU performance by up to $70\%$ through model graph simplifications.
-*   **OpenCV Preprocessing**: Real-time image normalization (ImageNet standards), spatial scaling, and mask contours post-processing.
-*   **Custom Class-Balanced Loss**: Incorporates a hybrid **Dice-Focal Loss** to mitigate severe class imbalance ($3.58\%$ water vs $96.42\%$ land).
-*   **Robust Testing**: Full coverage for dataset generators, model shapes, and API endpoints using `pytest`.
+All models were evaluated on the identical **54 held-out test patches** ($256 \times 256$, totaling **3,538,944 test pixels** containing 473,646 ground-truth water pixels and 3,065,298 land pixels). Evaluations were executed deterministically at threshold $\tau = 0.50$ (with validation-calibrated $\tau^* = 0.60$ for improved models).
+
+| Model Architecture & Experiment | Model Class | Decision Threshold ($\tau$) | Pixel Accuracy (%) | Water Precision (%) | Water Recall (%) | Macro Dice | Macro IoU | Micro Dice | Micro IoU | True Positives (TP) | False Positives (FP) | False Negatives (FN) | True Negatives (TN) |
+| :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| **UNet++ (Exp1 Baseline)** | Baseline | 0.50 | 89.38% | 76.55% | 29.76% | 0.3032 | 0.2035 | 0.4285 | 0.2727 | 140,936 | 43,163 | 332,710 | 3,022,135 |
+| **DeepLabV3+ (Exp2 Baseline)** | Baseline | 0.50 | 89.47% | 89.70% | 24.07% | 0.2211 | 0.1464 | 0.3795 | 0.2342 | 113,995 | 13,091 | 359,651 | 3,052,207 |
+| **SegFormer-B0 (Exp3 Baseline)** | Baseline | 0.50 | 87.59% | 85.84% | 8.74% | 0.1083 | 0.0615 | 0.1586 | 0.0861 | 41,385 | 6,828 | 432,261 | 3,058,470 |
+| **Improved UNet++ (EXP01 Tversky)** | Improved | 0.50 | 90.64% | 80.37% | 39.75% | 0.3872 | 0.2718 | 0.5319 | 0.3623 | 188,256 | 45,992 | 285,390 | 3,019,306 |
+| **Improved DeepLabV3+ (EXP04 Focal Tversky)** | Improved | 0.50 | 90.22% | 78.57% | 37.05% | 0.3636 | 0.2542 | 0.5036 | 0.3365 | 175,501 | 47,872 | 298,145 | 3,017,426 |
+| **Improved SegFormer-B0 (EXP05 Focal Tversky)** | Improved | 0.50 | 87.03% | 52.51% | 32.75% | 0.3414 | 0.2275 | 0.4034 | 0.2527 | 155,141 | 140,320 | 318,505 | 2,924,978 |
+| **Improved FPN (EXP06 Focal Tversky) — CHAMPION** | **Champion** | **0.50** | **91.56%** | **75.81%** | **54.24%** | **0.4580** | **0.3328** | **0.6323** | **0.4624** | **256,886** | **81,954** | **216,760** | **2,983,344** |
+| **Improved FPN (EXP06 Calibrated)** | Calibrated | 0.60 | 91.56% | 76.45% | 53.35% | 0.4544 | 0.3295 | 0.6284 | 0.4582 | 252,677 | 77,835 | 220,969 | 2,987,463 |
+
+> [!NOTE]
+> Detailed per-image breakdown, statistical distributions, and metric definitions are documented in [`reports/model-evaluation.md`](file:///Users/safalyareddy/Desktop/Projects/GeoVision-AI-Satellite-Water-Body-Segmentation-Platform/reports/model-evaluation.md) and [`reports/benchmark-results.csv`](file:///Users/safalyareddy/Desktop/Projects/GeoVision-AI-Satellite-Water-Body-Segmentation-Platform/reports/benchmark-results.csv).
 
 ---
 
-## 🚀 Installation & Local Setup
+## 4. Visual Evidence & Diagnostics
 
-Ensure you have **Python 3.9+** and a clean virtual environment:
+### Precision-Recall Curves
+Precision-recall dynamics across decision thresholds ($0.10 \le \tau \le 0.90$). The champion FPN model maintains superior recall without steep precision degradation:
 
-### 1. Setup Virtual Environment & Dependencies
+![Precision-Recall Curves](docs/images/precision_recall_curve.png)
+
+### Normalized Confusion Matrices
+Pixel-level confusion matrices demonstrating the progressive reduction of false negative water pixels:
+
+![Confusion Matrices](docs/images/confusion_matrices.png)
+
+### Segmentation Sample (Patch 0010 — Inland Lake & Estuary)
+Sample prediction illustrating high-fidelity shoreline extraction:
+
+![Prediction Sample](docs/images/prediction_overlay_sample.png)
+
+---
+
+## 5. Technology Stack
+
+- **Machine Learning**: PyTorch 2.x, PyTorch Lightning, Segmentation Models PyTorch (SMP), Transformers (Hugging Face).
+- **Optimization & Export**: ONNX Runtime (CPU execution provider, Opset 17).
+- **Inference & Serving API**: FastAPI, Uvicorn, Pydantic, HTTPX.
+- **Frontend Dashboard**: Streamlit, PIL, Matplotlib.
+- **Testing & Code Quality**: Pytest (45 unit and integration tests), pre-commit hooks.
+- **Containerization & CI**: Docker, Docker Compose, GitHub Actions.
+
+---
+
+## 6. Installation & Quickstart
+
+### Prerequisites
+- Python 3.10 or 3.11
+- Git
+
+### Local Setup
 ```bash
-# Set executable and run install script
-chmod +x install.sh
-./install.sh
+# 1. Clone the repository
+git clone https://github.com/safalyareddy/GEOVISION_AI.git
+cd GEOVISION_AI
 
-# Activate the virtual environment
+# 2. Create and activate a virtual environment
+python3 -m venv venv
 source venv/bin/activate
+
+# 3. Install CPU PyTorch wheels and dependencies
+pip install --upgrade pip
+pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
+pip install -r requirements.txt
+
+# 4. Run the full automated test suite
+PYTHONPATH=. pytest tests/ -v
 ```
 
-### 2. Dataset Initialization
-Initialize the Kaggle Sentinel-2 dataset workspace split and compile the statistical data report:
+---
+
+## 7. Execution
+
+### 1. Launch FastAPI Microservice
 ```bash
-PYTHONPATH=. python scripts/prepare_dataset.py
+uvicorn src.api.main:app --host 0.0.0.0 --port 8000 --reload
 ```
-This splits data into `dataset/train/`, `dataset/val/`, and `dataset/test/` partitions and compiles `dataset_report.md`.
+Interactive API documentation:
+- Swagger UI: `http://localhost:8000/docs`
+- ReDoc: `http://localhost:8000/redoc`
 
----
-
-## ⚡ Running the Application
-
-The application is run as a microservice architecture. Make sure you activate `venv` in both terminals:
-
-### 1. Launch FastAPI Backend Service
+Test health endpoint:
 ```bash
-PYTHONPATH=. uvicorn src.api.main:app --host 127.0.0.1 --port 8000
+curl http://localhost:8000/health
 ```
-*   **Swagger API Docs**: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
-*   **Service Root**: [http://127.0.0.1:8000/](http://127.0.0.1:8000/)
 
-### 2. Launch Streamlit UI Dashboard
+Run test inference via curl:
 ```bash
-streamlit run app.py
+curl -X POST "http://localhost:8000/predict" \
+     -F "file=@dataset/test/images/patch_0047.png" \
+     -F "model_name=fpn" \
+     -F "threshold=0.5"
 ```
-*   **Dashboard URL**: [http://localhost:8501](http://localhost:8501)
 
----
-
-## 🐳 Docker Orchestration
-
-To run containerized versions of the API backend and UI dashboard locally without manual Python setup:
+### 2. Launch Streamlit Interactive Dashboard
 ```bash
-# Start all containers in the background
-docker-compose up --build
+streamlit run app.py --server.port 8501
 ```
-*   **Backend REST API**: `http://localhost:8000`
-*   **Frontend Dashboard**: `http://localhost:8501`
+Navigate to `http://localhost:8501` to upload satellite tiles, toggle architectures, tune the decision threshold slider, and compare model outputs.
 
 ---
 
-## 🔬 Mathematical Loss Definition
+## 8. Docker Deployment
 
-To handle class imbalance (Sentinel-2 frames contain vast landmasses and sparse water basins), the platform trains models using a joint **Dice-Focal Loss**:
+### Run with Docker
+```bash
+# Build unified container
+docker build -t geovision-ai:latest .
 
-$$\mathcal{L}_{\text{total}} = \alpha \mathcal{L}_{\text{Dice}} + \beta \mathcal{L}_{\text{Focal}}$$
+# Run FastAPI service
+docker run -p 8000:8000 geovision-ai:latest
+```
 
-Where:
-*   $\mathcal{L}_{\text{Dice}} = 1 - \frac{2 \sum p_i g_i + \epsilon}{\sum p_i^2 + \sum g_i^2 + \epsilon}$
-*   $\mathcal{L}_{\text{Focal}} = -\alpha (1-p_i)^\gamma \log(p_i)$
-
----
-
-## 📊 Model Benchmarks & Scientific Evaluation
-
-### Evaluation Protocol & Hardware Specifications
-* **Hardware Platform**: Apple Silicon M4 (16 GB Unified Memory) / CPU Execution
-* **Input Resolution**: $256 \times 256$ RGB (pixel values scaled to $[0, 1]$)
-* **Latency & Throughput Benchmark**: Single-frame inference (batch size = 1), 5 warm-up iterations, 20 measurement repetitions measured via `time.perf_counter()`
-* **Accuracy Evaluation**: Evaluated across 54 in-domain validation tiles and 54 frozen held-out test tiles, batch size = 4, decision threshold $\tau = 0.50$, Laplace smoothing $\epsilon = 10^{-6}$
-
-### 1. In-Domain Validation Split Performance (`dataset/val`, 54 tiles)
-
-| Model Architecture | Backbone Encoder | Val Dice | Val IoU | Val Precision | Val Recall | Parameters | Weights Size |
-| :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
-| **UNet++** (Trained) | ResNet-34 | **0.8187** | **0.7431** | **0.9219** | **0.7952** | 26.08M | 99.68 MB |
-| **DeepLabV3+** | ResNet-34 | 0.2817 | 0.1639 | 0.2042 | 0.4538 | 22.44M | 85.59 MB |
-| **SegFormer-B2** | MiT-B2 | 0.1621 | 0.0882 | 0.3008 | 0.1110 | 27.35M | 104.32 MB |
-
-### 2. Held-Out Test Generalization & Latency Benchmark (`dataset/test`, 54 tiles)
-
-| Model Architecture | Test Dice | Test IoU | Test Precision | Test Recall | CPU Latency | Throughput | Failure Analysis / Notes |
-| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :--- |
-| **UNet++** (Trained) | **0.1906** | **0.1131** | **0.3603** | 0.1854 | 90.05 ms | 11.1 FPS | Selective (2.68M TN); suffers from turbid coastal water blue reflectance shift (+31.5%). |
-| **DeepLabV3+** | 0.2124 | 0.1338 | 0.1338 | 1.0000 | 40.02 ms | 25.0 FPS | Degenerate all-foreground collapse (Recall = 1.0; Precision matches 13.38% prior). |
-| **SegFormer-B2** | 0.2149 | 0.1356 | 0.1356 | 0.9992 | 231.64 ms | 4.3 FPS | Degenerate all-foreground collapse (Recall = 0.9992; Precision matches 13.56% prior). |
-
-* Detailed cross-split diagnostics, spectral contrast analysis, and the remediation roadmap are documented in [`reports/heldout_test_evaluation.md`](file:///Users/safalyareddy/Desktop/Projects/GeoVision-AI-Satellite-Water-Body-Segmentation-Platform/reports/heldout_test_evaluation.md).
-
+### Run Multi-Container Stack (API + UI)
+```bash
+docker compose up -d --build
+```
+- API accessible at `http://localhost:8000`
+- UI accessible at `http://localhost:8501`
 
 ---
 
-## 🔮 Future Improvements
+## 9. Model Checkpoints & Acquisition
 
-1.  **Multi-Spectral Support**: Incorporate Near-Infrared (NIR) Band-8 sentinel data to compute NDWI index layers.
-2.  **Model Quantization**: Deploy INT8 quantized ONNX graphs to support web-assembly runtime edge deployments.
-3.  **Spatio-Temporal Tracking**: Build ConvLSTM recurrence layers to track coastline shifts and river expansions over years.
+Model weights are saved as PyTorch state dictionaries (`.pth`). Checkpoint checksums and architectures are listed below:
 
----
+| Architecture | Experiment ID | Checkpoint File | Size | SHA-256 Checksum |
+| :--- | :--- | :--- | :---: | :--- |
+| **FPN (Champion)** | EXP06 | `EXP06_FPN_FocalTversky_best.pth` | 88.5 MB | `d21fa18c36beabdb0b139364d347a6e97c1cc00e83e9ba92630e9a7795119eb1` |
+| **UNet++ (Improved)** | EXP01 | `EXP01_UNetPlusPlus_Tversky_best.pth` | 99.7 MB | `497e246ef79d87f3b2255cc119e7ab8bd0045d48caf3d4710e9f6738e56c4548` |
+| **DeepLabV3+ (Improved)** | EXP04 | `EXP04_DeepLabV3Plus_FocalTversky_best.pth` | 85.8 MB | `6c7c6dd4835d29be34b9eda03bdfca878914749a526c44cade99906cc1b1b827` |
+| **UNet++ (Baseline)** | Baseline | `unet_plusplus_best.pth` | 99.7 MB | `e9ac1bed148e6f3e8926d9008fd3fe6ad490ff8ed1dee6d79b96134ef8712c9b` |
 
-## 🤝 Contributing
-
-Contributions are welcome! Please follow these guidelines:
-1.  Fork the Project.
-2.  Create your Feature Branch (`git checkout -b feature/AmazingFeature`).
-3.  Commit your Changes (`git commit -m 'Add some AmazingFeature'`).
-4.  Push to the Branch (`git push origin feature/AmazingFeature`).
-5.  Open a Pull Request.
-
----
-
-## 📜 License
-
-Distributed under the MIT License. See [LICENSE](LICENSE) for more information.
+To obtain trained model weights:
+```bash
+# Weights can be downloaded from the release tag or Hugging Face model repository
+# Place the .pth files into the checkpoints/ directory
+mkdir -p checkpoints
+```
 
 ---
 
-## ✍️ Author
+## 10. Limitations & Engineering Scope
 
-**Safalya Reddy**
-*   GitHub: [@safalyareddy](https://github.com/safalyareddy)
-*   Email: [safalya.reddy@gmail.com](mailto:safalya.reddy@gmail.com)
+1. **Geographic Distribution**: The benchmark dataset consists of regional Sentinel-2 optical scenes. Performance may vary across unseen geographic domains (e.g., glacial regions, arid salinas, heavy shadow). Universal generalization is not claimed without regional fine-tuning.
+2. **Optical Sensor Constraints**: Cloud cover, dense haze, and sun glint impede optical surface reflectance. Operational remote sensing in production typically pairs optical imagery with Synthetic Aperture Radar (SAR, Sentinel-1) or multi-spectral indices (MNDWI).
+3. **Physical Area Estimation**: The computed water surface area ($\text{km}^2$) assumes nominal Sentinel-2 10m Ground Sample Distance ($100 \text{ m}^2/\text{pixel}$). This serves as an unreferenced approximation when uploaded imagery lacks embedded geospatial CRS or GeoTIFF metadata.
+
+---
+
+## 11. License
+
+This project is licensed under the [MIT License](file:///Users/safalyareddy/Desktop/Projects/GeoVision-AI-Satellite-Water-Body-Segmentation-Platform/LICENSE).

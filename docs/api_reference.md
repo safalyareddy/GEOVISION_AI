@@ -38,7 +38,8 @@ Lists supported architectures.
   "supported_models": {
     "unet_plusplus": "UNet++ (Nested UNet for multi-scale feature fusion)",
     "deeplabv3_plus": "DeepLabV3+ (Atrous Spatial Pyramid Pooling)",
-    "segformer": "SegFormer-B2 (Lightweight Vision Transformer for Segmentation)"
+    "segformer": "SegFormer-B2 (Lightweight Vision Transformer for Segmentation)",
+    "fpn": "Feature Pyramid Network (Multi-scale feature pyramid for thin streams and boundaries)"
   },
   "default_model": "unet_plusplus"
 }
@@ -49,7 +50,7 @@ Uploads a satellite image tile and returns the segmentation mask and metrics.
 * **Content-Type**: `multipart/form-data`
 * **Parameters**:
   * `file`: Binary image file (`PNG`, `JPEG`, `TIFF`, max 10 MB)
-  * `model_name`: `unet_plusplus` | `deeplabv3_plus` | `segformer`
+  * `model_name`: `unet_plusplus` | `deeplabv3_plus` | `segformer` | `fpn`
   * `threshold`: Float between `0.0` and `1.0` (default: `0.5`)
 * **Response (`200 OK`)**:
 ```json

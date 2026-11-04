@@ -1,0 +1,11 @@
+model_name,display_name,model_type,threshold,pixel_accuracy,water_precision,water_recall,macro_dice,macro_iou,micro_dice,micro_iou,tp,fp,fn,tn
+unet_plusplus,"UNet++ (Exp1 Baseline)",baseline,0.50,0.8938,0.7655,0.2976,0.3032,0.2035,0.4285,0.2727,140936,43163,332710,3022135
+deeplabv3_plus,"DeepLabV3+ (Exp2 Baseline)",baseline,0.50,0.8947,0.8970,0.2407,0.2211,0.1464,0.3795,0.2342,113995,13091,359651,3052207
+segformer,"SegFormer-B0 (Exp3 Baseline)",baseline,0.50,0.8759,0.8584,0.0874,0.1083,0.0615,0.1586,0.0861,41385,6828,432261,3058470
+unet_plusplus,"Improved UNet++ (EXP01 Tversky)",improved,0.50,0.9064,0.8037,0.3975,0.3872,0.2718,0.5319,0.3623,188256,45992,285390,3019306
+unet_plusplus,"Improved UNet++ (EXP01 Calibrated)",calibrated,0.60,0.9060,0.8076,0.3912,0.3835,0.2686,0.5271,0.3578,185289,44151,288357,3021147
+deeplabv3_plus,"Improved DeepLabV3+ (EXP04 Focal Tversky)",improved,0.50,0.9022,0.7857,0.3705,0.3636,0.2542,0.5036,0.3365,175501,47872,298145,3017426
+deeplabv3_plus,"Improved DeepLabV3+ (EXP04 Calibrated)",calibrated,0.60,0.9015,0.7952,0.3554,0.3542,0.2466,0.4913,0.3256,168339,43347,305307,3021951
+segformer,"Improved SegFormer-B0 (EXP05 Focal Tversky)",improved,0.50,0.8703,0.5251,0.3275,0.3414,0.2275,0.4034,0.2527,155141,140320,318505,2924978
+fpn,"Improved FPN (EXP06 Focal Tversky - CHAMPION)",champion,0.50,0.9156,0.7581,0.5424,0.4580,0.3328,0.6323,0.4624,256886,81954,216760,2983344
+fpn,"Improved FPN (EXP06 Calibrated)",calibrated,0.60,0.9156,0.7645,0.5335,0.4544,0.3295,0.6284,0.4582,252677,77835,220969,2987463
