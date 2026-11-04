@@ -82,7 +82,7 @@ Services configured in `docker-compose.yml`:
 3. **Model Checkpoint Management on Spaces**:
    - Since large model binaries (`.pth`) are gitignored to maintain a lightweight repository, `src/utils/model_registry.py` provides an automated download mechanism.
    - When the container boots, `docker/entrypoint.sh` checks for the champion FPN model (`fpn_best.pth`).
-   - If not found locally, it automatically downloads from the Hugging Face Model Hub (configured via `GEOVISION_HF_REPO`, default `safalyareddy/geovision-water-segmentation-models`).
+   - If not found locally, it automatically downloads from the Hugging Face Model Hub (configured via `GEOVISION_HF_REPO`, default `safalya06/geovision-water-segmentation-models`).
    - Cryptographic SHA-256 validation (`d21fa18c36beabdb0b139364d347a6e97c1cc00e83e9ba92630e9a7795119eb1`) ensures bitwise model authenticity.
 
 4. **Git Remote Setup & Deployment**:

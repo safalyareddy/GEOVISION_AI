@@ -25,7 +25,7 @@ logger = logging.getLogger("geovision.model_registry")
 
 # Global Settings & Pinned Defaults
 CHAMPION_MODEL = "fpn"
-DEFAULT_HF_REPO = os.getenv("GEOVISION_HF_REPO", "safalyareddy/geovision-water-segmentation-models")
+DEFAULT_HF_REPO = os.getenv("GEOVISION_HF_REPO", "safalya06/geovision-water-segmentation-models")
 DEFAULT_HF_REVISION = os.getenv("GEOVISION_HF_REVISION", "main")
 
 # Canonical Model Metadata & Verified Checksums
