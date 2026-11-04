@@ -177,3 +177,38 @@ def test_predict_endpoint_oversized_file():
     )
     assert response.status_code == 413
     assert "exceeds maximum size limit" in response.json()["detail"].lower()
+
+
+@pytest.mark.skipif(not HAS_TESTCLIENT, reason="FastAPI TestClient required for API tests.")
+def test_predict_endpoint_champion_fpn():
+    """Test prediction endpoint with champion FPN model."""
+    client = TestClient(app)
+    img = Image.new("RGB", (64, 64), color="blue")
+    buf = io.BytesIO()
+    img.save(buf, format="PNG")
+    buf.seek(0)
+
+    response = client.post(
+        "/predict",
+        files={"file": ("test_s2.png", buf, "image/png")},
+        data={"model_name": "fpn", "threshold": 0.5}
+    )
+    assert response.status_code == 200
+    data = response.json()
+    assert data["model_name"] == "fpn"
+    assert "water_coverage_percentage" in data
+    assert "latency_ms" in data
+    assert "mask_base64" in data
+
+
+@pytest.mark.skipif(not HAS_TESTCLIENT, reason="FastAPI TestClient required for API tests.")
+def test_models_endpoint_reports_champion_readiness():
+    """Test that /models returns champion status and readiness details."""
+    client = TestClient(app)
+    response = client.get("/models")
+    assert response.status_code == 200
+    data = response.json()
+    assert data["champion_model"] == "fpn"
+    assert "models_status" in data
+    assert "fpn" in data["models_status"]
+    assert data["models_status"]["fpn"]["is_champion"] is True

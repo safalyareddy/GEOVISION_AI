@@ -1,3 +1,13 @@
+---
+title: GeoVision AI Water Segmentation
+emoji: 🌊
+colorFrom: blue
+colorTo: cyan
+sdk: docker
+app_port: 7860
+pinned: false
+---
+
 # GeoVision AI — Satellite Water Body Segmentation Platform
 
 A modular computer vision platform for high-resolution surface water detection, segmentation, and hydrological surface area quantification from optical satellite imagery (Sentinel-2).
@@ -8,8 +18,8 @@ A modular computer vision platform for high-resolution surface water detection, 
 
 Automated water body detection from optical remote sensing imagery is a critical capability for flood monitoring, reservoir storage tracking, and drought assessment. However, applying standard deep learning segmentation models directly to satellite tiles reveals fundamental technical challenges:
 
-1. **Extreme Class Imbalance**: In optical satellite imagery, land dominates over water. In our Sentinel-2 dataset, water covers only **4.22%** of all pixels across the dataset (a **24.7:1 land-to-water ratio**).
-2. **The Accuracy Paradox**: Under severe imbalance, a trivial classifier predicting all background achieves **86.6% to 89.5% pixel accuracy** while capturing **0% to 24% of actual water bodies**, completely failing as a detection system.
+1. **Extreme Class Imbalance**: In optical satellite imagery, land dominates over surface water. In our Sentinel-2 benchmark dataset, water coverage across splits is: **3.89%** in train (306 tiles), **5.51%** in validation (54 tiles), and **13.38%** in the held-out test split (54 tiles), resulting in **4.13%** across the training/validation pool and **5.34%** overall across all 414 tiles (an overall 17.7:1 land-to-water ratio).
+2. **The Accuracy Paradox**: Under severe imbalance, a trivial classifier predicting all background achieves **86.62% pixel accuracy** on the held-out test split (3,065,298 / 3,538,944 land pixels) while capturing **0.0% of genuine water bodies**, completely failing as a detection system.
 3. **Fine-Boundary & Thin-Stream Degradation**: Standard segmentation decoders (such as ASPP in DeepLabV3+ or downsampled Transformer patches in SegFormer) lose narrow river tributaries and coastal boundaries through successive spatial pooling.
 
 GeoVision AI evaluates multi-architecture segmentation models (**Feature Pyramid Networks (FPN)**, **UNet++**, **DeepLabV3+**, **SegFormer**), diagnoses systematic false negatives, and implements asymmetric recall-prioritized loss functions (**Tversky Loss** and **Focal Tversky Loss**) to achieve balanced precision and recall.
@@ -51,7 +61,7 @@ graph TD
 
 ## 3. Verified Benchmark Results
 
-All models were evaluated on the identical **54 held-out test patches** ($256 \times 256$, totaling **3,538,944 test pixels** containing 473,646 ground-truth water pixels and 3,065,298 land pixels). Evaluations were executed deterministically at threshold $\tau = 0.50$ (with validation-calibrated $\tau^* = 0.60$ for improved models).
+All models were evaluated on the identical **54 held-out test patches** ($256 \times 256$, totaling **3,538,944 test pixels** containing 473,646 ground-truth water pixels and 3,065,298 land pixels). Evaluations were executed deterministically at frozen baseline threshold $\tau = 0.50$ (with validation-only calibrated threshold $\tau^* = 0.60$ tuned strictly on the 54 validation patches to assess threshold generalization).
 
 | Model Architecture & Experiment | Model Class | Decision Threshold ($\tau$) | Pixel Accuracy (%) | Water Precision (%) | Water Recall (%) | Macro Dice | Macro IoU | Micro Dice | Micro IoU | True Positives (TP) | False Positives (FP) | False Negatives (FN) | True Negatives (TN) |
 | :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
@@ -65,7 +75,7 @@ All models were evaluated on the identical **54 held-out test patches** ($256 \t
 | **Improved FPN (EXP06 Calibrated)** | Calibrated | 0.60 | 91.56% | 76.45% | 53.35% | 0.4544 | 0.3295 | 0.6284 | 0.4582 | 252,677 | 77,835 | 220,969 | 2,987,463 |
 
 > [!NOTE]
-> Detailed per-image breakdown, statistical distributions, and metric definitions are documented in [`reports/model-evaluation.md`](file:///Users/safalyareddy/Desktop/Projects/GeoVision-AI-Satellite-Water-Body-Segmentation-Platform/reports/model-evaluation.md) and [`reports/benchmark-results.csv`](file:///Users/safalyareddy/Desktop/Projects/GeoVision-AI-Satellite-Water-Body-Segmentation-Platform/reports/benchmark-results.csv).
+> Detailed per-image breakdown, statistical distributions, and metric definitions are documented in [`reports/model-evaluation.md`](reports/model-evaluation.md) and [`reports/benchmark-results.csv`](reports/benchmark-results.csv).
 
 ---
 
@@ -94,7 +104,7 @@ Sample prediction illustrating high-fidelity shoreline extraction:
 - **Optimization & Export**: ONNX Runtime (CPU execution provider, Opset 17).
 - **Inference & Serving API**: FastAPI, Uvicorn, Pydantic, HTTPX.
 - **Frontend Dashboard**: Streamlit, PIL, Matplotlib.
-- **Testing & Code Quality**: Pytest (45 unit and integration tests), pre-commit hooks.
+- **Testing & Code Quality**: Pytest (54 unit, integration, and security tests), pre-commit hooks.
 - **Containerization & CI**: Docker, Docker Compose, GitHub Actions.
 
 ---
@@ -157,43 +167,49 @@ Navigate to `http://localhost:8501` to upload satellite tiles, toggle architectu
 
 ---
 
-## 8. Docker Deployment
+## 8. Docker & Cloud Deployment
 
-### Run with Docker
+### Run Unified Container (Hugging Face Spaces & Local Docker)
+The root `Dockerfile` provides a containerized environment conforming to the **Hugging Face Docker Space SDK**:
+- Non-root user execution (`UID 1000`, `appuser`).
+- Process supervision via `docker/entrypoint.sh` running FastAPI on internal port `8000` and Streamlit on public port `7860`.
+- Cryptographic SHA-256 validation of model checkpoints with automatic Hugging Face Model Hub download.
+
 ```bash
-# Build unified container
+# 1. Build unified production container
 docker build -t geovision-ai:latest .
 
-# Run FastAPI service
-docker run -p 8000:8000 geovision-ai:latest
+# 2. Run container (Streamlit UI exposed on port 7860)
+docker run -p 7860:7860 geovision-ai:latest
 ```
+Navigate to `http://localhost:7860` for the interactive dashboard.
 
-### Run Multi-Container Stack (API + UI)
+### Run Multi-Container Stack (Docker Compose)
+For local microservice development:
 ```bash
 docker compose up -d --build
 ```
-- API accessible at `http://localhost:8000`
-- UI accessible at `http://localhost:8501`
+- FastAPI microservice: `http://localhost:8000`
+- Streamlit dashboard: `http://localhost:8501`
 
 ---
 
-## 9. Model Checkpoints & Acquisition
+## 9. Model Checkpoints & Cryptographic Verification
 
-Model weights are saved as PyTorch state dictionaries (`.pth`). Checkpoint checksums and architectures are listed below:
+Model weights are saved as PyTorch state dictionaries (`.pth`). Checkpoint checksums and architectures are cataloged in `src/utils/model_registry.py`:
 
-| Architecture | Experiment ID | Checkpoint File | Size | SHA-256 Checksum |
+| Architecture | Status | Checkpoint File | Size | SHA-256 Cryptographic Checksum |
 | :--- | :--- | :--- | :---: | :--- |
-| **FPN (Champion)** | EXP06 | `EXP06_FPN_FocalTversky_best.pth` | 88.5 MB | `d21fa18c36beabdb0b139364d347a6e97c1cc00e83e9ba92630e9a7795119eb1` |
-| **UNet++ (Improved)** | EXP01 | `EXP01_UNetPlusPlus_Tversky_best.pth` | 99.7 MB | `497e246ef79d87f3b2255cc119e7ab8bd0045d48caf3d4710e9f6738e56c4548` |
-| **DeepLabV3+ (Improved)** | EXP04 | `EXP04_DeepLabV3Plus_FocalTversky_best.pth` | 85.8 MB | `6c7c6dd4835d29be34b9eda03bdfca878914749a526c44cade99906cc1b1b827` |
+| **FPN (Champion)** | 🏆 Champion | `fpn_best.pth` | 88.5 MB | `d21fa18c36beabdb0b139364d347a6e97c1cc00e83e9ba92630e9a7795119eb1` |
+| **UNet++ (Improved)** | Baseline/Improved | `unet_plusplus_best.pth` | 99.7 MB | `497e246ef79d87f3b2255cc119e7ab8bd0045d48caf3d4710e9f6738e56c4548` |
+| **DeepLabV3+ (Improved)** | Improved | `deeplabv3_plus_best.pth` | 85.8 MB | `6c7c6dd4835d29be34b9eda03bdfca878914749a526c44cade99906cc1b1b827` |
 | **UNet++ (Baseline)** | Baseline | `unet_plusplus_best.pth` | 99.7 MB | `e9ac1bed148e6f3e8926d9008fd3fe6ad490ff8ed1dee6d79b96134ef8712c9b` |
 
-To obtain trained model weights:
-```bash
-# Weights can be downloaded from the release tag or Hugging Face model repository
-# Place the .pth files into the checkpoints/ directory
-mkdir -p checkpoints
-```
+### Model Acquisition & Safety Guarantees
+1. **Local Weights**: Place `.pth` files in `checkpoints/` (e.g. `checkpoints/fpn_best.pth`).
+2. **Automated Hub Download**: If checkpoints are absent locally, `src/utils/model_registry.py` automatically downloads from Hugging Face Hub (configurable via `GEOVISION_HF_REPO` and `GEOVISION_HF_REVISION`).
+3. **Cryptographic Validation**: Checksums are computed in 64 KB blocks and verified prior to deserialization. Corrupted or unverified weights are rejected.
+4. **Zero-Uninitialized Policy**: Inference with randomly initialized weights is strictly prohibited. If weights cannot be verified, endpoints return HTTP 503 with explicit acquisition instructions.
 
 ---
 
@@ -207,4 +223,4 @@ mkdir -p checkpoints
 
 ## 11. License
 
-This project is licensed under the [MIT License](file:///Users/safalyareddy/Desktop/Projects/GeoVision-AI-Satellite-Water-Body-Segmentation-Platform/LICENSE).
+This project is licensed under the [MIT License](LICENSE).

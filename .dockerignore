@@ -4,7 +4,6 @@ venv/
 env/
 .venv/
 dataset/
-checkpoints/
 logs/
 reports/
 notebooks/
@@ -33,3 +32,9 @@ htmlcov/
 *.key
 *.pem
 *.crt
+archive_historical/
+experiments/
+PROJECT_FILE_CLASSIFICATION.csv
+checkpoints/*
+!checkpoints/fpn_best.pth
+!checkpoints/.gitkeep

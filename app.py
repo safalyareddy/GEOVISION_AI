@@ -38,6 +38,12 @@ except ImportError:
     HAS_ONNX = False
 
 from src.models import build_model, SUPPORTED_MODELS
+from src.utils.model_registry import (
+    load_verified_model,
+    is_model_available,
+    get_model_status_summary,
+    CHAMPION_MODEL
+)
 
 DEFAULT_API_URL = os.environ.get("API_URL", "http://localhost:8000")
 
@@ -53,36 +59,8 @@ if HAS_STREAMLIT:
 # Model Caching Helpers
 @st.cache_resource if HAS_STREAMLIT else (lambda f: f)
 def load_pytorch_model(model_name: str):
-    """Load and cache PyTorch segmentation model."""
-    model = build_model(model_name=model_name)
-    # Resolve checkpoint: prefer latest 2026 validated improvements, fall back gracefully
-    candidate_paths = [
-        Path("experiments/2026_water_segmentation_improvement/checkpoints/EXP06_FPN_FocalTversky_best.pth") if model_name == "fpn" else None,
-        Path("experiments/2026_water_segmentation_improvement/checkpoints/EXP01_UNetPlusPlus_Tversky_best.pth") if model_name == "unet_plusplus" else None,
-        Path("experiments/2026_water_segmentation_improvement/checkpoints/EXP04_DeepLabV3Plus_FocalTversky_best.pth") if model_name == "deeplabv3_plus" else None,
-        Path("experiments/2026_water_segmentation_improvement/checkpoints/EXP05_SegFormer_FocalTversky_best.pth") if model_name == "segformer" else None,
-        Path(f"checkpoints/experiments/round3/{model_name}_r3_multiscale.pth"),
-        Path(f"checkpoints/experiments/round2/{model_name}_r2.pth"),
-        Path(f"checkpoints/experiments/{model_name}_exp1.pth"),
-        Path(f"checkpoints/experiments/{model_name}_exp2.pth"),
-        Path(f"checkpoints/experiments/{model_name}_exp3.pth"),
-        Path(f"checkpoints/{model_name}_best.pth")
-    ]
-    candidate_paths = [p for p in candidate_paths if p is not None]
-    ckpt_path = next((p for p in candidate_paths if p.exists()), Path(f"checkpoints/{model_name}_best.pth"))
-    if ckpt_path.exists():
-        try:
-            state = torch.load(str(ckpt_path), map_location="cpu", weights_only=True)
-            if isinstance(state, dict) and "state_dict" in state:
-                state = state["state_dict"]
-            try:
-                model.load_state_dict(state, strict=True)
-            except Exception:
-                model.load_state_dict(state, strict=False)
-        except Exception as e:
-            st.warning(f"Could not load checkpoint '{ckpt_path}': {e}")
-    model.eval()
-    return model
+    """Load and cache verified PyTorch segmentation model, strictly preventing uninitialized weights."""
+    return load_verified_model(model_name=model_name, device="cpu")
 
 
 @st.cache_resource if HAS_STREAMLIT else (lambda f: f)
@@ -189,15 +167,31 @@ def main():
     # Sidebar
     st.sidebar.header("⚙️ Inference Configuration")
 
+    model_status = get_model_status_summary()
+    model_options = [CHAMPION_MODEL] + [m for m in ["unet_plusplus", "deeplabv3_plus", "segformer"] if m != CHAMPION_MODEL]
+
+    def format_model(name: str) -> str:
+        info = model_status.get(name, {})
+        is_champ = info.get("is_champion", False)
+        avail = info.get("available", False)
+        names = {
+            "fpn": "Feature Pyramid Network (FPN)",
+            "unet_plusplus": "UNet++ (ResNet-34)",
+            "deeplabv3_plus": "DeepLabV3+ (ResNet-34)",
+            "segformer": "SegFormer-B0 (Transformer)"
+        }
+        base = names.get(name, name)
+        if is_champ and avail:
+            return f"{base} — 🏆 Champion (Weights Ready)"
+        elif avail:
+            return f"{base} — (Weights Ready)"
+        else:
+            return f"{base} — (Weights Missing)"
+
     model_choice = st.sidebar.selectbox(
         "Select Model Architecture",
-        options=["unet_plusplus", "deeplabv3_plus", "segformer", "fpn"],
-        format_func=lambda x: {
-            "unet_plusplus": "UNet++ (ResNet34)",
-            "deeplabv3_plus": "DeepLabV3+ (ResNet34)",
-            "segformer": "SegFormer-B0 (Vision Transformer)",
-            "fpn": "Feature Pyramid Network (FPN Multi-Scale — Round 3 Winner)"
-        }[x]
+        options=model_options,
+        format_func=format_model
     )
 
     threshold = st.sidebar.slider(
@@ -206,7 +200,7 @@ def main():
         max_value=0.90,
         value=0.50,
         step=0.05,
-        help="Probability threshold above which a pixel is classified as surface water."
+        help="Probability threshold above which a pixel is classified as surface water. Benchmark calibrated threshold is 0.50 (with 0.60 for high-precision scenarios)."
     )
 
     backend = st.sidebar.radio(
@@ -224,8 +218,10 @@ def main():
     st.sidebar.info(
         "**Sentinel-2 Imagery**: 10m spatial resolution\n\n"
         "• Total Split Samples: 414\n"
-        "• Train: 306 | Val: 54 | Test: 54\n"
-        "• Class Ratio: 95.78% Land / 4.22% Water"
+        "• Train: 306 (3.89% water)\n"
+        "• Val: 54 (5.51% water)\n"
+        "• Test: 54 (13.38% water)\n"
+        "• Overall: 5.34% Water / 94.66% Land"
     )
 
     # Main Dashboard Tabs
@@ -255,78 +251,98 @@ def main():
             if sample_msk_path.exists():
                 gt_mask = Image.open(sample_msk_path).convert("L")
 
-        if image is not None:
-            mask_img, binary_mask, latency_ms = run_inference(image, model_choice, threshold, backend, api_url=api_url)
-            overlay_img = create_overlay(image, mask_img)
-
-            # Calculate water coverage
-            water_pixels = int(np.sum(binary_mask > 0))
-            total_pixels = int(binary_mask.size)
-            water_coverage_pct = (water_pixels / total_pixels) * 100.0
-
-            # Estimate physical area (10m x 10m per pixel for Sentinel-2 = 100 m^2)
-            water_area_km2 = (water_pixels * 100) / 1e6
-
-            st.markdown("---")
-            # Metric Callouts
-            m1, m2, m3, m4 = st.columns(4)
-            m1.metric("Predicted Water Coverage", f"{water_coverage_pct:.2f}%")
-            m2.metric(
-                "Estimated Water Area",
-                f"{water_area_km2:.3f} km²",
-                help="Nominal physical area assuming Sentinel-2 10m GSD (100 m²/px). Unreferenced approximation when geospatial CRS/GeoTIFF metadata is not present."
+        model_ready = is_model_available(model_choice)
+        if not model_ready and "FastAPI" not in backend:
+            st.warning(
+                f"⚠️ Trained weights for **{model_choice}** are not loaded locally. "
+                "Inference with uninitialized weights is strictly prevented to avoid invalid predictions. "
+                "Please select the Champion FPN model or provide verified weights."
             )
-            m3.metric("Inference Latency", f"{latency_ms:.2f} ms")
-            m4.metric("Active Backend", backend)
 
-            st.markdown("---")
-            # Visual Grid
-            if gt_mask is not None:
-                c1, c2, c3, c4 = st.columns(4)
-                c1.image(image, caption="Satellite Input Image", use_column_width=True)
-                c2.image(gt_mask, caption="Ground Truth Mask", use_column_width=True)
-                c3.image(mask_img, caption=f"Predicted Mask (Thresh={threshold})", use_column_width=True)
-                c4.image(overlay_img, caption="Segmentation Overlay", use_column_width=True)
-            else:
-                c1, c2, c3 = st.columns(3)
-                c1.image(image, caption="Satellite Input Image", use_column_width=True)
-                c2.image(mask_img, caption=f"Predicted Mask (Thresh={threshold})", use_column_width=True)
-                c3.image(overlay_img, caption="Segmentation Overlay", use_column_width=True)
+        if image is not None and (model_ready or "FastAPI" in backend):
+            try:
+                mask_img, binary_mask, latency_ms = run_inference(image, model_choice, threshold, backend, api_url=api_url)
+            except Exception as e:
+                st.error(f"Inference execution failed: {e}")
+                mask_img = None
+
+            if mask_img is not None:
+                overlay_img = create_overlay(image, mask_img)
+
+                # Calculate water coverage
+                water_pixels = int(np.sum(binary_mask > 0))
+                total_pixels = int(binary_mask.size)
+                water_coverage_pct = (water_pixels / total_pixels) * 100.0
+
+                # Estimate physical area (10m x 10m per pixel for Sentinel-2 = 100 m^2)
+                water_area_km2 = (water_pixels * 100) / 1e6
+
+                st.markdown("---")
+                # Metric Callouts
+                m1, m2, m3, m4 = st.columns(4)
+                m1.metric("Predicted Water Coverage", f"{water_coverage_pct:.2f}%")
+                m2.metric(
+                    "Estimated Water Area",
+                    f"{water_area_km2:.3f} km²",
+                    help="Nominal physical area assuming Sentinel-2 10m GSD (100 m²/px). Unreferenced approximation when geospatial CRS/GeoTIFF metadata is not present."
+                )
+                m3.metric("Inference Latency", f"{latency_ms:.2f} ms")
+                m4.metric("Active Backend", backend)
+
+                st.markdown("---")
+                # Visual Grid
+                if gt_mask is not None:
+                    c1, c2, c3, c4 = st.columns(4)
+                    c1.image(image, caption="Satellite Input Image", use_column_width=True)
+                    c2.image(gt_mask, caption="Ground Truth Mask", use_column_width=True)
+                    c3.image(mask_img, caption=f"Predicted Mask (Thresh={threshold})", use_column_width=True)
+                    c4.image(overlay_img, caption="Segmentation Overlay", use_column_width=True)
+                else:
+                    c1, c2, c3 = st.columns(3)
+                    c1.image(image, caption="Satellite Input Image", use_column_width=True)
+                    c2.image(mask_img, caption=f"Predicted Mask (Thresh={threshold})", use_column_width=True)
+                    c3.image(overlay_img, caption="Segmentation Overlay", use_column_width=True)
 
     with tab2:
         st.subheader("Cross-Architecture Performance Evaluation")
-        csv_path = Path("benchmark_results.csv")
+        csv_path = Path("reports/benchmark-results.csv")
+        if not csv_path.exists():
+            csv_path = Path("benchmark_results.csv")
+
         if csv_path.exists():
             df_bench = pd.read_csv(csv_path)
-            st.dataframe(df_bench.style.highlight_max(axis=0, subset=["dice", "iou", "fps"]), use_container_width=True)
+            st.dataframe(df_bench, use_container_width=True)
 
             st.markdown("### Architecture Metrics Comparison")
             c_left, c_right = st.columns(2)
             with c_left:
-                st.bar_chart(df_bench.set_index("model_name")[["fps"]], use_container_width=True)
-                st.caption("Inference Speed (Frames Per Second)")
+                if "water_recall" in df_bench.columns:
+                    st.bar_chart(df_bench.set_index("model_name")[["water_recall"]], use_container_width=True)
+                    st.caption("Water Recall Comparison")
             with c_right:
-                st.bar_chart(df_bench.set_index("model_name")[["dice", "iou"]], use_container_width=True)
-                st.caption("Segmentation Accuracy (Dice / IoU)")
+                if "micro_dice" in df_bench.columns:
+                    st.bar_chart(df_bench.set_index("model_name")[["micro_dice"]], use_container_width=True)
+                    st.caption("Micro Dice Score Comparison")
         else:
-            st.warning("Benchmark results file `benchmark_results.csv` not found. Run `python src/evaluate.py --save-csv` to generate.")
+            st.warning("Benchmark results file not found.")
 
     with tab3:
-        st.subheader("Technical Architecture & MAANG Design Decisions")
+        st.subheader("Technical Architecture & System Methodology")
         st.markdown("""
         ### Architectural Breakdown
 
         1. **Model Backbone Selection**:
+           - **Feature Pyramid Network (FPN)**: Top-down feature hierarchy combining semantic and high-resolution spatial features for thin channels and fine shorelines (Champion Model).
            - **UNet++**: Nested dense skip pathways reduce semantic gap between feature maps.
            - **DeepLabV3+**: Atrous Spatial Pyramid Pooling (ASPP) captures multi-scale context.
-           - **SegFormer-B2**: Lightweight Transformer encoder with MLP decoder for global attention.
+           - **SegFormer**: Lightweight Transformer encoder with MLP decoder.
 
-        2. **Loss Function (Dice-Focal Hybrid)**:
-           $$\mathcal{L}_{total} = 0.5 \cdot \mathcal{L}_{Dice} + 0.5 \cdot \mathcal{L}_{Focal}$$
-           Designed to counteract extreme class imbalance (95.78% land vs 4.22% surface water).
+        2. **Loss Function (Recall Prioritization)**:
+           - Asymmetric **Tversky and Focal Tversky Loss** ($\beta=0.7 > \alpha=0.3$) heavily penalizes false negatives.
+           - Designed to counteract extreme class imbalance (94.66% land vs 5.34% surface water overall; 3.89% in training set).
 
         3. **Water Coverage Computation**:
-           $$\text{Water Coverage (\%)} = \frac{\text{Count}(\text{Pixel}_{\text{pred}} \ge \tau)}{\text{Total Valid Pixels}} \times 100$$
+           $$\\text{Water Coverage (\\%)} = \\frac{\\text{Count}(\\text{Pixel}_{\\text{pred}} \\ge \\tau)}{\\text{Total Valid Pixels}} \\times 100$$
            *Note*: Water coverage represents physical surface area fraction, distinct from model accuracy or Dice score.
         """)
 

@@ -27,6 +27,12 @@ except ImportError:
     HAS_TORCH = False
 
 from src.models import build_model, SUPPORTED_MODELS
+from src.utils.model_registry import (
+    load_verified_model,
+    is_model_available,
+    get_model_status_summary,
+    CHAMPION_MODEL,
+)
 
 # Initialize FastAPI application
 app = FastAPI(
@@ -49,40 +55,14 @@ if HAS_FASTAPI:
 _MODEL_CACHE: Dict[str, Any] = {}
 
 
-def get_cached_model(model_name: str = "unet_plusplus") -> Any:
-    """Retrieve or instantiate model instance with state dict."""
+def get_cached_model(model_name: str = CHAMPION_MODEL) -> Any:
+    """Retrieve or instantiate verified model instance with state dict."""
     if model_name not in SUPPORTED_MODELS:
         raise ValueError(f"Unsupported model architecture '{model_name}'. Supported: {SUPPORTED_MODELS}")
 
     if model_name not in _MODEL_CACHE and HAS_TORCH:
-        model = build_model(model_name=model_name)
-        # Resolve checkpoint: prefer latest 2026 validated improvements, fall back gracefully
-        candidate_paths = [
-            Path("experiments/2026_water_segmentation_improvement/checkpoints/EXP06_FPN_FocalTversky_best.pth") if model_name == "fpn" else None,
-            Path("experiments/2026_water_segmentation_improvement/checkpoints/EXP01_UNetPlusPlus_Tversky_best.pth") if model_name == "unet_plusplus" else None,
-            Path("experiments/2026_water_segmentation_improvement/checkpoints/EXP04_DeepLabV3Plus_FocalTversky_best.pth") if model_name == "deeplabv3_plus" else None,
-            Path("experiments/2026_water_segmentation_improvement/checkpoints/EXP05_SegFormer_FocalTversky_best.pth") if model_name == "segformer" else None,
-            Path(f"checkpoints/experiments/round3/{model_name}_r3_multiscale.pth"),
-            Path(f"checkpoints/experiments/round2/{model_name}_r2.pth"),
-            Path(f"checkpoints/experiments/{model_name}_exp1.pth"),
-            Path(f"checkpoints/experiments/{model_name}_exp2.pth"),
-            Path(f"checkpoints/experiments/{model_name}_exp3.pth"),
-            Path(f"checkpoints/{model_name}_best.pth")
-        ]
-        candidate_paths = [p for p in candidate_paths if p is not None]
-        ckpt_path = next((p for p in candidate_paths if p.exists()), Path(f"checkpoints/{model_name}_best.pth"))
-        if ckpt_path.exists():
-            try:
-                state = torch.load(str(ckpt_path), map_location="cpu", weights_only=True)
-                if isinstance(state, dict) and "state_dict" in state:
-                    state = state["state_dict"]
-                try:
-                    model.load_state_dict(state, strict=True)
-                except Exception:
-                    model.load_state_dict(state, strict=False)
-            except Exception as e:
-                print(f"[WARNING] Could not load checkpoint '{ckpt_path}': {e}")
-        model.eval()
+        # load_verified_model verifies SHA-256 and strictly disallows uninitialized execution
+        model = load_verified_model(model_name=model_name, device="cpu")
         _MODEL_CACHE[model_name] = model
 
     return _MODEL_CACHE.get(model_name)
@@ -95,7 +75,8 @@ def read_root():
         "service": "GeoVision AI — Water Body Segmentation API",
         "status": "healthy",
         "version": "1.0.0",
-        "supported_models": SUPPORTED_MODELS
+        "supported_models": SUPPORTED_MODELS,
+        "champion_model": CHAMPION_MODEL
     }
 
 
@@ -105,6 +86,8 @@ def health_check():
     return {
         "status": "ok",
         "torch_available": HAS_TORCH,
+        "champion_model": CHAMPION_MODEL,
+        "champion_ready": is_model_available(CHAMPION_MODEL),
         "loaded_models": list(_MODEL_CACHE.keys())
     }
 
@@ -114,14 +97,16 @@ def list_models():
     """List available model architectures and benchmark specs."""
     return {
         "supported_models": SUPPORTED_MODELS,
-        "default_model": "unet_plusplus"
+        "default_model": CHAMPION_MODEL,
+        "champion_model": CHAMPION_MODEL,
+        "models_status": get_model_status_summary()
     }
 
 
 @app.post("/predict")
 async def predict(
     file: UploadFile = File(...),
-    model_name: str = Form("unet_plusplus"),
+    model_name: str = Form(CHAMPION_MODEL),
     threshold: float = Form(0.5)
 ):
     """
@@ -247,6 +232,11 @@ async def predict(
     except Exception as e:
         if isinstance(e, HTTPException):
             raise e
+        if isinstance(e, RuntimeError):
+            raise HTTPException(
+                status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+                detail=str(e)
+            )
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Internal inference failure while processing satellite imagery."

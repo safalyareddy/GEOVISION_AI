@@ -26,13 +26,13 @@ pip install -r requirements.txt
 
 ## 2. Automated Test Suite Validation
 
-Run the complete 45-test suite across data loaders, model construction, loss functions, API endpoints, evaluation metrics, and ONNX parity:
+Run the complete 54-test suite across data loaders, model construction, loss functions, API endpoints, model registry cryptographic verification, evaluation metrics, and ONNX parity:
 
 ```bash
 PYTHONPATH=. pytest tests/ -v
 ```
 
-All 45 tests must pass without warnings or regressions.
+All 54 tests must pass without warnings or regressions.
 
 ---
 
@@ -67,7 +67,7 @@ To reproduce the 2026 improved model evaluations:
 python scripts/generate_diagnostic_visualizations.py
 ```
 
-The verified results are tracked in [`reports/benchmark-results.csv`](file:///Users/safalyareddy/Desktop/Projects/GeoVision-AI-Satellite-Water-Body-Segmentation-Platform/reports/benchmark-results.csv) and documented in [`reports/model-evaluation.md`](file:///Users/safalyareddy/Desktop/Projects/GeoVision-AI-Satellite-Water-Body-Segmentation-Platform/reports/model-evaluation.md).
+The verified results are tracked in [`reports/benchmark-results.csv`](../reports/benchmark-results.csv) and documented in [`reports/model-evaluation.md`](../reports/model-evaluation.md).
 
 ---
 

@@ -7,10 +7,11 @@ This document is the verified, authoritative record of model evaluation for the 
 ## 1. Executive Summary & Verified Findings
 
 - **Test Split Context**: 54 held-out Sentinel-2 satellite image patches ($256 \times 256$ pixels), totaling **3,538,944 pixels**.
-- **Extreme Class Imbalance**: Ground truth contains **473,646 water pixels (13.38%)** and **3,065,298 land/background pixels (86.62%)**. Across the entire dataset (train + val + test), water accounts for only **4.22%** of all pixels (a 24.7:1 land-to-water imbalance).
+- **Extreme Class Imbalance**: Ground truth in the held-out test split contains **473,646 water pixels (13.38%)** and **3,065,298 land/background pixels (86.62%)**. Across dataset splits, surface water coverage is: **3.89%** in train (779,844 / 20,054,016 px), **5.51%** in validation (194,823 / 3,538,944 px), **4.13%** across the train+validation pool (974,667 / 23,592,960 px), and **5.34%** overall across all 414 tiles combined (1,448,313 / 27,131,904 px, a 17.7:1 land-to-water ratio).
+- **All-Background Baseline Accuracy**: A trivial classifier predicting 100% background (land) achieves **86.62% Pixel Accuracy** ($3,065,298 / 3,538,944$) on the held-out test split while capturing **0.0% Water Recall**, demonstrating why pixel accuracy alone is misleading for satellite water detection.
 - **The Core Bottleneck**: Baseline models trained with standard symmetric Dice / BCE loss suffered from high pixel accuracy (87%–89%) but severe false negatives (water recall as low as 8.7% for SegFormer and 29.8% for UNet++).
 - **The Solution**: Formulating asymmetric recall-prioritized loss functions (**Tversky Loss** with $\beta=0.7 > \alpha=0.3$ and **Focal Tversky Loss** with $\gamma=1.33$) combined with multi-scale architecture (**Feature Pyramid Network (FPN) with ResNet-34**).
-- **Champion Model**: **Improved FPN (EXP06)** achieved **54.24% Water Recall** (+82% relative improvement over baseline UNet++), eliminating **115,950 false negative water pixels**, while improving **Pixel Accuracy to 91.56%**, **Water Precision to 75.81%**, and **Micro Dice to 0.6323** (Macro Dice 0.4580).
+- **Champion Model**: **Improved FPN (EXP06)** achieved **54.24% Water Recall** (+82.3% relative improvement over baseline UNet++: $29.76\% \to 54.24\%$, +24.48 percentage points), cutting false negative water pixels from 332,710 to 216,760 (**34.8% false-negative reduction**, 115,950 false negative pixels recovered), while improving **Pixel Accuracy to 91.56%**, **Water Precision to 75.81%**, and **Micro Dice to 0.6323** (Macro Dice 0.4580).
 
 ---
 
@@ -61,12 +62,12 @@ To ensure complete clarity:
    - All evaluation scripts load strictly from `dataset/test/images/` and `dataset/test/masks/`.
    - No test images or masks were observed during training, loss computation, or threshold selection.
 2. **Deterministic Preprocessing**:
-   - Optical images loaded as 3-channel RGB float tensors normalized to $[0, 1]$.
+   - Optical images loaded as 3-channel RGB float tensors normalized to $[0, 1]$ across all models (FPN, UNet++, DeepLabV3+, SegFormer), with identical preprocessing applied during training and evaluation.
    - Masks loaded as single-channel binary float tensors ($0.0$ or $1.0$).
-   - For FPN, standard ImageNet channel standardization (`mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]`) was applied identically during training and evaluation.
-3. **Decision Threshold Selection**:
-   - Default benchmark: $\tau = 0.50$ (standard frozen threshold).
-   - Optimal validation threshold $\tau^* = 0.60$ was discovered via validation sweep ($0.10 \le \tau \le 0.90$) and evaluated on the test set to confirm that performance does not overfit to threshold tuning.
+3. **Validation-Only Decision Threshold Calibration**:
+   - Default benchmark: $\tau = 0.50$ (standard frozen threshold across all comparisons).
+   - Optimal validation threshold $\tau^* = 0.60$ was discovered via validation sweep ($0.10 \le \tau \le 0.90$ in steps of 0.05) conducted exclusively on the 54-patch validation split.
+   - The calibrated threshold $\tau^* = 0.60$ was then evaluated frozen on the 54 held-out test patches to confirm out-of-sample generalization, proving that gains are not an artifact of test-set threshold tuning.
 4. **Hardware Environment**:
    - Evaluated on Apple Silicon M4 with PyTorch 2.14.1 on MPS / CPU runtime.
 

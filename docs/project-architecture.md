@@ -56,7 +56,7 @@ The factory method `build_model(model_name)` constructs production-grade segment
 4. **SegFormer**: Lightweight hierarchical Vision Transformer using overlapping patch embeddings and multi-layer perceptron (MLP) decoders.
 
 ### C. Objective Functions (`src/loss.py`)
-To handle severe class imbalance (95.78% land vs. 4.22% water), the platform implements:
+To handle severe class imbalance (overall 5.34% water vs. 94.66% land; 3.89% in train split), the platform implements:
 - **Soft Dice Loss**: Measures region overlap directly, preventing gradient vanishing on small targets.
 - **Focal Loss**: Dynamically down-weights easy background examples $(\gamma=2.0, \alpha=0.25)$ to focus backpropagation on ambiguous boundaries.
 - **Tversky & Focal Tversky Loss**: Asymmetrically penalizes False Negatives ($\beta=0.7 > \alpha=0.3$) with focusing exponent $\gamma=1.33$ to recover missed water bodies.
@@ -71,6 +71,15 @@ To handle severe class imbalance (95.78% land vs. 4.22% water), the platform imp
    - Multi-backend execution: FastAPI REST API, in-process PyTorch, or in-process ONNX Runtime.
    - Interactive threshold tuning slider ($0.10 \le \tau \le 0.90$).
    - Cyan water-overlay visualization and side-by-side ground truth comparison.
+3. **Container Supervisor** (`docker/entrypoint.sh`):
+   - Dual-service process supervision conforming to Hugging Face Spaces Docker SDK.
+   - Binds Streamlit to public port `7860` and FastAPI to internal port `8000`.
+   - Non-root user execution (`UID 1000`) and graceful SIGTERM signal handling.
+
+### E. Model Registry & Verification Engine (`src/utils/model_registry.py`)
+- Cryptographic SHA-256 verification before state dict deserialization.
+- Local candidate search with fallback to automated Hugging Face Model Hub download.
+- Strict prevention of uninitialized execution (HTTP 503 error if weights are missing).
 
 ---
 
@@ -78,7 +87,7 @@ To handle severe class imbalance (95.78% land vs. 4.22% water), the platform imp
 
 1. **Ingestion**: The client posts an optical satellite image file to `/predict` or uploads it via the Streamlit interface.
 2. **Validation**: The image format is verified (PNG/JPG/TIFF), payload size verified ($\le 10 \text{MB}$), and decoded to RGB.
-3. **Tensor Preprocessing**: Resized to $256 \times 256$, normalized to $[0, 1]$ float32 tensor (with ImageNet standardization for FPN), shaped as $(1, 3, 256, 256)$.
+3. **Tensor Preprocessing**: Resized to $256 \times 256$, normalized to $[0, 1]$ float32 tensor across all architectures, shaped as $(1, 3, 256, 256)$.
 4. **Inference**: Propagated through the selected network in evaluation mode (`torch.no_grad()`). Raw output logits are converted to class probabilities via the sigmoid function $\sigma(z) = \frac{1}{1 + e^{-z}}$.
 5. **Thresholding & Postprocessing**: Evaluated against decision threshold $\tau$:
    $$\hat{Y}_{i,j} = \begin{cases} 1 & \text{if } P(Y_{i,j} = 1 \mid X) \ge \tau \\ 0 & \text{otherwise} \end{cases}$$
