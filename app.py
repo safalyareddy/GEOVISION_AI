@@ -55,12 +55,21 @@ if HAS_STREAMLIT:
 def load_pytorch_model(model_name: str):
     """Load and cache PyTorch segmentation model."""
     model = build_model(model_name=model_name)
-    ckpt_map = {
-        "unet_plusplus": "checkpoints/unet_plusplus_best.pth",
-        "deeplabv3_plus": "checkpoints/deeplabv3_plus_best.pth",
-        "segformer": "checkpoints/segformer_best.pth"
-    }
-    ckpt_path = Path(ckpt_map.get(model_name, ""))
+    # Resolve checkpoint: prefer latest 2026 validated improvements, fall back gracefully
+    candidate_paths = [
+        Path("experiments/2026_water_segmentation_improvement/checkpoints/EXP06_FPN_FocalTversky_best.pth") if model_name == "fpn" else None,
+        Path("experiments/2026_water_segmentation_improvement/checkpoints/EXP01_UNetPlusPlus_Tversky_best.pth") if model_name == "unet_plusplus" else None,
+        Path("experiments/2026_water_segmentation_improvement/checkpoints/EXP04_DeepLabV3Plus_FocalTversky_best.pth") if model_name == "deeplabv3_plus" else None,
+        Path("experiments/2026_water_segmentation_improvement/checkpoints/EXP05_SegFormer_FocalTversky_best.pth") if model_name == "segformer" else None,
+        Path(f"checkpoints/experiments/round3/{model_name}_r3_multiscale.pth"),
+        Path(f"checkpoints/experiments/round2/{model_name}_r2.pth"),
+        Path(f"checkpoints/experiments/{model_name}_exp1.pth"),
+        Path(f"checkpoints/experiments/{model_name}_exp2.pth"),
+        Path(f"checkpoints/experiments/{model_name}_exp3.pth"),
+        Path(f"checkpoints/{model_name}_best.pth")
+    ]
+    candidate_paths = [p for p in candidate_paths if p is not None]
+    ckpt_path = next((p for p in candidate_paths if p.exists()), Path(f"checkpoints/{model_name}_best.pth"))
     if ckpt_path.exists():
         try:
             state = torch.load(str(ckpt_path), map_location="cpu", weights_only=True)
@@ -182,8 +191,13 @@ def main():
 
     model_choice = st.sidebar.selectbox(
         "Select Model Architecture",
-        options=["unet_plusplus", "deeplabv3_plus", "segformer"],
-        format_func=lambda x: {"unet_plusplus": "UNet++ (ResNet34)", "deeplabv3_plus": "DeepLabV3+ (ResNet50)", "segformer": "SegFormer-B2"}[x]
+        options=["unet_plusplus", "deeplabv3_plus", "segformer", "fpn"],
+        format_func=lambda x: {
+            "unet_plusplus": "UNet++ (ResNet34)",
+            "deeplabv3_plus": "DeepLabV3+ (ResNet34)",
+            "segformer": "SegFormer-B0 (Vision Transformer)",
+            "fpn": "Feature Pyramid Network (FPN Multi-Scale — Round 3 Winner)"
+        }[x]
     )
 
     threshold = st.sidebar.slider(
@@ -257,7 +271,11 @@ def main():
             # Metric Callouts
             m1, m2, m3, m4 = st.columns(4)
             m1.metric("Predicted Water Coverage", f"{water_coverage_pct:.2f}%")
-            m2.metric("Estimated Water Area", f"{water_area_km2:.3f} km²")
+            m2.metric(
+                "Estimated Water Area",
+                f"{water_area_km2:.3f} km²",
+                help="Nominal physical area assuming Sentinel-2 10m GSD (100 m²/px). Unreferenced approximation when geospatial CRS/GeoTIFF metadata is not present."
+            )
             m3.metric("Inference Latency", f"{latency_ms:.2f} ms")
             m4.metric("Active Backend", backend)
 

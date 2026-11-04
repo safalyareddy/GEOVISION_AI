@@ -129,7 +129,8 @@ class FallbackUNetPlusPlus(nn.Module if HAS_TORCH else object):
 SUPPORTED_MODELS: Dict[str, str] = {
     "unet_plusplus": "UNet++ (Nested UNet for multi-scale feature fusion)",
     "deeplabv3_plus": "DeepLabV3+ (Atrous Spatial Pyramid Pooling)",
-    "segformer": "SegFormer-B2 (Lightweight Vision Transformer for Segmentation)"
+    "segformer": "SegFormer-B2 (Lightweight Vision Transformer for Segmentation)",
+    "fpn": "Feature Pyramid Network (Multi-scale feature pyramid for thin streams and boundaries)"
 }
 
 
@@ -145,7 +146,7 @@ def build_model(
     Factory function to construct segmentation neural network architectures.
 
     Args:
-        model_name: Architecture key ('unet_plusplus', 'deeplabv3_plus', 'segformer').
+        model_name: Architecture key ('unet_plusplus', 'deeplabv3_plus', 'segformer', 'fpn').
         in_channels: Input image channel count (default: 3 for RGB).
         num_classes: Output target class count (default: 1 for binary water segmentation).
         encoder_name: Backbone encoder network (default: 'resnet34').
@@ -168,7 +169,7 @@ def build_model(
         valid_keys = ", ".join(list(SUPPORTED_MODELS.keys()))
         raise ValueError(f"Invalid model name '{model_name}'. Must be one of: {valid_keys}")
 
-    if normalized_name in ["unet_plusplus", "deeplabv3_plus"]:
+    if normalized_name in ["unet_plusplus", "deeplabv3_plus", "fpn"]:
         if not HAS_SMP:
             if allow_dummy_fallback:
                 return FallbackUNetPlusPlus(in_channels=in_channels, num_classes=num_classes)
@@ -191,22 +192,30 @@ def build_model(
                 in_channels=in_channels,
                 classes=num_classes
             )
+        elif normalized_name == "fpn":
+            return smp.FPN(
+                encoder_name=encoder_name,
+                encoder_weights=encoder_weights,
+                in_channels=in_channels,
+                classes=num_classes
+            )
 
     elif normalized_name == "segformer":
-        if HAS_TRANSFORMERS:
+        if HAS_SMP and hasattr(smp, "Segformer"):
+            enc = "mit_b0" if encoder_name in ["resnet34", "nvidia/mit-b2", "mit_b2", "mit-b2"] else encoder_name
+            return smp.Segformer(
+                encoder_name=enc,
+                encoder_weights=encoder_weights,
+                in_channels=in_channels,
+                classes=num_classes
+            )
+        elif HAS_TRANSFORMERS:
             hf_encoder = "nvidia/mit-b2" if encoder_name == "resnet34" else encoder_name
             return HuggingFaceSegFormerWrapper(
                 encoder_name=hf_encoder,
                 in_channels=in_channels,
                 num_classes=num_classes,
                 encoder_weights=encoder_weights
-            )
-        elif HAS_SMP and hasattr(smp, "Segformer"):
-            return smp.Segformer(
-                encoder_name="mit_b2" if encoder_name == "resnet34" else encoder_name,
-                encoder_weights=encoder_weights,
-                in_channels=in_channels,
-                classes=num_classes
             )
         else:
             if allow_dummy_fallback:

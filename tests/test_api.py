@@ -67,6 +67,8 @@ def test_predict_endpoint_valid_image():
     data = response.json()
     assert data["model_name"] == "unet_plusplus"
     assert "water_coverage_percentage" in data
+    assert "estimated_water_area_km2" in data
+    assert "area_estimation_basis" in data
     assert "mask_base64" in data
     assert data["image_dimensions"] == [64, 64]
 

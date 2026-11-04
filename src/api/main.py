@@ -56,12 +56,21 @@ def get_cached_model(model_name: str = "unet_plusplus") -> Any:
 
     if model_name not in _MODEL_CACHE and HAS_TORCH:
         model = build_model(model_name=model_name)
-        ckpt_map = {
-            "unet_plusplus": "checkpoints/unet_plusplus_best.pth",
-            "deeplabv3_plus": "checkpoints/deeplabv3_plus_best.pth",
-            "segformer": "checkpoints/segformer_best.pth"
-        }
-        ckpt_path = Path(ckpt_map.get(model_name, ""))
+        # Resolve checkpoint: prefer latest 2026 validated improvements, fall back gracefully
+        candidate_paths = [
+            Path("experiments/2026_water_segmentation_improvement/checkpoints/EXP06_FPN_FocalTversky_best.pth") if model_name == "fpn" else None,
+            Path("experiments/2026_water_segmentation_improvement/checkpoints/EXP01_UNetPlusPlus_Tversky_best.pth") if model_name == "unet_plusplus" else None,
+            Path("experiments/2026_water_segmentation_improvement/checkpoints/EXP04_DeepLabV3Plus_FocalTversky_best.pth") if model_name == "deeplabv3_plus" else None,
+            Path("experiments/2026_water_segmentation_improvement/checkpoints/EXP05_SegFormer_FocalTversky_best.pth") if model_name == "segformer" else None,
+            Path(f"checkpoints/experiments/round3/{model_name}_r3_multiscale.pth"),
+            Path(f"checkpoints/experiments/round2/{model_name}_r2.pth"),
+            Path(f"checkpoints/experiments/{model_name}_exp1.pth"),
+            Path(f"checkpoints/experiments/{model_name}_exp2.pth"),
+            Path(f"checkpoints/experiments/{model_name}_exp3.pth"),
+            Path(f"checkpoints/{model_name}_best.pth")
+        ]
+        candidate_paths = [p for p in candidate_paths if p is not None]
+        ckpt_path = next((p for p in candidate_paths if p.exists()), Path(f"checkpoints/{model_name}_best.pth"))
         if ckpt_path.exists():
             try:
                 state = torch.load(str(ckpt_path), map_location="cpu", weights_only=True)
@@ -186,7 +195,7 @@ async def predict(
     orig_w, orig_h = image.size
 
     try:
-        # Preprocess tensor
+        # Preprocess tensor (matching standard [0, 1] training normalization)
         transform = T.Compose([
             T.Resize((256, 256)),
             T.ToTensor(),
@@ -222,10 +231,13 @@ async def predict(
         mask_img.save(buf, format="PNG")
         mask_b64 = base64.b64encode(buf.getvalue()).decode("utf-8")
 
+        water_area_km2 = float(round((water_pixels * 100.0) / 1e6, 4))
         return {
             "model_name": model_name,
             "threshold": threshold,
             "water_coverage_percentage": round(water_coverage_pct, 2),
+            "estimated_water_area_km2": water_area_km2,
+            "area_estimation_basis": "Nominal Sentinel-2 10m GSD (100 m^2/px). Unreferenced approximation when geospatial CRS/GeoTIFF metadata is not present.",
             "water_pixels": water_pixels,
             "total_pixels": total_pixels,
             "latency_ms": round(latency_ms, 2),
