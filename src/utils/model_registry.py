@@ -201,12 +201,23 @@ def resolve_checkpoint_path(model_name: str, allow_download: bool = True) -> Opt
     return None
 
 
-def is_model_available(model_name: str) -> bool:
+def is_model_available(model_name: str, allow_download: bool = False) -> bool:
     """Return True if verified checkpoint exists and can be loaded."""
     if not HAS_TORCH:
         return False
-    path = resolve_checkpoint_path(model_name, allow_download=False)
+    path = resolve_checkpoint_path(model_name, allow_download=allow_download)
     return path is not None and path.exists()
+
+
+def is_model_obtainable(model_name: str) -> bool:
+    """Return True if model checkpoint is available locally or configured on Hugging Face Hub."""
+    if model_name not in MODEL_REGISTRY:
+        return False
+    path = resolve_checkpoint_path(model_name, allow_download=False)
+    if path and path.exists():
+        return True
+    meta = MODEL_REGISTRY[model_name]
+    return bool(meta.get("hf_filename") and DEFAULT_HF_REPO)
 
 
 def get_model_status_summary() -> Dict[str, Dict[str, Any]]:
@@ -222,8 +233,12 @@ def get_model_status_summary() -> Dict[str, Dict[str, Any]]:
             "available": available,
             "checkpoint_path": str(resolved) if resolved else None,
             "expected_sha256": meta.get("expected_sha256"),
+            "pinned_revision": DEFAULT_HF_REVISION if meta.get("hf_filename") else None,
+            "hf_repo": DEFAULT_HF_REPO if meta.get("hf_filename") else None,
             "status_label": "Champion (Weights Loaded)" if meta["is_champion"] and available else (
-                "Weights Loaded" if available else "Weights Missing"
+                "Weights Loaded" if available else (
+                    "Available on Hub" if meta.get("hf_filename") else "Weights Missing"
+                )
             )
         }
     return summary
@@ -233,7 +248,8 @@ def load_verified_model(model_name: str, device: str = "cpu") -> Any:
     """
     Instantiate model architecture and load verified checkpoint.
 
-    Strictly raises RuntimeError if weights are missing, preventing uninitialized execution.
+    Strictly raises RuntimeError if weights are missing, compromised, or mismatched,
+    preventing uninitialized or simulated execution.
     """
     if not HAS_TORCH:
         raise RuntimeError("PyTorch is not installed in the environment.")
@@ -244,15 +260,26 @@ def load_verified_model(model_name: str, device: str = "cpu") -> Any:
     ckpt_path = resolve_checkpoint_path(model_name, allow_download=True)
     if ckpt_path is None or not ckpt_path.exists():
         raise RuntimeError(
-            f"Trained checkpoint for '{model_name}' could not be located locally or downloaded. "
+            f"Trained checkpoint for '{model_name}' could not be located locally or downloaded from Hugging Face Hub. "
             "Inference with uninitialized weights is strictly prohibited. "
-            f"Please ensure '{model_name}_best.pth' is present in checkpoints/ or available on Hugging Face Hub."
+            f"Please verify '{model_name}_best.pth' in checkpoints/ or on Hugging Face Hub ({DEFAULT_HF_REPO}@{DEFAULT_HF_REVISION})."
         )
 
-    # Instantiate architecture
-    model = build_model(model_name=model_name)
+    # 1. Cryptographic SHA-256 Verification prior to deserialization
+    expected_hash = MODEL_REGISTRY[model_name].get("expected_sha256")
+    if expected_hash:
+        if not verify_checkpoint_integrity(ckpt_path, expected_hash):
+            actual_hash = compute_file_sha256(ckpt_path)
+            raise RuntimeError(
+                f"Cryptographic SHA-256 verification failed for '{ckpt_path}'. "
+                f"Expected: {expected_hash}, calculated: {actual_hash}. "
+                "Inference with compromised or mismatched weights is strictly prohibited."
+            )
 
-    # Safe deserialization
+    # 2. Instantiate exact architecture (no random ImageNet download when loading custom weights)
+    model = build_model(model_name=model_name, encoder_weights=None)
+
+    # 3. Safe deserialization using PyTorch weights_only=True
     state = torch.load(str(ckpt_path), map_location=device, weights_only=True)
     if isinstance(state, dict) and "state_dict" in state:
         state = state["state_dict"]
@@ -260,7 +287,7 @@ def load_verified_model(model_name: str, device: str = "cpu") -> Any:
     if not isinstance(state, dict) or len(state) == 0:
         raise RuntimeError(f"Checkpoint '{ckpt_path}' does not contain a valid non-empty state dictionary.")
 
-    # Prefix normalization if needed
+    # 4. Prefix normalization (e.g. PyTorch Lightning 'model.' prefix)
     cleaned_state = {}
     for k, v in state.items():
         clean_k = k
@@ -268,24 +295,17 @@ def load_verified_model(model_name: str, device: str = "cpu") -> Any:
             clean_k = clean_k[len("model."):]
         cleaned_state[clean_k] = v
 
-    # Attempt strict loading first, fallback to partial only if compatible
+    # 5. Strict state-dictionary loading
     try:
         model.load_state_dict(cleaned_state, strict=True)
     except Exception as e_strict:
         try:
             model.load_state_dict(state, strict=True)
         except Exception:
-            try:
-                load_res = model.load_state_dict(cleaned_state, strict=False)
-                # If too many missing keys, fail safe
-                if len(load_res.missing_keys) > 20:
-                    raise RuntimeError(
-                        f"Architecture mismatch for '{model_name}' with '{ckpt_path}': "
-                        f"{len(load_res.missing_keys)} missing keys, {len(load_res.unexpected_keys)} unexpected keys. "
-                        "Aborting to avoid degraded uninitialized inference."
-                    )
-            except Exception as e_non_strict:
-                raise RuntimeError(f"Failed to load checkpoint into '{model_name}': {e_strict} | {e_non_strict}")
+            raise RuntimeError(
+                f"Strict state-dictionary loading failed for '{model_name}' using checkpoint '{ckpt_path}': {e_strict}. "
+                "Inference with mismatched or partially initialized weights is strictly prohibited."
+            )
 
     model.to(device)
     model.eval()

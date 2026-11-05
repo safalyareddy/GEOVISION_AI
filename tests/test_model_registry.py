@@ -93,3 +93,56 @@ def test_load_verified_model_missing_checkpoint_fails_safe(tmp_path: Path):
         with pytest.raises(RuntimeError) as excinfo:
             load_verified_model("fpn", device="cpu")
         assert "uninitialized weights is strictly prohibited" in str(excinfo.value)
+
+
+def test_hf_repo_and_pinned_revision_resolution():
+    """Test that default Hugging Face repository and revision are pinned and non-empty."""
+    from src.utils.model_registry import DEFAULT_HF_REPO, DEFAULT_HF_REVISION
+    assert DEFAULT_HF_REPO == "safalya06/geovision-water-segmentation-models"
+    assert DEFAULT_HF_REVISION == "022039f0ce080afec9354a18635af97cc4cf352e"
+    assert len(DEFAULT_HF_REVISION) == 40  # Full git commit sha
+
+
+def test_deliberately_incorrect_checksum_rejection(tmp_path: Path):
+    """Test that a checkpoint with mismatched SHA-256 is strictly rejected."""
+    corrupt_file = tmp_path / "corrupt_fpn.pth"
+    corrupt_file.write_bytes(b"tampered_or_incomplete_model_weights")
+    expected_hash = "d21fa18c36beabdb0b139364d347a6e97c1cc00e83e9ba92630e9a7795119eb1"
+
+    # 1. Direct integrity verification must return False
+    assert verify_checkpoint_integrity(corrupt_file, expected_hash) is False
+
+    with patch.dict(MODEL_REGISTRY, {"fpn": {
+        "display_name": "Tampered FPN",
+        "is_champion": True,
+        "default_filename": "corrupt_fpn.pth",
+        "expected_sha256": expected_hash,
+        "candidate_paths": [corrupt_file],
+        "hf_filename": "corrupt_fpn.pth"
+    }}):
+        # 2. Local candidate resolution must refuse to return corrupt file
+        rejected_candidate = resolve_checkpoint_path("fpn", allow_download=False)
+        assert rejected_candidate is None
+
+        # 3. Model loader must strictly abort rather than loading tampered weights
+        with pytest.raises(RuntimeError):
+            load_verified_model("fpn", device="cpu")
+
+
+@pytest.mark.skipif(not HAS_TORCH, reason="PyTorch is required for strict loading test.")
+def test_strict_checkpoint_loading_rejects_missing_keys(tmp_path: Path):
+    """Test that state dictionary with missing/incompatible keys fails strictly without random fallback."""
+    bad_dict_file = tmp_path / "bad_dict.pth"
+    torch.save({"partial_weight": torch.randn(1, 1, 3, 3)}, str(bad_dict_file))
+
+    with patch.dict(MODEL_REGISTRY, {"fpn": {
+        "display_name": "Incompatible Dict FPN",
+        "is_champion": True,
+        "default_filename": "bad_dict.pth",
+        "expected_sha256": None,
+        "candidate_paths": [bad_dict_file],
+        "hf_filename": "bad_dict.pth"
+    }}):
+        with pytest.raises(RuntimeError) as excinfo:
+            load_verified_model("fpn", device="cpu")
+        assert "Strict state-dictionary loading failed" in str(excinfo.value)
