@@ -1,0 +1,161 @@
+{
+  "metadata": {
+    "test_image": "patch_0047.png",
+    "image_size": [
+      256,
+      256
+    ],
+    "hf_pinned_revision": "441a99034b36336c34d86c23cfe9c1a8114ca3a4",
+    "threshold": 0.5,
+    "timestamp": "2026-11-05T15:17:24Z",
+    "total_combinations": 12
+  },
+  "results": {
+    "fpn__pytorch_inprocess": {
+      "model_name": "fpn",
+      "backend": "pytorch_inprocess",
+      "status": "PASS",
+      "latency_ms": 32.6,
+      "water_coverage_pct": 12.63,
+      "water_area_km2": 0.8276,
+      "non_finite_count": 0,
+      "sha256": "d21fa18c36beabdb0b139364d347a6e97c1cc00e83e9ba92630e9a7795119eb1",
+      "mask_agreement_with_pytorch_pct": 100.0
+    },
+    "fpn__fastapi_microservice": {
+      "model_name": "fpn",
+      "backend": "fastapi_microservice",
+      "status": "PASS",
+      "latency_ms": 134.26,
+      "server_latency_ms": 24.07,
+      "water_coverage_pct": 12.63,
+      "water_area_km2": 0.8276,
+      "non_finite_count": 0,
+      "input_classification": "VERIFIED_PROJECT_SAMPLE",
+      "mask_agreement_with_pytorch_pct": 100.0
+    },
+    "fpn__onnx_runtime": {
+      "model_name": "fpn",
+      "backend": "onnx_runtime",
+      "status": "PASS",
+      "latency_ms": 31.02,
+      "water_coverage_pct": 12.63,
+      "water_area_km2": 0.8276,
+      "non_finite_count": 0,
+      "onnx_size_bytes": 403224,
+      "max_prob_diff_vs_pytorch": 1.4841556549072266e-05,
+      "mask_agreement_with_pytorch_pct": 100.0
+    },
+    "unet_plusplus__pytorch_inprocess": {
+      "model_name": "unet_plusplus",
+      "backend": "pytorch_inprocess",
+      "status": "PASS",
+      "latency_ms": 86.95,
+      "water_coverage_pct": 6.93,
+      "water_area_km2": 0.4541,
+      "non_finite_count": 0,
+      "sha256": "497e246ef79d87f3b2255cc119e7ab8bd0045d48caf3d4710e9f6738e56c4548",
+      "mask_agreement_with_pytorch_pct": 100.0
+    },
+    "unet_plusplus__fastapi_microservice": {
+      "model_name": "unet_plusplus",
+      "backend": "fastapi_microservice",
+      "status": "PASS",
+      "latency_ms": 196.35,
+      "server_latency_ms": 86.78,
+      "water_coverage_pct": 6.93,
+      "water_area_km2": 0.4541,
+      "non_finite_count": 0,
+      "input_classification": "VERIFIED_PROJECT_SAMPLE",
+      "mask_agreement_with_pytorch_pct": 100.0
+    },
+    "unet_plusplus__onnx_runtime": {
+      "model_name": "unet_plusplus",
+      "backend": "onnx_runtime",
+      "status": "PASS",
+      "latency_ms": 67.25,
+      "water_coverage_pct": 6.93,
+      "water_area_km2": 0.4541,
+      "non_finite_count": 0,
+      "onnx_size_bytes": 372374,
+      "max_prob_diff_vs_pytorch": 1.8358230590820312e-05,
+      "mask_agreement_with_pytorch_pct": 100.0
+    },
+    "deeplabv3_plus__pytorch_inprocess": {
+      "model_name": "deeplabv3_plus",
+      "backend": "pytorch_inprocess",
+      "status": "PASS",
+      "latency_ms": 37.09,
+      "water_coverage_pct": 10.1,
+      "water_area_km2": 0.6616,
+      "non_finite_count": 0,
+      "sha256": "6c7c6dd4835d29be34b9eda03bdfca878914749a526c44cade99906cc1b1b827",
+      "mask_agreement_with_pytorch_pct": 100.0
+    },
+    "deeplabv3_plus__fastapi_microservice": {
+      "model_name": "deeplabv3_plus",
+      "backend": "fastapi_microservice",
+      "status": "PASS",
+      "latency_ms": 132.1,
+      "server_latency_ms": 40.79,
+      "water_coverage_pct": 10.1,
+      "water_area_km2": 0.6616,
+      "non_finite_count": 0,
+      "input_classification": "VERIFIED_PROJECT_SAMPLE",
+      "mask_agreement_with_pytorch_pct": 100.0
+    },
+    "deeplabv3_plus__onnx_runtime": {
+      "model_name": "deeplabv3_plus",
+      "backend": "onnx_runtime",
+      "status": "PASS",
+      "latency_ms": 33.95,
+      "water_coverage_pct": 10.1,
+      "water_area_km2": 0.6616,
+      "non_finite_count": 0,
+      "onnx_size_bytes": 282898,
+      "max_prob_diff_vs_pytorch": 1.1920928955078125e-05,
+      "mask_agreement_with_pytorch_pct": 100.0
+    },
+    "segformer__pytorch_inprocess": {
+      "model_name": "segformer",
+      "backend": "pytorch_inprocess",
+      "status": "PASS",
+      "latency_ms": 80.76,
+      "water_coverage_pct": 7.45,
+      "water_area_km2": 0.4883,
+      "non_finite_count": 0,
+      "sha256": "2c762a52a5aa5cafb6aecb698bf483257fd5279bce3f3af7368850ba9354e986",
+      "mask_agreement_with_pytorch_pct": 100.0
+    },
+    "segformer__fastapi_microservice": {
+      "model_name": "segformer",
+      "backend": "fastapi_microservice",
+      "status": "PASS",
+      "latency_ms": 128.93,
+      "server_latency_ms": 62.3,
+      "water_coverage_pct": 7.45,
+      "water_area_km2": 0.4883,
+      "non_finite_count": 0,
+      "input_classification": "VERIFIED_PROJECT_SAMPLE",
+      "mask_agreement_with_pytorch_pct": 100.0
+    },
+    "segformer__onnx_runtime": {
+      "model_name": "segformer",
+      "backend": "onnx_runtime",
+      "status": "PASS",
+      "latency_ms": 14.28,
+      "water_coverage_pct": 7.45,
+      "water_area_km2": 0.4883,
+      "non_finite_count": 0,
+      "onnx_size_bytes": 1353458,
+      "max_prob_diff_vs_pytorch": 1.430511474609375e-06,
+      "mask_agreement_with_pytorch_pct": 100.0
+    }
+  },
+  "summary": {
+    "all_combinations_passed": true,
+    "total_passed": 12,
+    "total_failed": 0,
+    "parity_with_pytorch_perfect": true
+  }
+}

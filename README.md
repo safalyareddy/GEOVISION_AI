@@ -18,8 +18,9 @@ pinned: false
 A modular computer vision platform for high-resolution surface water detection, segmentation, and hydrological surface area quantification from optical satellite imagery (Sentinel-2).
 
 * **Live Cloud Application**: [https://ai-geovision.streamlit.app/](https://ai-geovision.streamlit.app/)
-* **Verified Champion Checkpoint**: [`safalya06/geovision-water-segmentation-models@022039f`](https://huggingface.co/safalya06/geovision-water-segmentation-models)
-* **Cryptographic Checksum**: `d21fa18c36beabdb0b139364d347a6e97c1cc00e83e9ba92630e9a7795119eb1`
+* **Verified Checkpoints**: [`safalya06/geovision-water-segmentation-models@441a990`](https://huggingface.co/safalya06/geovision-water-segmentation-models)
+* **Pinned Commit**: `441a99034b36336c34d86c23cfe9c1a8114ca3a4`
+* **Champion Model (FPN-ResNet34)**: SHA-256 `d21fa18c36beabdb0b139364d347a6e97c1cc00e83e9ba92630e9a7795119eb1`
 
 ---
 
@@ -204,32 +205,41 @@ docker compose up -d --build
 ---
 
 ## 9. Model Checkpoints & Cryptographic Verification
-
-Model weights are saved as PyTorch state dictionaries (`.pth`). Checkpoint checksums and architectures are cataloged in `src/utils/model_registry.py`:
+ 
+Model weights are saved as PyTorch state dictionaries (`.pth`). Checkpoint checksums and architectures are cataloged in `src/utils/model_registry.py` and pinned to Hugging Face Hub commit `441a99034b36336c34d86c23cfe9c1a8114ca3a4`:
 
 | Architecture | Status | Checkpoint File | Size | SHA-256 Cryptographic Checksum |
 | :--- | :--- | :--- | :---: | :--- |
 | **FPN (Champion)** | 🏆 Champion | `fpn_best.pth` | 88.5 MB | `d21fa18c36beabdb0b139364d347a6e97c1cc00e83e9ba92630e9a7795119eb1` |
-| **UNet++ (Improved)** | Baseline/Improved | `unet_plusplus_best.pth` | 99.7 MB | `497e246ef79d87f3b2255cc119e7ab8bd0045d48caf3d4710e9f6738e56c4548` |
-| **DeepLabV3+ (Improved)** | Improved | `deeplabv3_plus_best.pth` | 85.8 MB | `6c7c6dd4835d29be34b9eda03bdfca878914749a526c44cade99906cc1b1b827` |
-| **UNet++ (Baseline)** | Baseline | `unet_plusplus_best.pth` | 99.7 MB | `e9ac1bed148e6f3e8926d9008fd3fe6ad490ff8ed1dee6d79b96134ef8712c9b` |
+| **UNet++** | Production | `unet_plusplus_best.pth` | 99.7 MB | `497e246ef79d87f3b2255cc119e7ab8bd0045d48caf3d4710e9f6738e56c4548` |
+| **DeepLabV3+** | Production | `deeplabv3_plus_best.pth` | 85.8 MB | `6c7c6dd4835d29be34b9eda03bdfca878914749a526c44cade99906cc1b1b827` |
+| **SegFormer** | Production | `segformer_best.pth` | 14.3 MB | `2c762a52a5aa5cafb6aecb698bf483257fd5279bce3f3af7368850ba9354e986` |
 
-### Model Acquisition & Safety Guarantees
-1. **Local Weights**: Place `.pth` files in `checkpoints/` (e.g. `checkpoints/fpn_best.pth`).
-2. **Automated Hub Download**: If checkpoints are absent locally, `src/utils/model_registry.py` automatically downloads from Hugging Face Hub (configurable via `GEOVISION_HF_REPO` and `GEOVISION_HF_REVISION`).
-3. **Cryptographic Validation**: Checksums are computed in 64 KB blocks and verified prior to deserialization. Corrupted or unverified weights are rejected.
-4. **Zero-Uninitialized Policy**: Inference with randomly initialized weights is strictly prohibited. If weights cannot be verified, endpoints return HTTP 503 with explicit acquisition instructions.
+### Multi-Backend Inference Support (12/12 Acceptance)
+The platform supports 3 interchangeable, verified inference backends:
+1. **PyTorch (In-Process CPU/MPS)**: Evaluates loaded models using `torch.inference_mode()` with strict state dictionary loading.
+2. **ONNX Runtime (Optimized CPU)**: High-performance execution engine with full operator parity and CPU graph optimizations. Provides over **5x latency reduction** on SegFormer (14.28 ms vs 80.76 ms).
+3. **FastAPI Microservice (REST API)**: Containerized asynchronous microservice exposing `/health`, `/ready`, `/models/{model_id}/status`, `/metrics`, and `/predict`.
+
+### Scientific Safety & Input Validation Pipeline
+GeoVision AI implements a 6-state input verification engine (`src/utils/input_validator.py`):
+1. **Consumer Photograph Rejection**: Scans for smartphone/consumer camera EXIF metadata and detects extreme chromatic saturation ($>35\%$ of pixels with $S > 0.80$). Rejects floral/portrait/indoor photos with **HTTP 422 Unprocessable Content** (API) or UI safety alerts (Streamlit) to prevent unscientific hydrological claims.
+2. **Two-Mode Area Quantification**:
+   - **Verified Geospatial Mode**: Reads embedded GeoTIFF tags (`ModelPixelScaleTag`) to calculate exact square kilometers based on physical coordinate bounds.
+   - **Nominal Approximation Mode**: Applies calibrated Sentinel-2 10m Ground Sample Distance assumption ($100.0\text{ m}^2/\text{pixel}$) accompanied by an explicit unreferenced approximation caveat.
+3. **Zero-Uninitialized Policy**: Strictly disallows inference with random, fallback, or unverified weights.
 
 ---
 
 ## 10. Limitations & Engineering Scope
 
-1. **Geographic Distribution**: The benchmark dataset consists of regional Sentinel-2 optical scenes. Performance may vary across unseen geographic domains (e.g., glacial regions, arid salinas, heavy shadow). Universal generalization is not claimed without regional fine-tuning.
+1. **Geographic Distribution**: The benchmark dataset consists of regional Sentinel-2 optical scenes. Universal generalization is not claimed without regional fine-tuning across unseen geographic domains.
 2. **Optical Sensor Constraints**: Cloud cover, dense haze, and sun glint impede optical surface reflectance. Operational remote sensing in production typically pairs optical imagery with Synthetic Aperture Radar (SAR, Sentinel-1) or multi-spectral indices (MNDWI).
-3. **Physical Area Estimation**: The computed water surface area ($\text{km}^2$) assumes nominal Sentinel-2 10m Ground Sample Distance ($100 \text{ m}^2/\text{pixel}$). This serves as an unreferenced approximation when uploaded imagery lacks embedded geospatial CRS or GeoTIFF metadata.
+3. **Physical Area Estimation**: The computed water surface area ($\text{km}^2$) uses nominal Sentinel-2 10m Ground Sample Distance ($100 \text{ m}^2/\text{pixel}$) unless input imagery contains embedded GeoTIFF pixel scale tags.
 
 ---
 
 ## 11. License
 
 This project is licensed under the [MIT License](LICENSE).
+

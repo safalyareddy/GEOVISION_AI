@@ -18,16 +18,15 @@ echo "=========================================================="
 # Ensure cache directories exist with appropriate permissions
 mkdir -p /app/checkpoints "${HOME}/.cache/geovision/checkpoints" /tmp/geovision
 
-# Pre-flight check / acquisition of champion FPN checkpoint
+# Pre-flight check / acquisition of all four registered checkpoints
 python -c "
 import sys
-from src.utils.model_registry import resolve_checkpoint_path, is_model_available, CHAMPION_MODEL
-print(f'Checking availability of champion model ({CHAMPION_MODEL})...')
-path = resolve_checkpoint_path(CHAMPION_MODEL, allow_download=True)
-if path and path.exists():
-    print(f'Champion model verified at: {path}')
-else:
-    print('WARNING: Champion model could not be pre-loaded at startup. Will attempt runtime download when requested.')
+from src.utils.model_registry import resolve_checkpoint_path, is_model_available, SUPPORTED_MODELS, CHAMPION_MODEL
+print('Pre-flight checkpoint verification for all architectures:')
+for m in SUPPORTED_MODELS:
+    path = resolve_checkpoint_path(m, allow_download=False)
+    status = 'Verified' if (path and path.exists()) else 'Missing'
+    print(f'  • {m:<16}: {status} ({path})')
 " || true
 
 # Signal handling for graceful shutdown
@@ -52,7 +51,7 @@ trap cleanup SIGTERM SIGINT SIGQUIT
 # 1. Start FastAPI microservice on internal port
 echo "Starting FastAPI microservice on 127.0.0.1:${API_PORT}..."
 uvicorn src.api.main:app \
-    --host 127.0.0.1 \
+    --host 0.0.0.0 \
     --port "${API_PORT}" \
     --log-level info &
 UVICORN_PID=$!

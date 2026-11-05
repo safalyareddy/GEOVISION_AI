@@ -37,4 +37,8 @@ experiments/
 PROJECT_FILE_CLASSIFICATION.csv
 checkpoints/*
 !checkpoints/fpn_best.pth
+!checkpoints/unet_plusplus_best.pth
+!checkpoints/deeplabv3_plus_best.pth
+!checkpoints/segformer_best.pth
 !checkpoints/.gitkeep
+

@@ -5,6 +5,7 @@ Unit & Integration Tests for FastAPI Microservice
 
 import io
 import pytest
+import numpy as np
 from PIL import Image
 
 try:
@@ -48,11 +49,11 @@ def test_list_models_endpoint():
 
 @pytest.mark.skipif(not HAS_TESTCLIENT, reason="FastAPI TestClient required for API tests.")
 def test_predict_endpoint_valid_image():
-    """Test prediction endpoint with synthetic PNG image."""
+    """Test prediction endpoint with valid remote sensing image."""
     client = TestClient(app)
 
-    # Create dummy synthetic RGB image
-    img = Image.new("RGB", (64, 64), color="blue")
+    # Create dummy synthetic RGB image with natural remote sensing reflectance (low saturation)
+    img = Image.new("RGB", (64, 64), color=(60, 75, 70))
     buf = io.BytesIO()
     img.save(buf, format="PNG")
     buf.seek(0)
@@ -183,7 +184,7 @@ def test_predict_endpoint_oversized_file():
 def test_predict_endpoint_champion_fpn():
     """Test prediction endpoint with champion FPN model."""
     client = TestClient(app)
-    img = Image.new("RGB", (64, 64), color="blue")
+    img = Image.new("RGB", (64, 64), color=(60, 75, 70))
     buf = io.BytesIO()
     img.save(buf, format="PNG")
     buf.seek(0)
@@ -212,3 +213,73 @@ def test_models_endpoint_reports_champion_readiness():
     assert "models_status" in data
     assert "fpn" in data["models_status"]
     assert data["models_status"]["fpn"]["is_champion"] is True
+
+
+@pytest.mark.skipif(not HAS_TESTCLIENT, reason="FastAPI TestClient required for API tests.")
+def test_predict_endpoint_all_four_models():
+    """Test prediction endpoint returns valid results for all four supported models."""
+    client = TestClient(app)
+    img = Image.new("RGB", (128, 128), color=(65, 80, 75))
+    buf = io.BytesIO()
+    img.save(buf, format="PNG")
+    img_bytes = buf.getvalue()
+
+    for m_name in ["fpn", "unet_plusplus", "deeplabv3_plus", "segformer"]:
+        response = client.post(
+            "/predict",
+            files={"file": (f"test_{m_name}.png", io.BytesIO(img_bytes), "image/png")},
+            data={"model_name": m_name, "threshold": 0.5}
+        )
+        assert response.status_code == 200, f"Failed prediction for model '{m_name}': {response.text}"
+        data = response.json()
+        assert data["model_name"] == m_name
+        assert 0.0 <= data["water_coverage_percentage"] <= 100.0
+        assert data["latency_ms"] > 0
+        assert len(data["mask_base64"]) > 0
+
+
+@pytest.mark.skipif(not HAS_TESTCLIENT, reason="FastAPI TestClient required for API tests.")
+def test_predict_endpoint_rejects_consumer_photograph():
+    """Test that consumer photographs (e.g., highly saturated floral/portrait images) are rejected with HTTP 422."""
+    client = TestClient(app)
+    # Pure red image (saturation 1.0) simulating consumer floral photography
+    arr = np.zeros((128, 128, 3), dtype=np.uint8)
+    arr[..., 0] = 255
+    arr[..., 1] = 10
+    arr[..., 2] = 20
+    img = Image.fromarray(arr)
+    buf = io.BytesIO()
+    img.save(buf, format="PNG")
+    buf.seek(0)
+
+    response = client.post(
+        "/predict",
+        files={"file": ("flower.png", buf, "image/png")},
+        data={"model_name": "fpn", "threshold": 0.5}
+    )
+    assert response.status_code == 422
+    assert "Unsupported photograph" in response.text
+
+
+@pytest.mark.skipif(not HAS_TESTCLIENT, reason="FastAPI TestClient required for API tests.")
+def test_ready_and_metrics_endpoints():
+    """Test /ready, /metrics, and /models/{model_id}/status endpoints."""
+    client = TestClient(app)
+    r_ready = client.get("/ready")
+    assert r_ready.status_code == 200
+    data_ready = r_ready.json()
+    assert "ready" in data_ready
+    assert "service_state" in data_ready
+
+    r_metrics = client.get("/metrics")
+    assert r_metrics.status_code == 200
+    data_metrics = r_metrics.json()
+    assert "metrics" in data_metrics
+    assert "total_requests" in data_metrics["metrics"]
+
+    r_status = client.get("/models/fpn/status")
+    assert r_status.status_code == 200
+    assert r_status.json()["model_name"] == "fpn"
+
+    r_status_bad = client.get("/models/nonexistent_model/status")
+    assert r_status_bad.status_code == 404

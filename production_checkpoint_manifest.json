@@ -1,0 +1,146 @@
+{
+  "platform": "GeoVision AI — Sentinel-2 Satellite Water-Body Segmentation Platform",
+  "generated_at": "2026-11-05T15:20:00Z",
+  "huggingface": {
+    "repository": "safalya06/geovision-water-segmentation-models",
+    "pinned_commit": "441a99034b36336c34d86c23cfe9c1a8114ca3a4",
+    "verified_lfs_storage": true
+  },
+  "models": {
+    "fpn": {
+      "model_id": "fpn",
+      "display_name": "FPN-ResNet34 (Production Champion)",
+      "is_champion": true,
+      "architecture": "smp.FPN",
+      "backbone": "resnet34",
+      "encoder_weights": "imagenet",
+      "checkpoint_filename": "fpn_best.pth",
+      "file_size_bytes": 92779733,
+      "sha256": "d21fa18c36beabdb0b139364d347a6e97c1cc00e83e9ba92630e9a7795119eb1",
+      "provenance": {
+        "experiment_id": "EXP06",
+        "training_epochs": 30,
+        "loss_function": "Focal Tversky Loss (alpha=0.7, beta=0.3, gamma=1.333)",
+        "optimizer": "AdamW (lr=0.0003, weight_decay=0.0001)"
+      },
+      "test_set_metrics": {
+        "accuracy": 0.9156,
+        "precision": 0.7581,
+        "recall": 0.5424,
+        "micro_dice": 0.6323,
+        "true_positives": 256886,
+        "false_negatives": 216760,
+        "false_positives": 82006,
+        "true_negatives": 2984188
+      },
+      "onnx": {
+        "exported": true,
+        "filename": "fpn.onnx",
+        "opset_version": 18,
+        "binary_mask_parity_pct": 100.0,
+        "max_prob_diff": 0.000015
+      }
+    },
+    "unet_plusplus": {
+      "model_id": "unet_plusplus",
+      "display_name": "UNet++-ResNet34",
+      "is_champion": false,
+      "architecture": "smp.UnetPlusPlus",
+      "backbone": "resnet34",
+      "encoder_weights": "imagenet",
+      "checkpoint_filename": "unet_plusplus_best.pth",
+      "file_size_bytes": 104528035,
+      "sha256": "497e246ef79d87f3b2255cc119e7ab8bd0045d48caf3d4710e9f6738e56c4548",
+      "provenance": {
+        "experiment_id": "EXP01",
+        "training_epochs": 30,
+        "loss_function": "Focal Tversky Loss (alpha=0.7, beta=0.3, gamma=1.333)",
+        "optimizer": "AdamW (lr=0.0003)"
+      },
+      "test_set_metrics": {
+        "accuracy": 0.9064,
+        "precision": 0.8037,
+        "recall": 0.3975,
+        "micro_dice": 0.5319,
+        "true_positives": 188256,
+        "false_negatives": 285390,
+        "false_positives": 45982,
+        "true_negatives": 3020212
+      },
+      "onnx": {
+        "exported": true,
+        "filename": "unet_plusplus.onnx",
+        "opset_version": 18,
+        "binary_mask_parity_pct": 100.0,
+        "max_prob_diff": 0.000018
+      }
+    },
+    "deeplabv3_plus": {
+      "model_id": "deeplabv3_plus",
+      "display_name": "DeepLabV3+-ResNet34",
+      "is_champion": false,
+      "architecture": "smp.DeepLabV3Plus",
+      "backbone": "resnet34",
+      "encoder_weights": "imagenet",
+      "checkpoint_filename": "deeplabv3_plus_best.pth",
+      "file_size_bytes": 89936639,
+      "sha256": "6c7c6dd4835d29be34b9eda03bdfca878914749a526c44cade99906cc1b1b827",
+      "provenance": {
+        "experiment_id": "EXP04",
+        "training_epochs": 30,
+        "loss_function": "Focal Tversky Loss (alpha=0.7, beta=0.3, gamma=1.333)",
+        "optimizer": "AdamW (lr=0.0003)"
+      },
+      "test_set_metrics": {
+        "accuracy": 0.9022,
+        "precision": 0.7857,
+        "recall": 0.3705,
+        "micro_dice": 0.5036,
+        "true_positives": 175500,
+        "false_negatives": 298146,
+        "false_positives": 47844,
+        "true_negatives": 3018350
+      },
+      "onnx": {
+        "exported": true,
+        "filename": "deeplabv3_plus.onnx",
+        "opset_version": 18,
+        "binary_mask_parity_pct": 100.0,
+        "max_prob_diff": 0.000012
+      }
+    },
+    "segformer": {
+      "model_id": "segformer",
+      "display_name": "SegFormer-MiT-B0",
+      "is_champion": false,
+      "architecture": "transformers.SegformerForSemanticSegmentation",
+      "backbone": "nvidia/mit-b0",
+      "checkpoint_filename": "segformer_best.pth",
+      "file_size_bytes": 14949211,
+      "sha256": "2c762a52a5aa5cafb6aecb698bf483257fd5279bce3f3af7368850ba9354e986",
+      "provenance": {
+        "experiment_id": "EXP05",
+        "training_epochs": 30,
+        "loss_function": "Focal Tversky Loss (alpha=0.7, beta=0.3, gamma=1.333)",
+        "optimizer": "AdamW (lr=0.00006)"
+      },
+      "test_set_metrics": {
+        "accuracy": 0.8703,
+        "precision": 0.5251,
+        "recall": 0.3275,
+        "micro_dice": 0.4034,
+        "true_positives": 155142,
+        "false_negatives": 318504,
+        "false_positives": 140306,
+        "true_negatives": 2925888
+      },
+      "onnx": {
+        "exported": true,
+        "filename": "segformer.onnx",
+        "opset_version": 18,
+        "binary_mask_parity_pct": 100.0,
+        "max_prob_diff": 0.000001
+      }
+    }
+  }
+}

@@ -39,7 +39,7 @@ class HuggingFaceSegFormerWrapper(nn.Module if HAS_TORCH else object):
     """
     def __init__(
         self,
-        encoder_name: str = "nvidia/mit-b2",
+        encoder_name: str = "nvidia/mit-b0",
         in_channels: int = 3,
         num_classes: int = 1,
         encoder_weights: Optional[str] = "imagenet"
@@ -56,29 +56,44 @@ class HuggingFaceSegFormerWrapper(nn.Module if HAS_TORCH else object):
         self.in_channels = in_channels
         self.encoder_name = encoder_name
 
-        try:
-            if encoder_weights is not None:
-                self.config = SegformerConfig.from_pretrained(encoder_name, num_labels=num_classes)
-                self.model = SegformerForSemanticSegmentation(self.config)
-            else:
-                self.config = SegformerConfig(
-                    num_labels=num_classes,
-                    num_channels=in_channels,
-                    depths=[2, 2, 2, 2],
-                    hidden_sizes=[32, 64, 160, 256],
-                    decoder_hidden_size=256
-                )
-                self.model = SegformerForSemanticSegmentation(self.config)
-        except Exception:
-            # Fallback to local offline structural config if external hub unreachable
+        # Determine architecture parameters based on encoder variant (MiT-B2 vs MiT-B0)
+        is_b0 = "b0" in encoder_name.lower()
+        depths = [2, 2, 2, 2] if is_b0 else [3, 4, 6, 3]
+        hidden_sizes = [32, 64, 160, 256] if is_b0 else [64, 128, 320, 512]
+        decoder_hidden_size = 256 if is_b0 else 768
+
+        label_mapping = {0: "water"}
+        reverse_mapping = {"water": 0}
+        if encoder_weights is None:
             self.config = SegformerConfig(
                 num_labels=num_classes,
                 num_channels=in_channels,
-                depths=[2, 2, 2, 2],
-                hidden_sizes=[32, 64, 160, 256],
-                decoder_hidden_size=256
+                depths=depths,
+                hidden_sizes=hidden_sizes,
+                decoder_hidden_size=decoder_hidden_size,
+                id2label=label_mapping,
+                label2id=reverse_mapping
             )
-            self.model = SegformerForSemanticSegmentation(self.config)
+        else:
+            try:
+                self.config = SegformerConfig.from_pretrained(
+                    encoder_name,
+                    num_labels=num_classes,
+                    id2label=label_mapping,
+                    label2id=reverse_mapping
+                )
+            except Exception:
+                # Fallback to local structural config
+                self.config = SegformerConfig(
+                    num_labels=num_classes,
+                    num_channels=in_channels,
+                    depths=depths,
+                    hidden_sizes=hidden_sizes,
+                    decoder_hidden_size=decoder_hidden_size,
+                    id2label=label_mapping,
+                    label2id=reverse_mapping
+                )
+        self.model = SegformerForSemanticSegmentation(self.config)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         h, w = x.shape[-2], x.shape[-1]
@@ -127,10 +142,10 @@ class FallbackUNetPlusPlus(nn.Module if HAS_TORCH else object):
 
 
 SUPPORTED_MODELS: Dict[str, str] = {
-    "unet_plusplus": "UNet++ (Nested UNet for multi-scale feature fusion)",
-    "deeplabv3_plus": "DeepLabV3+ (Atrous Spatial Pyramid Pooling)",
-    "segformer": "SegFormer-B2 (Lightweight Vision Transformer for Segmentation)",
-    "fpn": "Feature Pyramid Network (Multi-scale feature pyramid for thin streams and boundaries)"
+    "unet_plusplus": "UNet++–ResNet34 (Nested UNet for multi-scale feature fusion)",
+    "deeplabv3_plus": "DeepLabV3+–ResNet34 (Atrous Spatial Pyramid Pooling)",
+    "segformer": "SegFormer–MiT-B0 (Lightweight Vision Transformer)",
+    "fpn": "FPN–ResNet34 (Champion Feature Pyramid Network)"
 }
 
 
@@ -201,21 +216,21 @@ def build_model(
             )
 
     elif normalized_name == "segformer":
-        if HAS_SMP and hasattr(smp, "Segformer"):
-            enc = "mit_b0" if encoder_name in ["resnet34", "nvidia/mit-b2", "mit_b2", "mit-b2"] else encoder_name
-            return smp.Segformer(
-                encoder_name=enc,
-                encoder_weights=encoder_weights,
-                in_channels=in_channels,
-                classes=num_classes
-            )
-        elif HAS_TRANSFORMERS:
-            hf_encoder = "nvidia/mit-b2" if encoder_name == "resnet34" else encoder_name
+        if HAS_TRANSFORMERS:
+            hf_encoder = "nvidia/mit-b0" if encoder_name in ["resnet34", "nvidia/mit-b0", "mit_b0", "mit-b0"] else encoder_name
             return HuggingFaceSegFormerWrapper(
                 encoder_name=hf_encoder,
                 in_channels=in_channels,
                 num_classes=num_classes,
                 encoder_weights=encoder_weights
+            )
+        elif HAS_SMP and hasattr(smp, "Segformer"):
+            enc = "mit_b0" if encoder_name in ["resnet34", "nvidia/mit-b0", "mit_b0", "mit-b0"] else encoder_name
+            return smp.Segformer(
+                encoder_name=enc,
+                encoder_weights=encoder_weights,
+                in_channels=in_channels,
+                classes=num_classes
             )
         else:
             if allow_dummy_fallback:
