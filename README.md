@@ -10,7 +10,16 @@ pinned: false
 
 # GeoVision AI — Satellite Water Body Segmentation Platform
 
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://ai-geovision.streamlit.app/)
+[![Hugging Face Model](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Model%20Hub-blue)](https://huggingface.co/safalya06/geovision-water-segmentation-models)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
 A modular computer vision platform for high-resolution surface water detection, segmentation, and hydrological surface area quantification from optical satellite imagery (Sentinel-2).
+
+* **Live Cloud Application**: [https://ai-geovision.streamlit.app/](https://ai-geovision.streamlit.app/)
+* **Verified Champion Checkpoint**: [`safalya06/geovision-water-segmentation-models@022039f`](https://huggingface.co/safalya06/geovision-water-segmentation-models)
+* **Cryptographic Checksum**: `d21fa18c36beabdb0b139364d347a6e97c1cc00e83e9ba92630e9a7795119eb1`
 
 ---
 

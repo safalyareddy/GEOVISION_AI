@@ -6,16 +6,17 @@ This guide details the deployment architectures, hardware requirements, containe
 
 ## 1. Hosting Platform Evaluation
 
-| Platform | Recommended Role | Free Tier Specifications | Strengths | Limitations |
+| Platform | Recommended Role | Tier Specifications | Strengths | Limitations |
 | :--- | :--- | :--- | :--- | :--- |
-| **Hugging Face Spaces** | **Primary Interactive Demo** (Docker SDK) | 2 vCPU, 16 GB RAM, 50 GB Disk | Zero hosting cost; 16 GB RAM accommodates PyTorch model weights effortlessly; direct ML community reach. | Cold start on dormant free spaces (~30s). |
-| **Railway** | **Inference API Microservice** (FastAPI) | $5 credit / month (pay-as-you-go) | Native Docker support; automatic SSL/TLS; isolated environment variables; low latency. | Paid usage beyond free tier. |
-| **Render** | Alternative API Service | 0.5 CPU, 512 MB RAM | Simple Git deployment. | 512 MB free RAM is tight for multiple simultaneous PyTorch models. |
-| **Vercel / Netlify** | *Not Recommended* | Serverless Lambdas | Fast static CDN edge. | 50 MB / 250 MB function size limits cannot accommodate PyTorch dependencies. |
+| **Streamlit Community Cloud** | **Live Production Demo** (Verified) | 1.0 GB RAM (burst 1.5 GB), shared CPU | **100% Free** forever; zero credit card required; direct GitHub synchronization; verified 638 MB peak inference RSS. | Sleeps on dormant inactivity (~15s wake). |
+| **Hugging Face Hub** | **Model Checkpoint Registry** (Verified) | Git LFS, free public model hosting | Bitwise cryptographic verification (`d21fa1...`); pinned revision locking; reliable 64 KB block streaming. | Model hosting only; Docker Spaces requires PRO subscription. |
+| **Docker (Local / Self-Hosted)** | **Multi-Service Microservice** | Standard Docker Engine | Multi-process supervisor (`docker/entrypoint.sh`), internal FastAPI `:8000`, public UI `:7860`. | Requires host Docker daemon. |
+| **Render / Koyeb** | *Not Recommended for ML* | 512 MB RAM | Simple Git deployment. | **Fails with OOMKilled**: PyTorch + FPN model requires ~589 MB minimum. |
 
-### Architectural Recommendation
-1. **Public Interactive ML Portfolio Demo**: Deploy to **Hugging Face Spaces** using the **Docker SDK**. The generous 16 GB RAM allowance ensures seamless model inference and multi-architecture switching without Out-Of-Memory (OOM) risks.
-2. **Production API Endpoint**: Deploy the FastAPI microservice to **Railway** or a cloud container instance using `Dockerfile`.
+### Verified Live Deployments
+* **Live Web Dashboard**: [https://ai-geovision.streamlit.app/](https://ai-geovision.streamlit.app/)
+* **Verified Champion Checkpoint**: [`safalya06/geovision-water-segmentation-models@022039f`](https://huggingface.co/safalya06/geovision-water-segmentation-models)
+* **Cryptographic Checksum**: `d21fa18c36beabdb0b139364d347a6e97c1cc00e83e9ba92630e9a7795119eb1`
 
 ---
 
