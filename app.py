@@ -203,15 +203,29 @@ def main():
         help="Probability threshold above which a pixel is classified as surface water. Benchmark calibrated threshold is 0.50 (with 0.60 for high-precision scenarios)."
     )
 
+    # Detect FastAPI microservice availability
+    fastapi_active = False
+    if HAS_HTTPX:
+        try:
+            with httpx.Client(timeout=0.4) as test_client:
+                health_resp = test_client.get(f"{DEFAULT_API_URL.rstrip('/')}/health")
+                fastapi_active = (health_resp.status_code == 200)
+        except Exception:
+            fastapi_active = False
+
+    default_backend_idx = 0 if fastapi_active else 1
     backend = st.sidebar.radio(
         "Inference Execution Backend",
         options=["FastAPI Microservice (REST API)", "PyTorch (In-Process)", "ONNX Runtime (In-Process)"],
+        index=default_backend_idx,
         help="Compare execution performance between remote FastAPI microservice, PyTorch eager execution, and ONNX Runtime."
     )
 
     api_url = DEFAULT_API_URL
     if "FastAPI" in backend:
         api_url = st.sidebar.text_input("FastAPI Endpoint URL", value=DEFAULT_API_URL, help="Base URL for FastAPI microservice (e.g. http://localhost:8000 or http://api:8000)")
+        if not fastapi_active:
+            st.sidebar.caption("ℹ️ FastAPI is not running on 127.0.0.1:8000. Switch to 'PyTorch (In-Process)' for standalone cloud execution.")
 
     st.sidebar.markdown("---")
     st.sidebar.markdown("### 📊 Dataset Overview")
@@ -244,12 +258,22 @@ def main():
         if uploaded_file is not None:
             image = Image.open(uploaded_file).convert("RGB")
         elif use_sample:
-            sample_img_path = Path("dataset/test/images/patch_0047.png")
-            sample_msk_path = Path("dataset/test/masks/patch_0047.png")
-            if sample_img_path.exists():
-                image = Image.open(sample_img_path).convert("RGB")
-            if sample_msk_path.exists():
-                gt_mask = Image.open(sample_msk_path).convert("L")
+            sample_candidates = [
+                Path("dataset/test/images/patch_0047.png"),
+                Path("assets/demo/patch_0047.png"),
+            ]
+            sample_msk_candidates = [
+                Path("dataset/test/masks/patch_0047.png"),
+                Path("assets/demo/patch_0047_mask.png"),
+            ]
+            for cand in sample_candidates:
+                if cand.exists():
+                    image = Image.open(cand).convert("RGB")
+                    break
+            for cand in sample_msk_candidates:
+                if cand.exists():
+                    gt_mask = Image.open(cand).convert("L")
+                    break
 
         model_ready = is_model_available(model_choice)
         if not model_ready and "FastAPI" not in backend:
