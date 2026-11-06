@@ -84,7 +84,7 @@ def get_current_git_commit() -> str:
                     return ref[:7]
     except Exception:
         pass
-    return "016d54e"
+    return "abfcd55"
 
 # Page Configuration
 if HAS_STREAMLIT:
