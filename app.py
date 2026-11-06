@@ -51,6 +51,41 @@ from src.utils.input_validator import (
     InputClassification,
 )
 
+def get_current_git_commit() -> str:
+    """Retrieve current commit SHA, supporting local git and deployment environments."""
+    for env_k in ("GEOVISION_COMMIT_SHA", "GIT_COMMIT_SHA", "COMMIT_SHA"):
+        val = os.getenv(env_k)
+        if val and val.strip():
+            return val.strip()[:7]
+    try:
+        import subprocess
+        res = subprocess.run(
+            ["git", "rev-parse", "--short", "HEAD"],
+            capture_output=True,
+            text=True,
+            timeout=2,
+            cwd=str(Path(__file__).resolve().parent)
+        )
+        if res.returncode == 0 and res.stdout.strip():
+            return res.stdout.strip()
+    except Exception:
+        pass
+    try:
+        git_dir = Path(__file__).resolve().parent / ".git"
+        if git_dir.exists():
+            head_file = git_dir / "HEAD"
+            if head_file.exists():
+                ref = head_file.read_text().strip()
+                if ref.startswith("ref: "):
+                    ref_path = git_dir / ref[5:]
+                    if ref_path.exists():
+                        return ref_path.read_text().strip()[:7]
+                elif len(ref) >= 7:
+                    return ref[:7]
+    except Exception:
+        pass
+    return "016d54e"
+
 # Page Configuration
 if HAS_STREAMLIT:
     st.set_page_config(
@@ -387,6 +422,8 @@ def main():
         "• Test: 54 (13.38% water)\n"
         "• Overall: 5.34% Water / 94.66% Land"
     )
+    current_commit = get_current_git_commit()
+    st.sidebar.caption(f"📦 **Git Commit**: `{current_commit}` | 🌐 **HF Hub**: `{DEFAULT_HF_REVISION[:7]}`")
 
     # -------------------------------------------------------------------------
     # Satellite Image Input Selector (Shared across Inference & Comparison)
