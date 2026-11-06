@@ -14,12 +14,6 @@ import numpy as np
 import pandas as pd
 
 try:
-    import httpx
-    HAS_HTTPX = True
-except ImportError:
-    HAS_HTTPX = False
-
-try:
     import streamlit as st
     HAS_STREAMLIT = True
 except ImportError:
@@ -106,7 +100,7 @@ def run_pytorch_inference(
     threshold: float
 ) -> Tuple[Image.Image, np.ndarray, float, float, float]:
     """
-    Execute genuine PyTorch FPN inference using standard preprocessing,
+    Execute genuine PyTorch inference using standard preprocessing,
     torch.inference_mode(), sigmoid activation, and decision thresholding.
 
     Returns:
@@ -153,7 +147,7 @@ def run_pytorch_inference(
 def get_cached_onnx_session(model_name: str) -> Any:
     """Load or export optimized ONNX runtime session for given model."""
     if not HAS_ONNX:
-        raise RuntimeError("ONNX Runtime is not installed.")
+        raise RuntimeError("ONNX Runtime is not installed. Please install 'onnxruntime'.")
     onnx_path = Path("checkpoints/onnx") / f"{model_name}.onnx"
     if not onnx_path.exists():
         # Export on-the-fly from verified PyTorch checkpoint
@@ -161,15 +155,46 @@ def get_cached_onnx_session(model_name: str) -> Any:
         pt_model = get_cached_pytorch_model(model_name)
         pt_model.eval()
         dummy = torch.randn(1, 3, 256, 256, dtype=torch.float32)
-        torch.onnx.export(
-            pt_model,
-            dummy,
-            str(onnx_path),
-            input_names=["input"],
-            output_names=["output"],
-            opset_version=18,
-            dynamic_axes={"input": {0: "batch"}, "output": {0: "batch"}},
-        )
+
+        # Primary export: Standard PyTorch ONNX export with opset 18
+        export_success = False
+        primary_err = None
+        try:
+            torch.onnx.export(
+                pt_model,
+                dummy,
+                str(onnx_path),
+                input_names=["input"],
+                output_names=["output"],
+                opset_version=18,
+                dynamic_axes={"input": {0: "batch"}, "output": {0: "batch"}},
+            )
+            export_success = True
+        except Exception as e_prim:
+            primary_err = e_prim
+
+        # Fallback export: Legacy TorchScript exporter with dynamo=False (zero dependency on onnxscript)
+        if not export_success:
+            try:
+                import warnings
+                with warnings.catch_warnings():
+                    warnings.simplefilter("ignore")
+                    torch.onnx.export(
+                        pt_model,
+                        dummy,
+                        str(onnx_path),
+                        input_names=["input"],
+                        output_names=["output"],
+                        opset_version=14,
+                        dynamo=False,
+                        dynamic_axes={"input": {0: "batch"}, "output": {0: "batch"}},
+                    )
+                export_success = True
+            except Exception as e_fall:
+                raise RuntimeError(
+                    f"Failed to export {model_name} to ONNX. Primary error: {primary_err}. Fallback error: {e_fall}"
+                )
+
     sess_opts = ort.SessionOptions()
     sess_opts.graph_optimization_level = ort.GraphOptimizationLevel.ORT_ENABLE_ALL
     return ort.InferenceSession(str(onnx_path), sess_opts, providers=["CPUExecutionProvider"])
@@ -204,38 +229,6 @@ def run_onnx_inference(
     water_area_km2 = float(water_area_m2 / 1e6)
 
     mask_img = Image.fromarray(binary_mask * 255, mode="L").resize((orig_w, orig_h), Image.NEAREST)
-    return mask_img, binary_mask, latency_ms, water_coverage_pct, water_area_km2
-
-
-def run_fastapi_inference(
-    image: Image.Image,
-    model_name: str,
-    threshold: float,
-    api_url: str
-) -> Tuple[Image.Image, np.ndarray, float, float, float]:
-    """Execute prediction via external FastAPI REST microservice."""
-    orig_w, orig_h = image.size
-    start_time = time.perf_counter()
-
-    buf = io.BytesIO()
-    image.save(buf, format="PNG")
-    files = {"file": ("image.png", buf.getvalue(), "image/png")}
-    data = {"model_name": model_name, "threshold": str(threshold)}
-
-    with httpx.Client(timeout=30.0) as client:
-        resp = client.post(f"{api_url.rstrip('/')}/predict", files=files, data=data)
-
-    if resp.status_code != 200:
-        raise RuntimeError(f"FastAPI microservice returned HTTP {resp.status_code}: {resp.text}")
-
-    payload = resp.json()
-    mask_bytes = base64.b64decode(payload["mask_base64"])
-    mask_img = Image.open(io.BytesIO(mask_bytes)).convert("L").resize((orig_w, orig_h), Image.NEAREST)
-    binary_mask = (np.array(mask_img) > 127).astype(np.uint8)
-    latency_ms = float(payload.get("latency_ms", (time.perf_counter() - start_time) * 1000.0))
-    water_coverage_pct = float(payload.get("water_coverage_percentage", 0.0))
-    water_area_km2 = float(payload.get("estimated_water_area_km2", 0.0))
-
     return mask_img, binary_mask, latency_ms, water_coverage_pct, water_area_km2
 
 
@@ -299,54 +292,22 @@ def main():
              "Default calibrated benchmark threshold is 0.50 (with 0.60 for high-precision scenarios)."
     )
 
-    # 3. Backend Detection & Selection
-    configured_api_url = os.environ.get("API_URL", "").strip()
-    fastapi_healthy = False
-    active_api_url = None
-
-    if configured_api_url:
-        try:
-            with httpx.Client(timeout=1.0) as client:
-                r = client.get(f"{configured_api_url.rstrip('/')}/health")
-                if r.status_code == 200:
-                    fastapi_healthy = True
-                    active_api_url = configured_api_url
-        except Exception:
-            fastapi_healthy = False
-    else:
-        # Check local Docker port 8000
-        try:
-            with httpx.Client(timeout=0.2) as client:
-                r = client.get("http://127.0.0.1:8000/health")
-                if r.status_code == 200:
-                    fastapi_healthy = True
-                    active_api_url = "http://127.0.0.1:8000"
-        except Exception:
-            fastapi_healthy = False
-
-    BACKEND_PYTORCH = "PyTorch (In-Process) [Primary / Cloud Default]"
-    BACKEND_FASTAPI = "FastAPI Microservice (REST API)" if fastapi_healthy else "FastAPI Microservice (Unavailable - Local Docker only)"
+    # 3. Engine Selection (PyTorch or ONNX Runtime)
+    BACKEND_PYTORCH = "PyTorch (In-Process CPU) [Default]"
     BACKEND_ONNX = "ONNX Runtime (Accelerated CPU)" if HAS_ONNX else "ONNX Runtime (Unavailable - Requires onnxruntime)"
 
-    backend_choices = [BACKEND_PYTORCH, BACKEND_FASTAPI, BACKEND_ONNX]
+    backend_choices = [BACKEND_PYTORCH, BACKEND_ONNX]
     backend = st.sidebar.radio(
-        "Inference Execution Backend",
+        "Inference Execution Engine",
         options=backend_choices,
         index=0,  # Always default to PyTorch (In-Process)
-        help="Select between in-process PyTorch execution, ONNX Runtime acceleration, or external FastAPI microservice."
+        help="Select between native PyTorch execution or optimized ONNX Runtime acceleration."
     )
 
-    # Backend Warning / Configuration Callouts
-    if backend == BACKEND_FASTAPI and not fastapi_healthy:
-        st.sidebar.warning(
-            "⚠️ **FastAPI Service Unavailable**\n\n"
-            "FastAPI is not reachable at localhost:8000 or via $API_URL. "
-            "Please select **PyTorch (In-Process)** for cloud execution."
-        )
-    elif backend == BACKEND_ONNX and not HAS_ONNX:
+    if backend == BACKEND_ONNX and not HAS_ONNX:
         st.sidebar.warning(
             "⚠️ **ONNX Runtime Unavailable**\n\n"
-            "onnxruntime package is not installed. Please select **PyTorch (In-Process)**."
+            "onnxruntime package is not installed. Please select **PyTorch (In-Process CPU)**."
         )
 
     # Model Loading & Verification Gate
@@ -518,8 +479,6 @@ def main():
         if not is_photo_rejected and image is not None:
             if backend == BACKEND_PYTORCH and model_obj is not None:
                 can_run = True
-            elif backend == BACKEND_FASTAPI and fastapi_healthy:
-                can_run = True
             elif backend == BACKEND_ONNX and onnx_sess is not None:
                 can_run = True
 
@@ -552,14 +511,6 @@ def main():
                     )
                     water_pixels = int(np.sum(binary_mask))
                     water_area_km2, area_note = calculate_water_area_km2(water_pixels, classification, input_meta)
-                elif backend == BACKEND_FASTAPI:
-                    mask_img, binary_mask, latency_ms, water_coverage_pct, water_area_km2 = run_fastapi_inference(
-                        image=image,
-                        model_name=model_choice,
-                        threshold=threshold,
-                        api_url=active_api_url
-                    )
-                    area_note = "Computed via FastAPI microservice with input safety verification."
             except Exception as e:
                 error_message = str(e)
 
@@ -579,11 +530,8 @@ def main():
                     help=area_note or "Geospatial area estimation"
                 )
                 m3.metric("Inference Latency", f"{latency_ms:.2f} ms")
-                backend_disp = (
-                    "PyTorch (In-Process)" if backend == BACKEND_PYTORCH
-                    else ("ONNX Runtime" if backend == BACKEND_ONNX else "FastAPI")
-                )
-                m4.metric("Active Backend", backend_disp)
+                backend_disp = "PyTorch (In-Process CPU)" if backend == BACKEND_PYTORCH else "ONNX Runtime (Accelerated CPU)"
+                m4.metric("Active Engine", backend_disp)
 
                 # Model Artifact Integrity Card
                 is_hf = MODEL_REGISTRY[model_choice].get("is_hosted_on_hf", False)
@@ -593,7 +541,7 @@ def main():
 
                 st.caption(
                     f"**Verified Model**: `{model_choice.upper()}` | "
-                    f"**Backend**: `{backend_disp}` | "
+                    f"**Engine**: `{backend_disp}` | "
                     f"**Source**: {source_lbl} | "
                     f"**Revision**: {rev_lbl} | "
                     f"**SHA-256**: `{active_hash[:16]}... (Cryptographically Verified)` | "
@@ -617,8 +565,6 @@ def main():
         elif not can_run and image is not None:
             if is_photo_rejected:
                 st.warning("⚠️ **Inference Blocked**: The uploaded image was classified as consumer photography or corrupted payload. Please upload a valid Sentinel-2 optical tile.")
-            elif backend == BACKEND_FASTAPI and not fastapi_healthy:
-                st.info("ℹ️ FastAPI is unavailable. Please select **PyTorch (In-Process)** or **ONNX Runtime** to run inference.")
             elif backend == BACKEND_ONNX and onnx_load_error:
                 st.error(f"❌ ONNX session error: {onnx_load_error}")
             elif model_load_error:
@@ -658,12 +604,20 @@ def main():
 
                 for arch_key in available_keys:
                     try:
-                        arch_model = get_cached_pytorch_model(arch_key)
-                        m_img, b_mask, lat, cov_pct, _ = run_pytorch_inference(
-                            model=arch_model,
-                            image=image,
-                            threshold=threshold
-                        )
+                        if backend == BACKEND_ONNX:
+                            arch_sess = get_cached_onnx_session(arch_key)
+                            m_img, b_mask, lat, cov_pct, _ = run_onnx_inference(
+                                session=arch_sess,
+                                image=image,
+                                threshold=threshold
+                            )
+                        else:
+                            arch_model = get_cached_pytorch_model(arch_key)
+                            m_img, b_mask, lat, cov_pct, _ = run_pytorch_inference(
+                                model=arch_model,
+                                image=image,
+                                threshold=threshold
+                            )
                         water_px = int(np.sum(b_mask))
                         area_km2, a_note = calculate_water_area_km2(water_px, classification, input_meta)
                         ov_img = create_overlay(image, m_img)
@@ -755,10 +709,10 @@ def main():
             3. **DeepLabV3+ (ResNet34)**: Atrous Spatial Pyramid Pooling (ASPP) for wide contextual field segmentation.
             4. **SegFormer (MiT-B0)**: Lightweight hierarchical Vision Transformer without positional embeddings.
 
-            ### Multi-Backend Inference Support
-            - **PyTorch (In-Process)**: Native CPU/MPS inference using `torch.inference_mode()` with strict cryptographic checkpoint validation.
-            - **ONNX Runtime Engine**: Standalone Open Neural Network Exchange graph execution with full operator parity and CPU graph optimization.
-            - **FastAPI REST Microservice**: Decoupled asynchronous microservice running containerized inference with health, readiness, and metrics endpoints.
+            ### Multi-Engine Inference Runtime
+            - **PyTorch Engine (In-Process CPU)**: Native CPU/MPS inference using `torch.inference_mode()` with strict cryptographic checkpoint validation.
+            - **ONNX Runtime Engine (Accelerated CPU)**: Standalone Open Neural Network Exchange graph execution with full operator parity and CPU graph optimization.
+            *(Note: Legacy FastAPI microservice architecture has been retired in favor of direct in-process PyTorch and ONNX Runtime execution).*
 
             ### Scientific Safety & Provenance Verification
             - **Cryptographic Model Registry**: All model checkpoints are verified against authoritative SHA-256 signatures before memory instantiation.

@@ -5,9 +5,7 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     DEBIAN_FRONTEND=noninteractive \
     HOME=/home/appuser \
-    PORT=7860 \
-    API_PORT=8000 \
-    API_URL=http://127.0.0.1:8000
+    PORT=7860
 
 WORKDIR /app
 
@@ -36,15 +34,15 @@ COPY --chown=appuser:appuser . .
 # Ensure entrypoint is executable
 RUN chmod +x docker/entrypoint.sh
 
-# Hugging Face Spaces routes web traffic strictly to port 7860
-EXPOSE 7860 8000
+# Expose Streamlit dashboard port
+EXPOSE 7860
 
 # Switch to non-root execution
 USER appuser
 
-# Healthcheck against internal FastAPI microservice
+# Healthcheck against Streamlit health endpoint
 HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
-    CMD curl -f http://127.0.0.1:8000/health || exit 1
+    CMD curl -f http://127.0.0.1:7860/_stcore/health || exit 1
 
-# Launch supervisor entrypoint (starts FastAPI on :8000 and Streamlit on :7860)
+# Launch Streamlit dashboard directly via entrypoint
 CMD ["bash", "docker/entrypoint.sh"]

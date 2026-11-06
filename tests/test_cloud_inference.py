@@ -17,7 +17,8 @@ except ImportError:
 from app import (
     get_cached_pytorch_model,
     run_pytorch_inference,
-    run_fastapi_inference,
+    get_cached_onnx_session,
+    run_onnx_inference,
     create_overlay,
 )
 from src.utils.model_registry import (
@@ -74,18 +75,25 @@ def test_overlay_generation():
     assert overlay.mode == "RGB"
 
 
-def test_fastapi_unavailability_raises_runtime_error():
-    """Verify that calling an unavailable FastAPI endpoint raises an explicit error and does not silently fall back."""
+def test_onnx_inference_on_bundled_sample():
+    """Verify genuine ONNX Runtime inference on the bundled patch_0047.png sample."""
     sample_path = Path("assets/demo/patch_0047.png")
     image = Image.open(sample_path).convert("RGB")
 
-    with pytest.raises(Exception):
-        run_fastapi_inference(
-            image=image,
-            model_name=CHAMPION_MODEL,
-            threshold=0.50,
-            api_url="http://127.0.0.1:9999"  # Nonexistent port
-        )
+    sess = get_cached_onnx_session(CHAMPION_MODEL)
+    assert sess is not None
+
+    mask_img, binary_mask, latency_ms, water_pct, water_area_km2 = run_onnx_inference(
+        session=sess,
+        image=image,
+        threshold=0.50
+    )
+
+    assert mask_img.size == image.size
+    assert binary_mask.shape == (256, 256)
+    assert latency_ms > 0
+    assert np.isclose(water_pct, 12.63, atol=0.2)
+    assert np.isclose(water_area_km2, 0.8276, atol=0.02)
 
 
 def test_no_prediction_metrics_after_load_failure(tmp_path: Path):

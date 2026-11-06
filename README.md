@@ -61,9 +61,7 @@ graph TD
     end
 
     subgraph Serving & UI
-        Checkpoints & ONNX --> API[src/api/main.py<br/>FastAPI Microservice :8000]
-        Checkpoints & ONNX --> UI[app.py<br/>Streamlit UI Dashboard :8501]
-        API --> UI
+        Checkpoints & ONNX --> UI[app.py<br/>Streamlit UI Dashboard :7860]
     end
 ```
 
@@ -110,11 +108,12 @@ Sample prediction illustrating high-fidelity shoreline extraction:
 
 ## 5. Technology Stack
 
-- **Machine Learning**: PyTorch 2.x, PyTorch Lightning, Segmentation Models PyTorch (SMP), Transformers (Hugging Face).
-- **Optimization & Export**: ONNX Runtime (CPU execution provider, Opset 17).
-- **Inference & Serving API**: FastAPI, Uvicorn, Pydantic, HTTPX.
-- **Frontend Dashboard**: Streamlit, PIL, Matplotlib.
-- **Testing & Code Quality**: Pytest (54 unit, integration, and security tests), pre-commit hooks.
+## 5. Technology Stack
+
+- **Machine Learning & Core**: PyTorch 2.x, PyTorch Lightning, Segmentation Models PyTorch (SMP), Transformers (Hugging Face).
+- **Optimization & Runtime**: ONNX Runtime (CPU execution provider, Opset 18/14), onnxscript.
+- **Frontend Dashboard**: Streamlit, PIL, Matplotlib, NumPy, Pandas.
+- **Testing & Code Quality**: Pytest (136 unit, integration, model-registry, and input-validator tests).
 - **Containerization & CI**: Docker, Docker Compose, GitHub Actions.
 
 ---
@@ -148,45 +147,26 @@ PYTHONPATH=. pytest tests/ -v
 
 ## 7. Execution
 
-### 1. Launch FastAPI Microservice
-```bash
-uvicorn src.api.main:app --host 0.0.0.0 --port 8000 --reload
-```
-Interactive API documentation:
-- Swagger UI: `http://localhost:8000/docs`
-- ReDoc: `http://localhost:8000/redoc`
-
-Test health endpoint:
-```bash
-curl http://localhost:8000/health
-```
-
-Run test inference via curl:
-```bash
-curl -X POST "http://localhost:8000/predict" \
-     -F "file=@dataset/test/images/patch_0047.png" \
-     -F "model_name=fpn" \
-     -F "threshold=0.5"
-```
-
-### 2. Launch Streamlit Interactive Dashboard
+### Launch Streamlit Interactive Dashboard
 ```bash
 streamlit run app.py --server.port 8501
 ```
-Navigate to `http://localhost:8501` to upload satellite tiles, toggle architectures, tune the decision threshold slider, and compare model outputs.
+Navigate to `http://localhost:8501` to upload satellite tiles, switch inference engines (PyTorch vs ONNX Runtime), toggle architectures, tune the decision threshold slider, and compare model outputs.
+
+*(Note: The legacy FastAPI microservice architecture has been retired. All inference, cryptographic checkpoint verification, and geospatial safety gating are now executed directly in-process via `src.inference`, `src.utils.model_registry`, and `src.utils.input_validator`).*
 
 ---
 
 ## 8. Docker & Cloud Deployment
 
-### Run Unified Container (Hugging Face Spaces & Local Docker)
+### Run Containerized Streamlit Application (Hugging Face Spaces & Local Docker)
 The root `Dockerfile` provides a containerized environment conforming to the **Hugging Face Docker Space SDK**:
 - Non-root user execution (`UID 1000`, `appuser`).
-- Process supervision via `docker/entrypoint.sh` running FastAPI on internal port `8000` and Streamlit on public port `7860`.
+- Native execution via `docker/entrypoint.sh` running Streamlit on public port `7860`.
 - Cryptographic SHA-256 validation of model checkpoints with automatic Hugging Face Model Hub download.
 
 ```bash
-# 1. Build unified production container
+# 1. Build production container
 docker build -t geovision-ai:latest .
 
 # 2. Run container (Streamlit UI exposed on port 7860)
@@ -194,13 +174,11 @@ docker run -p 7860:7860 geovision-ai:latest
 ```
 Navigate to `http://localhost:7860` for the interactive dashboard.
 
-### Run Multi-Container Stack (Docker Compose)
-For local microservice development:
+### Run via Docker Compose
 ```bash
 docker compose up -d --build
 ```
-- FastAPI microservice: `http://localhost:8000`
-- Streamlit dashboard: `http://localhost:8501`
+Navigate to `http://localhost:7860`.
 
 ---
 
@@ -215,15 +193,22 @@ Model weights are saved as PyTorch state dictionaries (`.pth`). Checkpoint check
 | **DeepLabV3+** | Production | `deeplabv3_plus_best.pth` | 85.8 MB | `6c7c6dd4835d29be34b9eda03bdfca878914749a526c44cade99906cc1b1b827` |
 | **SegFormer** | Production | `segformer_best.pth` | 14.3 MB | `2c762a52a5aa5cafb6aecb698bf483257fd5279bce3f3af7368850ba9354e986` |
 
-### Multi-Backend Inference Support (12/12 Acceptance)
-The platform supports 3 interchangeable, verified inference backends:
-1. **PyTorch (In-Process CPU/MPS)**: Evaluates loaded models using `torch.inference_mode()` with strict state dictionary loading.
-2. **ONNX Runtime (Optimized CPU)**: High-performance execution engine with full operator parity and CPU graph optimizations. Provides over **5x latency reduction** on SegFormer (14.28 ms vs 80.76 ms).
-3. **FastAPI Microservice (REST API)**: Containerized asynchronous microservice exposing `/health`, `/ready`, `/models/{model_id}/status`, `/metrics`, and `/predict`.
+### Multi-Engine Inference Support (8/8 Verified Combinations)
+The platform supports two verified, production inference engines across all four models:
+
+| Model Architecture | PyTorch (In-Process CPU) | ONNX Runtime (Accelerated CPU) | Parity Status (7 Test Tiles) |
+| :--- | :---: | :---: | :---: |
+| **FPN – ResNet34 (Champion)** | ✅ VERIFIED | ✅ VERIFIED | 100.0% Mask Agreement (Max \|Δp\|: 1.69e-5) |
+| **UNet++ – ResNet34** | ✅ VERIFIED | ✅ VERIFIED | 100.0% Mask Agreement (Max \|Δp\|: 3.18e-5) |
+| **DeepLabV3+ – ResNet34** | ✅ VERIFIED | ✅ VERIFIED | 100.0% Mask Agreement (Max \|Δp\|: 1.39e-5) |
+| **SegFormer – MiT-B0** | ✅ VERIFIED | ✅ VERIFIED | 100.0% Mask Agreement (Max \|Δp\|: 1.73e-6) |
+
+1. **PyTorch Engine (In-Process CPU/MPS)**: Evaluates loaded models using `torch.inference_mode()` with strict state dictionary loading and SHA-256 verification.
+2. **ONNX Runtime Engine (Accelerated CPU)**: Standalone Open Neural Network Exchange graph execution with full operator parity and CPU graph optimizations.
 
 ### Scientific Safety & Input Validation Pipeline
 GeoVision AI implements a 6-state input verification engine (`src/utils/input_validator.py`):
-1. **Consumer Photograph Rejection**: Scans for smartphone/consumer camera EXIF metadata and detects extreme chromatic saturation ($>35\%$ of pixels with $S > 0.80$). Rejects floral/portrait/indoor photos with **HTTP 422 Unprocessable Content** (API) or UI safety alerts (Streamlit) to prevent unscientific hydrological claims.
+1. **Consumer Photograph Rejection**: Scans for smartphone/consumer camera EXIF metadata and detects extreme chromatic saturation ($>35\%$ of pixels with $S > 0.80$). Rejects floral/portrait/indoor photos with explicit UI safety alerts to prevent unscientific hydrological claims.
 2. **Two-Mode Area Quantification**:
    - **Verified Geospatial Mode**: Reads embedded GeoTIFF tags (`ModelPixelScaleTag`) to calculate exact square kilometers based on physical coordinate bounds.
    - **Nominal Approximation Mode**: Applies calibrated Sentinel-2 10m Ground Sample Distance assumption ($100.0\text{ m}^2/\text{pixel}$) accompanied by an explicit unreferenced approximation caveat.

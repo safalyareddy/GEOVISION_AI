@@ -1,6 +1,16 @@
 """
 GeoVision AI Satellite Water Body Segmentation Platform
-FastAPI Microservice for Satellite Image Segmentation Inference
+FastAPI Microservice (RETIRED ARCHITECTURE — HISTORICAL REFERENCE ONLY)
+
+RETIREMENT NOTICE:
+As of the Final Production Completion milestone, the FastAPI microservice architecture
+has been fully retired from the active application and deployment pipeline.
+The active production platform is strictly:
+  Streamlit + PyTorch (In-Process) + ONNX Runtime (Accelerated CPU).
+
+All inference, cryptographic model verification, and geospatial input safety are now executed
+directly via the shared core modules (`src.inference`, `src.utils.model_registry`, `src.utils.input_validator`).
+This file is preserved solely for historical provenance and local debugging.
 """
 
 import io

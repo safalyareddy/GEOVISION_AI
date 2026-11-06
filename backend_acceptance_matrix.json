@@ -1,161 +1,491 @@
 {
-  "metadata": {
-    "test_image": "patch_0047.png",
-    "image_size": [
-      256,
-      256
-    ],
-    "hf_pinned_revision": "441a99034b36336c34d86c23cfe9c1a8114ca3a4",
-    "threshold": 0.5,
-    "timestamp": "2026-11-06T03:55:32Z",
-    "total_combinations": 12
-  },
-  "results": {
-    "fpn__pytorch_inprocess": {
-      "model_name": "fpn",
-      "backend": "pytorch_inprocess",
+  "timestamp": "2026-11-06 04:41:25 UTC",
+  "architecture_count": 4,
+  "engine_count": 2,
+  "total_combinations": 8,
+  "combinations": {
+    "unet_plusplus__pytorch": {
+      "model_key": "unet_plusplus",
+      "display_name": "UNet++\u2013ResNet34 (Improved Model)",
+      "engine": "PyTorch",
+      "checkpoint_sha256": "497e246ef79d87f3b2255cc119e7ab8bd0045d48caf3d4710e9f6738e56c4548",
       "status": "PASS",
-      "latency_ms": 25.7,
-      "water_coverage_pct": 12.63,
-      "water_area_km2": 0.8276,
-      "non_finite_count": 0,
-      "sha256": "d21fa18c36beabdb0b139364d347a6e97c1cc00e83e9ba92630e9a7795119eb1",
-      "mask_agreement_with_pytorch_pct": 100.0
+      "error": null
     },
-    "fpn__fastapi_microservice": {
-      "model_name": "fpn",
-      "backend": "fastapi_microservice",
+    "unet_plusplus__onnx": {
+      "model_key": "unet_plusplus",
+      "display_name": "UNet++\u2013ResNet34 (Improved Model)",
+      "engine": "ONNX Runtime",
+      "onnx_artifact_path": "checkpoints/onnx/unet_plusplus.onnx",
+      "onnx_sha256": "319fcd23c48744c172b25699d1543fd6a27d61335acd8c61c0eb30038d8134d3",
       "status": "PASS",
-      "latency_ms": 133.32,
-      "server_latency_ms": 26.14,
-      "water_coverage_pct": 12.63,
-      "water_area_km2": 0.8276,
-      "non_finite_count": 0,
-      "input_classification": "VERIFIED_PROJECT_SAMPLE",
-      "mask_agreement_with_pytorch_pct": 100.0
+      "error": null
     },
-    "fpn__onnx_runtime": {
-      "model_name": "fpn",
-      "backend": "onnx_runtime",
+    "deeplabv3_plus__pytorch": {
+      "model_key": "deeplabv3_plus",
+      "display_name": "DeepLabV3+\u2013ResNet34 (Improved Model)",
+      "engine": "PyTorch",
+      "checkpoint_sha256": "6c7c6dd4835d29be34b9eda03bdfca878914749a526c44cade99906cc1b1b827",
       "status": "PASS",
-      "latency_ms": 32.12,
-      "water_coverage_pct": 12.63,
-      "water_area_km2": 0.8276,
-      "non_finite_count": 0,
-      "onnx_size_bytes": 403224,
-      "max_prob_diff_vs_pytorch": 1.4841556549072266e-05,
-      "mask_agreement_with_pytorch_pct": 100.0
+      "error": null
     },
-    "unet_plusplus__pytorch_inprocess": {
-      "model_name": "unet_plusplus",
-      "backend": "pytorch_inprocess",
+    "deeplabv3_plus__onnx": {
+      "model_key": "deeplabv3_plus",
+      "display_name": "DeepLabV3+\u2013ResNet34 (Improved Model)",
+      "engine": "ONNX Runtime",
+      "onnx_artifact_path": "checkpoints/onnx/deeplabv3_plus.onnx",
+      "onnx_sha256": "f9955856cca9b1ad1aeba5c93afd6bb5525ab36271ec6f5ab4edacef143bee3e",
       "status": "PASS",
-      "latency_ms": 91.61,
-      "water_coverage_pct": 6.93,
-      "water_area_km2": 0.4541,
-      "non_finite_count": 0,
-      "sha256": "497e246ef79d87f3b2255cc119e7ab8bd0045d48caf3d4710e9f6738e56c4548",
-      "mask_agreement_with_pytorch_pct": 100.0
+      "error": null
     },
-    "unet_plusplus__fastapi_microservice": {
-      "model_name": "unet_plusplus",
-      "backend": "fastapi_microservice",
+    "segformer__pytorch": {
+      "model_key": "segformer",
+      "display_name": "SegFormer\u2013MiT-B0 (Improved Model)",
+      "engine": "PyTorch",
+      "checkpoint_sha256": "2c762a52a5aa5cafb6aecb698bf483257fd5279bce3f3af7368850ba9354e986",
       "status": "PASS",
-      "latency_ms": 202.17,
-      "server_latency_ms": 86.98,
-      "water_coverage_pct": 6.93,
-      "water_area_km2": 0.4541,
-      "non_finite_count": 0,
-      "input_classification": "VERIFIED_PROJECT_SAMPLE",
-      "mask_agreement_with_pytorch_pct": 100.0
+      "error": null
     },
-    "unet_plusplus__onnx_runtime": {
-      "model_name": "unet_plusplus",
-      "backend": "onnx_runtime",
+    "segformer__onnx": {
+      "model_key": "segformer",
+      "display_name": "SegFormer\u2013MiT-B0 (Improved Model)",
+      "engine": "ONNX Runtime",
+      "onnx_artifact_path": "checkpoints/onnx/segformer.onnx",
+      "onnx_sha256": "a6e3ea41a9b1966afc40893e11e21db66eacfbb89ba0728f4e7d537605685f56",
       "status": "PASS",
-      "latency_ms": 75.07,
-      "water_coverage_pct": 6.93,
-      "water_area_km2": 0.4541,
-      "non_finite_count": 0,
-      "onnx_size_bytes": 371579,
-      "max_prob_diff_vs_pytorch": 1.8358230590820312e-05,
-      "mask_agreement_with_pytorch_pct": 100.0
+      "error": null
     },
-    "deeplabv3_plus__pytorch_inprocess": {
-      "model_name": "deeplabv3_plus",
-      "backend": "pytorch_inprocess",
+    "fpn__pytorch": {
+      "model_key": "fpn",
+      "display_name": "FPN\u2013ResNet34 (Champion Model)",
+      "engine": "PyTorch",
+      "checkpoint_sha256": "d21fa18c36beabdb0b139364d347a6e97c1cc00e83e9ba92630e9a7795119eb1",
       "status": "PASS",
-      "latency_ms": 38.29,
-      "water_coverage_pct": 10.1,
-      "water_area_km2": 0.6616,
-      "non_finite_count": 0,
-      "sha256": "6c7c6dd4835d29be34b9eda03bdfca878914749a526c44cade99906cc1b1b827",
-      "mask_agreement_with_pytorch_pct": 100.0
+      "error": null
     },
-    "deeplabv3_plus__fastapi_microservice": {
-      "model_name": "deeplabv3_plus",
-      "backend": "fastapi_microservice",
+    "fpn__onnx": {
+      "model_key": "fpn",
+      "display_name": "FPN\u2013ResNet34 (Champion Model)",
+      "engine": "ONNX Runtime",
+      "onnx_artifact_path": "checkpoints/onnx/fpn.onnx",
+      "onnx_sha256": "48e60da00e2eafc91e5c96d6276c7b6c613b95360b3f1e0f084f49b3a8e91478",
       "status": "PASS",
-      "latency_ms": 137.76,
-      "server_latency_ms": 39.97,
-      "water_coverage_pct": 10.1,
-      "water_area_km2": 0.6616,
-      "non_finite_count": 0,
-      "input_classification": "VERIFIED_PROJECT_SAMPLE",
-      "mask_agreement_with_pytorch_pct": 100.0
-    },
-    "deeplabv3_plus__onnx_runtime": {
-      "model_name": "deeplabv3_plus",
-      "backend": "onnx_runtime",
-      "status": "PASS",
-      "latency_ms": 32.71,
-      "water_coverage_pct": 10.1,
-      "water_area_km2": 0.6616,
-      "non_finite_count": 0,
-      "onnx_size_bytes": 282313,
-      "max_prob_diff_vs_pytorch": 1.1920928955078125e-05,
-      "mask_agreement_with_pytorch_pct": 100.0
-    },
-    "segformer__pytorch_inprocess": {
-      "model_name": "segformer",
-      "backend": "pytorch_inprocess",
-      "status": "PASS",
-      "latency_ms": 61.13,
-      "water_coverage_pct": 7.45,
-      "water_area_km2": 0.4883,
-      "non_finite_count": 0,
-      "sha256": "2c762a52a5aa5cafb6aecb698bf483257fd5279bce3f3af7368850ba9354e986",
-      "mask_agreement_with_pytorch_pct": 100.0
-    },
-    "segformer__fastapi_microservice": {
-      "model_name": "segformer",
-      "backend": "fastapi_microservice",
-      "status": "PASS",
-      "latency_ms": 89.73,
-      "server_latency_ms": 62.66,
-      "water_coverage_pct": 7.45,
-      "water_area_km2": 0.4883,
-      "non_finite_count": 0,
-      "input_classification": "VERIFIED_PROJECT_SAMPLE",
-      "mask_agreement_with_pytorch_pct": 100.0
-    },
-    "segformer__onnx_runtime": {
-      "model_name": "segformer",
-      "backend": "onnx_runtime",
-      "status": "PASS",
-      "latency_ms": 12.46,
-      "water_coverage_pct": 7.45,
-      "water_area_km2": 0.4883,
-      "non_finite_count": 0,
-      "onnx_size_bytes": 1353458,
-      "max_prob_diff_vs_pytorch": 1.430511474609375e-06,
-      "mask_agreement_with_pytorch_pct": 100.0
+      "error": null
     }
   },
-  "summary": {
-    "all_combinations_passed": true,
-    "total_passed": 12,
-    "total_failed": 0,
-    "parity_with_pytorch_perfect": true
+  "parity_analysis": {
+    "unet_plusplus": {
+      "display_name": "UNet++\u2013ResNet34 (Improved Model)",
+      "tiles_evaluated": 7,
+      "aggregate_max_abs_diff": 3.17990779876709e-05,
+      "aggregate_mean_abs_diff": 1.1063396668628148e-07,
+      "aggregate_mean_mse": 8.178768111534043e-13,
+      "aggregate_mask_agreement_pct": 100.0,
+      "tile_results": [
+        {
+          "filename": "patch_0015.png",
+          "scene_type": "Low-water (<1% water coverage)",
+          "max_abs_diff": 6.884336471557617e-06,
+          "mean_abs_diff": 4.764780570098992e-09,
+          "mse": 1.149954206158951e-14,
+          "mask_agreement_pct": 100.0,
+          "pytorch_water_pct": 0.01,
+          "onnx_water_pct": 0.01,
+          "pytorch_latency_ms": 217.63,
+          "onnx_latency_ms": 1016.75,
+          "parity_passed": true
+        },
+        {
+          "filename": "patch_0045.png",
+          "scene_type": "Low-water (<1% water coverage)",
+          "max_abs_diff": 2.0605511963367462e-07,
+          "mean_abs_diff": 1.971510510401231e-09,
+          "mse": 3.8593520994425297e-17,
+          "mask_agreement_pct": 100.0,
+          "pytorch_water_pct": 0.0,
+          "onnx_water_pct": 0.0,
+          "pytorch_latency_ms": 128.17,
+          "onnx_latency_ms": 64.49,
+          "parity_passed": true
+        },
+        {
+          "filename": "patch_0010.png",
+          "scene_type": "Mixed land/water (10-15% water coverage)",
+          "max_abs_diff": 1.895427703857422e-05,
+          "mean_abs_diff": 4.100391493011557e-08,
+          "mse": 2.3124075354194473e-13,
+          "mask_agreement_pct": 100.0,
+          "pytorch_water_pct": 4.33,
+          "onnx_water_pct": 4.33,
+          "pytorch_latency_ms": 91.47,
+          "onnx_latency_ms": 64.55,
+          "parity_passed": true
+        },
+        {
+          "filename": "patch_0018.png",
+          "scene_type": "Mixed land/water (10-15% water coverage)",
+          "max_abs_diff": 2.053380012512207e-05,
+          "mean_abs_diff": 4.901599126583278e-08,
+          "mse": 2.5613384568683173e-13,
+          "mask_agreement_pct": 100.0,
+          "pytorch_water_pct": 5.07,
+          "onnx_water_pct": 5.07,
+          "pytorch_latency_ms": 102.23,
+          "onnx_latency_ms": 65.89,
+          "parity_passed": true
+        },
+        {
+          "filename": "patch_0047.png",
+          "scene_type": "Difficult boundary / demo patch (~25% water coverage)",
+          "max_abs_diff": 1.8358230590820312e-05,
+          "mean_abs_diff": 1.2630826518034155e-07,
+          "mse": 6.975509579676409e-13,
+          "mask_agreement_pct": 100.0,
+          "pytorch_water_pct": 6.93,
+          "onnx_water_pct": 6.93,
+          "pytorch_latency_ms": 207.4,
+          "onnx_latency_ms": 63.87,
+          "parity_passed": true
+        },
+        {
+          "filename": "patch_0012.png",
+          "scene_type": "Water-rich (>45% water coverage)",
+          "max_abs_diff": 2.849102020263672e-05,
+          "mean_abs_diff": 3.5852221458299027e-07,
+          "mse": 2.9741287557727425e-12,
+          "mask_agreement_pct": 100.0,
+          "pytorch_water_pct": 28.91,
+          "onnx_water_pct": 28.91,
+          "pytorch_latency_ms": 91.17,
+          "onnx_latency_ms": 65.38,
+          "parity_passed": true
+        },
+        {
+          "filename": "patch_0021.png",
+          "scene_type": "Water-rich (>45% water coverage)",
+          "max_abs_diff": 3.17990779876709e-05,
+          "mean_abs_diff": 1.9285108976418996e-07,
+          "mse": 1.5545452295220863e-12,
+          "mask_agreement_pct": 100.0,
+          "pytorch_water_pct": 19.74,
+          "onnx_water_pct": 19.74,
+          "pytorch_latency_ms": 91.63,
+          "onnx_latency_ms": 62.95,
+          "parity_passed": true
+        }
+      ],
+      "parity_verdict": "PASS"
+    },
+    "deeplabv3_plus": {
+      "display_name": "DeepLabV3+\u2013ResNet34 (Improved Model)",
+      "tiles_evaluated": 7,
+      "aggregate_max_abs_diff": 1.3947486877441406e-05,
+      "aggregate_mean_abs_diff": 9.090655729769383e-08,
+      "aggregate_mean_mse": 2.2591788974747318e-13,
+      "aggregate_mask_agreement_pct": 100.0,
+      "tile_results": [
+        {
+          "filename": "patch_0015.png",
+          "scene_type": "Low-water (<1% water coverage)",
+          "max_abs_diff": 3.3993273973464966e-08,
+          "mean_abs_diff": 2.448288682899147e-09,
+          "mse": 1.2111790287238245e-17,
+          "mask_agreement_pct": 100.0,
+          "pytorch_water_pct": 0.0,
+          "onnx_water_pct": 0.0,
+          "pytorch_latency_ms": 53.25,
+          "onnx_latency_ms": 766.54,
+          "parity_passed": true
+        },
+        {
+          "filename": "patch_0045.png",
+          "scene_type": "Low-water (<1% water coverage)",
+          "max_abs_diff": 8.009374141693115e-08,
+          "mean_abs_diff": 2.9618323349467346e-09,
+          "mse": 2.7123828003320114e-17,
+          "mask_agreement_pct": 100.0,
+          "pytorch_water_pct": 0.0,
+          "onnx_water_pct": 0.0,
+          "pytorch_latency_ms": 74.71,
+          "onnx_latency_ms": 50.24,
+          "parity_passed": true
+        },
+        {
+          "filename": "patch_0010.png",
+          "scene_type": "Mixed land/water (10-15% water coverage)",
+          "max_abs_diff": 4.708766937255859e-06,
+          "mean_abs_diff": 4.2421518742230546e-08,
+          "mse": 5.359798163021706e-14,
+          "mask_agreement_pct": 100.0,
+          "pytorch_water_pct": 3.96,
+          "onnx_water_pct": 3.96,
+          "pytorch_latency_ms": 124.49,
+          "onnx_latency_ms": 38.23,
+          "parity_passed": true
+        },
+        {
+          "filename": "patch_0018.png",
+          "scene_type": "Mixed land/water (10-15% water coverage)",
+          "max_abs_diff": 3.159046173095703e-06,
+          "mean_abs_diff": 5.14563751607966e-08,
+          "mse": 5.4899373214773936e-14,
+          "mask_agreement_pct": 100.0,
+          "pytorch_water_pct": 2.44,
+          "onnx_water_pct": 2.44,
+          "pytorch_latency_ms": 99.52,
+          "onnx_latency_ms": 32.94,
+          "parity_passed": true
+        },
+        {
+          "filename": "patch_0047.png",
+          "scene_type": "Difficult boundary / demo patch (~25% water coverage)",
+          "max_abs_diff": 1.1920928955078125e-05,
+          "mean_abs_diff": 9.546981516450614e-08,
+          "mse": 1.6041940725016607e-13,
+          "mask_agreement_pct": 100.0,
+          "pytorch_water_pct": 10.1,
+          "onnx_water_pct": 10.1,
+          "pytorch_latency_ms": 67.14,
+          "onnx_latency_ms": 34.24,
+          "parity_passed": true
+        },
+        {
+          "filename": "patch_0012.png",
+          "scene_type": "Water-rich (>45% water coverage)",
+          "max_abs_diff": 6.884336471557617e-06,
+          "mean_abs_diff": 1.927733421780431e-07,
+          "mse": 4.087621625729898e-13,
+          "mask_agreement_pct": 100.0,
+          "pytorch_water_pct": 21.57,
+          "onnx_water_pct": 21.57,
+          "pytorch_latency_ms": 44.74,
+          "onnx_latency_ms": 37.41,
+          "parity_passed": true
+        },
+        {
+          "filename": "patch_0021.png",
+          "scene_type": "Water-rich (>45% water coverage)",
+          "max_abs_diff": 1.3947486877441406e-05,
+          "mean_abs_diff": 2.4881472882043454e-07,
+          "mse": 9.037070679458747e-13,
+          "mask_agreement_pct": 100.0,
+          "pytorch_water_pct": 22.84,
+          "onnx_water_pct": 22.84,
+          "pytorch_latency_ms": 41.82,
+          "onnx_latency_ms": 32.24,
+          "parity_passed": true
+        }
+      ],
+      "parity_verdict": "PASS"
+    },
+    "segformer": {
+      "display_name": "SegFormer\u2013MiT-B0 (Improved Model)",
+      "tiles_evaluated": 7,
+      "aggregate_max_abs_diff": 1.7285346984863281e-06,
+      "aggregate_mean_abs_diff": 1.29761947472876e-07,
+      "aggregate_mean_mse": 3.64193853220214e-14,
+      "aggregate_mask_agreement_pct": 100.0,
+      "tile_results": [
+        {
+          "filename": "patch_0015.png",
+          "scene_type": "Low-water (<1% water coverage)",
+          "max_abs_diff": 1.2516975402832031e-06,
+          "mean_abs_diff": 1.6689671156200347e-07,
+          "mse": 4.7371184936934735e-14,
+          "mask_agreement_pct": 100.0,
+          "pytorch_water_pct": 5.74,
+          "onnx_water_pct": 5.74,
+          "pytorch_latency_ms": 68.36,
+          "onnx_latency_ms": 69.11,
+          "parity_passed": true
+        },
+        {
+          "filename": "patch_0045.png",
+          "scene_type": "Low-water (<1% water coverage)",
+          "max_abs_diff": 1.043081283569336e-06,
+          "mean_abs_diff": 1.4333238596009323e-07,
+          "mse": 3.417805047225414e-14,
+          "mask_agreement_pct": 100.0,
+          "pytorch_water_pct": 4.41,
+          "onnx_water_pct": 4.41,
+          "pytorch_latency_ms": 95.9,
+          "onnx_latency_ms": 18.99,
+          "parity_passed": true
+        },
+        {
+          "filename": "patch_0010.png",
+          "scene_type": "Mixed land/water (10-15% water coverage)",
+          "max_abs_diff": 1.1920928955078125e-06,
+          "mean_abs_diff": 1.3312970281731396e-07,
+          "mse": 3.4234022409408704e-14,
+          "mask_agreement_pct": 100.0,
+          "pytorch_water_pct": 7.72,
+          "onnx_water_pct": 7.72,
+          "pytorch_latency_ms": 85.31,
+          "onnx_latency_ms": 12.81,
+          "parity_passed": true
+        },
+        {
+          "filename": "patch_0018.png",
+          "scene_type": "Mixed land/water (10-15% water coverage)",
+          "max_abs_diff": 1.7285346984863281e-06,
+          "mean_abs_diff": 1.3304060075824964e-07,
+          "mse": 4.149168191642204e-14,
+          "mask_agreement_pct": 100.0,
+          "pytorch_water_pct": 17.43,
+          "onnx_water_pct": 17.43,
+          "pytorch_latency_ms": 64.54,
+          "onnx_latency_ms": 12.7,
+          "parity_passed": true
+        },
+        {
+          "filename": "patch_0047.png",
+          "scene_type": "Difficult boundary / demo patch (~25% water coverage)",
+          "max_abs_diff": 1.430511474609375e-06,
+          "mean_abs_diff": 1.4115965996097657e-07,
+          "mse": 3.858907280090279e-14,
+          "mask_agreement_pct": 100.0,
+          "pytorch_water_pct": 7.45,
+          "onnx_water_pct": 7.45,
+          "pytorch_latency_ms": 63.11,
+          "onnx_latency_ms": 12.47,
+          "parity_passed": true
+        },
+        {
+          "filename": "patch_0012.png",
+          "scene_type": "Water-rich (>45% water coverage)",
+          "max_abs_diff": 1.4603137969970703e-06,
+          "mean_abs_diff": 1.0145289763840992e-07,
+          "mse": 2.97942348418713e-14,
+          "mask_agreement_pct": 100.0,
+          "pytorch_water_pct": 19.45,
+          "onnx_water_pct": 19.45,
+          "pytorch_latency_ms": 62.3,
+          "onnx_latency_ms": 13.38,
+          "parity_passed": true
+        },
+        {
+          "filename": "patch_0021.png",
+          "scene_type": "Water-rich (>45% water coverage)",
+          "max_abs_diff": 1.5795230865478516e-06,
+          "mean_abs_diff": 8.93216736130853e-08,
+          "mse": 2.927744987635608e-14,
+          "mask_agreement_pct": 100.0,
+          "pytorch_water_pct": 8.28,
+          "onnx_water_pct": 8.28,
+          "pytorch_latency_ms": 62.06,
+          "onnx_latency_ms": 13.72,
+          "parity_passed": true
+        }
+      ],
+      "parity_verdict": "PASS"
+    },
+    "fpn": {
+      "display_name": "FPN\u2013ResNet34 (Champion Model)",
+      "tiles_evaluated": 7,
+      "aggregate_max_abs_diff": 1.6868114471435547e-05,
+      "aggregate_mean_abs_diff": 1.2122890188876308e-07,
+      "aggregate_mean_mse": 5.009694278298485e-13,
+      "aggregate_mask_agreement_pct": 100.0,
+      "tile_results": [
+        {
+          "filename": "patch_0015.png",
+          "scene_type": "Low-water (<1% water coverage)",
+          "max_abs_diff": 1.1444091796875e-05,
+          "mean_abs_diff": 5.310362283239556e-08,
+          "mse": 1.890861734766061e-13,
+          "mask_agreement_pct": 100.0,
+          "pytorch_water_pct": 1.06,
+          "onnx_water_pct": 1.06,
+          "pytorch_latency_ms": 43.13,
+          "onnx_latency_ms": 734.55,
+          "parity_passed": true
+        },
+        {
+          "filename": "patch_0045.png",
+          "scene_type": "Low-water (<1% water coverage)",
+          "max_abs_diff": 2.3469328880310059e-07,
+          "mean_abs_diff": 4.908198500408467e-11,
+          "mse": 2.752112202434872e-18,
+          "mask_agreement_pct": 100.0,
+          "pytorch_water_pct": 0.0,
+          "onnx_water_pct": 0.0,
+          "pytorch_latency_ms": 29.12,
+          "onnx_latency_ms": 32.98,
+          "parity_passed": true
+        },
+        {
+          "filename": "patch_0010.png",
+          "scene_type": "Mixed land/water (10-15% water coverage)",
+          "max_abs_diff": 1.2636184692382812e-05,
+          "mean_abs_diff": 3.616944610485007e-08,
+          "mse": 1.0751868958960159e-13,
+          "mask_agreement_pct": 100.0,
+          "pytorch_water_pct": 5.09,
+          "onnx_water_pct": 5.09,
+          "pytorch_latency_ms": 30.97,
+          "onnx_latency_ms": 31.13,
+          "parity_passed": true
+        },
+        {
+          "filename": "patch_0018.png",
+          "scene_type": "Mixed land/water (10-15% water coverage)",
+          "max_abs_diff": 1.3709068298339844e-05,
+          "mean_abs_diff": 8.668482820439749e-08,
+          "mse": 3.350701064264855e-13,
+          "mask_agreement_pct": 100.0,
+          "pytorch_water_pct": 7.09,
+          "onnx_water_pct": 7.09,
+          "pytorch_latency_ms": 28.41,
+          "onnx_latency_ms": 31.54,
+          "parity_passed": true
+        },
+        {
+          "filename": "patch_0047.png",
+          "scene_type": "Difficult boundary / demo patch (~25% water coverage)",
+          "max_abs_diff": 1.4841556549072266e-05,
+          "mean_abs_diff": 9.053778171619342e-08,
+          "mse": 3.482026136609334e-13,
+          "mask_agreement_pct": 100.0,
+          "pytorch_water_pct": 12.63,
+          "onnx_water_pct": 12.63,
+          "pytorch_latency_ms": 28.32,
+          "onnx_latency_ms": 33.25,
+          "parity_passed": true
+        },
+        {
+          "filename": "patch_0012.png",
+          "scene_type": "Water-rich (>45% water coverage)",
+          "max_abs_diff": 1.6868114471435547e-05,
+          "mean_abs_diff": 3.6826236282649916e-07,
+          "mse": 1.8631474401481496e-12,
+          "mask_agreement_pct": 100.0,
+          "pytorch_water_pct": 37.71,
+          "onnx_water_pct": 37.71,
+          "pytorch_latency_ms": 28.06,
+          "onnx_latency_ms": 38.0,
+          "parity_passed": true
+        },
+        {
+          "filename": "patch_0021.png",
+          "scene_type": "Water-rich (>45% water coverage)",
+          "max_abs_diff": 1.1086463928222656e-05,
+          "mean_abs_diff": 2.1379518955200183e-07,
+          "mse": 6.637582193949609e-13,
+          "mask_agreement_pct": 100.0,
+          "pytorch_water_pct": 35.8,
+          "onnx_water_pct": 35.8,
+          "pytorch_latency_ms": 29.24,
+          "onnx_latency_ms": 30.44,
+          "parity_passed": true
+        }
+      ],
+      "parity_verdict": "PASS"
+    }
+  },
+  "overall_summary": {
+    "all_passed": true,
+    "passed_combinations": 8,
+    "failed_combinations": 0
   }
 }

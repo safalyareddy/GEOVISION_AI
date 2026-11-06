@@ -22,11 +22,10 @@ except ImportError:
     HAS_TORCH = False
 
 try:
-    from fastapi.testclient import TestClient
-    from src.api.main import app as fastapi_app
-    HAS_TESTCLIENT = True
+    import onnxruntime as ort
+    HAS_ONNX = True
 except ImportError:
-    HAS_TESTCLIENT = False
+    HAS_ONNX = False
 
 from src.models import build_model, SUPPORTED_MODELS
 from src.utils.model_registry import (
@@ -203,41 +202,28 @@ class TestFourModelValidation:
                 )
 
     # -------------------------------------------------------------------------
-    # TEST G: FastAPI API Integration
+    # TEST G: ONNX Runtime Integration
     # -------------------------------------------------------------------------
-    @pytest.mark.skipif(not HAS_TESTCLIENT, reason="FastAPI TestClient required")
+    @pytest.mark.skipif(not HAS_ONNX, reason="ONNX Runtime required")
     @pytest.mark.parametrize("model_name", ALL_MODELS)
-    def test_g_api_integration(self, model_name: str):
-        """Verify model selection and prediction via FastAPI endpoints."""
-        client = TestClient(fastapi_app)
+    def test_g_onnx_integration(self, model_name: str):
+        """Verify model loading, session initialization, and prediction via ONNX Runtime."""
+        from src.inference import load_onnx_session, predict_onnx
 
-        # Health endpoint
-        resp_health = client.get("/health")
-        assert resp_health.status_code == 200
-        assert resp_health.json()["status"] == "ok"
+        sess = load_onnx_session(model_name)
+        assert sess is not None
 
-        # Models endpoint
-        resp_models = client.get("/models")
-        assert resp_models.status_code == 200
-        models_data = resp_models.json()
-        assert model_name in models_data["supported_models"]
-        assert models_data["models_status"][model_name]["available"] is True
-
-        # Predict endpoint with natural reflectance imagery
+        # Predict with test tile
         img = Image.new("RGB", (128, 128), color=(60, 75, 70))
-        buf = io.BytesIO()
-        img.save(buf, format="PNG")
+        res = predict_onnx(img, model_name=model_name, threshold=0.50)
 
-        response = client.post(
-            "/predict",
-            files={"file": (f"test_{model_name}.png", io.BytesIO(buf.getvalue()), "image/png")},
-            data={"model_name": model_name, "threshold": 0.50}
-        )
-        assert response.status_code == 200, f"API inference failed for {model_name}: {response.text}"
-        payload = response.json()
-        assert payload["model_name"] == model_name
-        assert 0.0 <= payload["water_coverage_percentage"] <= 100.0
-        assert len(payload["mask_base64"]) > 0
+        assert res["model_name"] == model_name
+        assert res["engine"] == "onnx"
+        assert res["latency_ms"] > 0
+        assert 0.0 <= res["water_coverage_pct"] <= 100.0
+        assert res["mask_array_256"].shape == (256, 256)
+        assert np.all((res["probability_map_256"] >= 0.0) & (res["probability_map_256"] <= 1.0))
+        assert res["mask_image"].size == (128, 128)
 
     # -------------------------------------------------------------------------
     # TEST H: Frontend Model Integration & Availability

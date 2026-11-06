@@ -29,6 +29,12 @@ try:
 except ImportError:
     HAS_TORCH = False
 
+try:
+    import onnxruntime as ort
+    HAS_ONNX = True
+except ImportError:
+    HAS_ONNX = False
+
 from src.models import SUPPORTED_MODELS
 from src.utils.model_registry import (
     load_verified_model,
@@ -40,6 +46,7 @@ from src.utils.model_registry import (
 
 # Global in-process model cache
 _MODEL_CACHE: Dict[Tuple[str, str], Any] = {}
+_ONNX_SESSION_CACHE: Dict[str, Any] = {}
 
 # Standard Spatial Resolution & Nominal Sentinel-2 Ground Sample Distance
 STANDARD_INPUT_SIZE = (256, 256)
@@ -79,9 +86,74 @@ def load_model(model_name: str = CHAMPION_MODEL, device: str = "cpu") -> Any:
     return _MODEL_CACHE[cache_key]
 
 
+def load_onnx_session(model_name: str = CHAMPION_MODEL) -> Any:
+    """
+    Load or export and cache an optimized ONNX Runtime InferenceSession
+    for the verified model artifact.
+    """
+    if not HAS_ONNX:
+        raise RuntimeError("ONNX Runtime is not installed. Please install 'onnxruntime'.")
+    if model_name not in SUPPORTED_MODELS:
+        raise ValueError(f"Unknown architecture '{model_name}'. Choose from: {list(SUPPORTED_MODELS.keys())}")
+
+    if model_name in _ONNX_SESSION_CACHE:
+        return _ONNX_SESSION_CACHE[model_name]
+
+    onnx_path = Path("checkpoints/onnx") / f"{model_name}.onnx"
+    if not onnx_path.exists():
+        onnx_path.parent.mkdir(parents=True, exist_ok=True)
+        pt_model = load_model(model_name=model_name, device="cpu")
+        pt_model.eval()
+        dummy = torch.randn(1, 3, 256, 256, dtype=torch.float32)
+
+        export_success = False
+        primary_err = None
+        try:
+            torch.onnx.export(
+                pt_model,
+                dummy,
+                str(onnx_path),
+                input_names=["input"],
+                output_names=["output"],
+                opset_version=18,
+                dynamic_axes={"input": {0: "batch"}, "output": {0: "batch"}},
+            )
+            export_success = True
+        except Exception as e_prim:
+            primary_err = e_prim
+
+        if not export_success:
+            try:
+                import warnings
+                with warnings.catch_warnings():
+                    warnings.simplefilter("ignore")
+                    torch.onnx.export(
+                        pt_model,
+                        dummy,
+                        str(onnx_path),
+                        input_names=["input"],
+                        output_names=["output"],
+                        opset_version=14,
+                        dynamo=False,
+                        dynamic_axes={"input": {0: "batch"}, "output": {0: "batch"}},
+                    )
+                export_success = True
+            except Exception as e_fall:
+                raise RuntimeError(
+                    f"Failed to export {model_name} to ONNX. Primary: {primary_err}. Fallback: {e_fall}"
+                )
+
+    sess_opts = ort.SessionOptions()
+    sess_opts.graph_optimization_level = ort.GraphOptimizationLevel.ORT_ENABLE_ALL
+    session = ort.InferenceSession(str(onnx_path), sess_opts, providers=["CPUExecutionProvider"])
+    _ONNX_SESSION_CACHE[model_name] = session
+    return session
+
+
 def clear_model_cache() -> None:
-    """Clear in-memory cached model weights."""
+    """Clear in-memory cached model weights and ONNX sessions."""
     _MODEL_CACHE.clear()
+    _ONNX_SESSION_CACHE.clear()
     if HAS_TORCH and torch.cuda.is_available():
         torch.cuda.empty_cache()
 
@@ -177,24 +249,97 @@ def _prepare_image_input(image: Union[Image.Image, np.ndarray, str, Path]) -> Tu
     return pil_img, orig_w, orig_h
 
 
-def predict(
+def predict_onnx(
     image: Union[Image.Image, np.ndarray, str, Path],
     model_name: str = CHAMPION_MODEL,
-    threshold: float = 0.50,
-    device: Optional[str] = None
+    threshold: float = 0.50
 ) -> Dict[str, Any]:
     """
-    Execute high-fidelity PyTorch surface water segmentation inference.
+    Execute high-fidelity ONNX Runtime surface water segmentation inference.
 
     Args:
         image: PIL Image, NumPy array, or path to image file.
         model_name: Registered model identifier ('fpn', 'unet_plusplus', 'deeplabv3_plus', 'segformer').
         threshold: Binary decision probability cutoff in [0.0, 1.0].
-        device: Target execution device ('cpu', 'mps'). Defaults to 'cpu'.
 
     Returns:
         Dict containing predicted mask array, PIL mask, coverage, area, latency, and metadata.
     """
+    if not (0.0 <= threshold <= 1.0):
+        raise ValueError(f"Threshold must be in [0.0, 1.0], got {threshold}")
+
+    pil_img, orig_w, orig_h = _prepare_image_input(image)
+
+    transform = T.Compose([
+        T.Resize(STANDARD_INPUT_SIZE),
+        T.ToTensor()
+    ])
+    input_numpy = transform(pil_img).unsqueeze(0).numpy()
+
+    session = load_onnx_session(model_name=model_name)
+
+    start_time = time.perf_counter()
+    input_name = session.get_inputs()[0].name
+    outputs = session.run(None, {input_name: input_numpy})
+    raw_out = outputs[0]
+    # Sigmoid activation: 1 / (1 + exp(-logits))
+    probs_256 = 1.0 / (1.0 + np.exp(-raw_out))
+    probs_256 = np.squeeze(probs_256)
+    latency_ms = (time.perf_counter() - start_time) * 1000.0
+
+    binary_mask_256 = (probs_256 >= threshold).astype(np.uint8)
+    water_pixels = int(np.sum(binary_mask_256))
+    total_pixels = int(binary_mask_256.size)
+    water_coverage_pct = float((water_pixels / total_pixels) * 100.0)
+    water_area_km2 = float(round((water_pixels * (NOMINAL_GSD_METERS ** 2)) / 1e6, 4))
+
+    mask_256_pil = Image.fromarray(binary_mask_256 * 255, mode="L")
+    mask_orig_pil = mask_256_pil.resize((orig_w, orig_h), resample=Image.NEAREST)
+    binary_mask_orig = (np.array(mask_orig_pil) > 127).astype(np.uint8)
+
+    return {
+        "model_name": model_name,
+        "engine": "onnx",
+        "device": "cpu",
+        "threshold": float(threshold),
+        "latency_ms": round(latency_ms, 2),
+        "water_coverage_pct": round(water_coverage_pct, 2),
+        "water_area_km2": water_area_km2,
+        "water_pixels": water_pixels,
+        "total_pixels": total_pixels,
+        "original_dimensions": [orig_w, orig_h],
+        "mask_array_256": binary_mask_256,
+        "probability_map_256": probs_256,
+        "mask_image": mask_orig_pil,
+        "binary_mask": binary_mask_orig,
+        "nominal_resolution": "Sentinel-2 10m GSD (100 m²/px)",
+        "geospatial_disclaimer": "Unprojected nominal Sentinel-2 10m Ground Sample Distance approximation (100 m²/pixel). Not georeferenced survey grade without external GeoTIFF CRS/affine metadata."
+    }
+
+
+def predict(
+    image: Union[Image.Image, np.ndarray, str, Path],
+    model_name: str = CHAMPION_MODEL,
+    threshold: float = 0.50,
+    device: Optional[str] = None,
+    engine: str = "pytorch"
+) -> Dict[str, Any]:
+    """
+    Execute high-fidelity surface water segmentation inference via PyTorch or ONNX Runtime.
+
+    Args:
+        image: PIL Image, NumPy array, or path to image file.
+        model_name: Registered model identifier ('fpn', 'unet_plusplus', 'deeplabv3_plus', 'segformer').
+        threshold: Binary decision probability cutoff in [0.0, 1.0].
+        device: Target execution device ('cpu', 'mps') when using PyTorch. Defaults to 'cpu'.
+        engine: Inference execution engine ('pytorch' or 'onnx').
+
+    Returns:
+        Dict containing predicted mask array, PIL mask, coverage, area, latency, and metadata.
+    """
+    if engine.lower() == "onnx":
+        return predict_onnx(image=image, model_name=model_name, threshold=threshold)
+
     if not (0.0 <= threshold <= 1.0):
         raise ValueError(f"Threshold must be in [0.0, 1.0], got {threshold}")
 
@@ -242,6 +387,7 @@ def predict(
 
     return {
         "model_name": model_name,
+        "engine": "pytorch",
         "device": target_device,
         "threshold": float(threshold),
         "latency_ms": round(latency_ms, 2),
@@ -262,7 +408,8 @@ def predict(
 def predict_all(
     image: Union[Image.Image, np.ndarray, str, Path],
     threshold: float = 0.50,
-    device: Optional[str] = None
+    device: Optional[str] = None,
+    engine: str = "pytorch"
 ) -> Dict[str, Dict[str, Any]]:
     """
     Execute inference across all verified available models sequentially.
@@ -273,7 +420,7 @@ def predict_all(
     for model_name in SUPPORTED_MODELS.keys():
         if is_model_available(model_name):
             try:
-                res = predict(image=pil_img, model_name=model_name, threshold=threshold, device=device)
+                res = predict(image=pil_img, model_name=model_name, threshold=threshold, device=device, engine=engine)
                 results[model_name] = res
             except Exception as e:
                 results[model_name] = {"error": str(e), "model_name": model_name}

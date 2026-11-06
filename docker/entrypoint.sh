@@ -1,18 +1,15 @@
 #!/usr/bin/env bash
 set -e
 
-# Hugging Face Spaces port defaults to 7860
+# Port defaults to 7860 (Hugging Face Spaces and Cloud default)
 PORT="${PORT:-7860}"
-API_PORT="${API_PORT:-8000}"
-export API_URL="http://127.0.0.1:${API_PORT}"
 
 echo "=========================================================="
 echo " Starting GeoVision AI Platform in Container Environment "
 echo " Public UI Port:      ${PORT}"
-echo " Internal API Port:   ${API_PORT}"
-echo " API Endpoint:        ${API_URL}"
 echo " User UID/GID:        $(id -u):$(id -g)"
 echo " Working Directory:   $(pwd)"
+echo " Architecture:        Streamlit + PyTorch + ONNX Runtime"
 echo "=========================================================="
 
 # Ensure cache directories exist with appropriate permissions
@@ -36,37 +33,14 @@ cleanup() {
         echo "Stopping Streamlit (PID $STREAMLIT_PID)..."
         kill -TERM "$STREAMLIT_PID" 2>/dev/null || true
     fi
-    if [ -n "$UVICORN_PID" ] && kill -0 "$UVICORN_PID" 2>/dev/null; then
-        echo "Stopping FastAPI / Uvicorn (PID $UVICORN_PID)..."
-        kill -TERM "$UVICORN_PID" 2>/dev/null || true
-    fi
     wait "$STREAMLIT_PID" 2>/dev/null || true
-    wait "$UVICORN_PID" 2>/dev/null || true
     echo "GeoVision AI services stopped cleanly."
     exit 0
 }
 
 trap cleanup SIGTERM SIGINT SIGQUIT
 
-# 1. Start FastAPI microservice on internal port
-echo "Starting FastAPI microservice on 127.0.0.1:${API_PORT}..."
-uvicorn src.api.main:app \
-    --host 0.0.0.0 \
-    --port "${API_PORT}" \
-    --log-level info &
-UVICORN_PID=$!
-
-# Wait for FastAPI to be healthy
-echo "Waiting for FastAPI healthcheck..."
-for i in $(seq 1 30); do
-    if curl -s "http://127.0.0.1:${API_PORT}/health" >/dev/null 2>&1; then
-        echo "FastAPI microservice is healthy on port ${API_PORT}."
-        break
-    fi
-    sleep 0.5
-done
-
-# 2. Start Streamlit dashboard on public port (7860 for Hugging Face Spaces)
+# Start Streamlit dashboard on configured port
 echo "Starting Streamlit dashboard on 0.0.0.0:${PORT}..."
 streamlit run app.py \
     --server.port "${PORT}" \
@@ -77,6 +51,6 @@ streamlit run app.py \
     --browser.gatherUsageStats false &
 STREAMLIT_PID=$!
 
-# Wait on background processes
-wait -n "$STREAMLIT_PID" "$UVICORN_PID"
+# Wait on Streamlit process
+wait "$STREAMLIT_PID"
 cleanup
