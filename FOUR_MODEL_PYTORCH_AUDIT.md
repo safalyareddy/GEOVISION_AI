@@ -17,7 +17,7 @@ This engineering audit validates the multi-model architecture of the GeoVision A
 2. **Cryptographic Checkpoint Integrity:** All four production checkpoints match their declared SHA-256 digests and load strictly (`strict=True`) with zero missing or unexpected keys.
 3. **Dual Device Compatibility:** Every model successfully executes deterministic inference (`torch.inference_mode()`) on both standard **CPU** and Apple Silicon **MPS** (Metal Performance Shaders).
 4. **Promotion of EXP01 UNet++:** The improved UNet++ checkpoint from the 2026 water segmentation improvement program (`EXP01_UNetPlusPlus_Tversky_best.pth`) has been promoted as the canonical UNet++ checkpoint, preserving the historical legacy baseline (`unet_plusplus_baseline_legacy_e9ac.pth`) for archival comparison.
-5. **Production Deployment Readiness:** Both the FastAPI microservice and Streamlit interactive web dashboard support all four models with lazy loading, memory safety (< 600 MB total model footprint), and full Docker containerization.
+5. **Production Deployment Readiness:** The Streamlit interactive web dashboard supports all four models across both PyTorch and ONNX Runtime in-process engines with lazy loading, memory safety (< 600 MB total model footprint), and single-service Docker containerization on port 7860 (FastAPI microservice retired from active runtime).
 
 ---
 
@@ -133,13 +133,9 @@ checkpoints/segformer_best.pth        <- experiments/2026_water_segmentation_imp
 ./venv/bin/python -m pytest tests/test_four_model_validation.py -v
 # Output: 29 passed in 21.40s (100% PASS)
 
-# 2. FastAPI Microservice Test Suite
-./venv/bin/python -m pytest tests/test_api.py -v
-# Output: 13 passed in 7.38s (100% PASS)
-
-# 3. Complete Project Test Suite
+# 2. Complete Project Test Suite (136 tests)
 ./venv/bin/python -m pytest tests/ -v
-# Output: 85 passed in 68.74s (100% PASS)
+# Output: 136 passed in 78.43s (100% PASS, 0 failures, 0 warnings)
 ```
 
 ---
@@ -154,14 +150,14 @@ checkpoints/segformer_best.pth        <- experiments/2026_water_segmentation_imp
 - [x] All four produce valid segmentation masks bounded in $[0, 1]$.
 - [x] CPU inference works for all four models.
 - [x] Apple Silicon MPS inference is verified with bit-identical outputs.
-- [x] Unified inference pipeline (`src/inference.py`) works with standard interfaces.
+- [x] Unified inference pipeline (`src/inference.py`) works with standard interfaces (PyTorch & ONNX Runtime).
 - [x] All four models are registered in `src/utils/model_registry.py`.
-- [x] FastAPI microservice integration functions across `/health`, `/models`, and `/predict`.
-- [x] Streamlit web dashboard supports selection, visualization, and comparison of all four models.
+- [x] Streamlit web dashboard supports selection, visualization, and comparison of all four models across both engines.
 - [x] All four models have reproducible benchmark results on the 54 held-out test tiles.
 - [x] Benchmark uses the exact 54 test images with zero test-set threshold tuning.
 - [x] Model selection is strictly validation-based.
-- [x] Docker build succeeds reproducibly without local Mac path dependencies.
-- [x] All four models execute successfully through the live Dockerized API.
-- [x] Documentation is complete across all five specified reference documents.
+- [x] Docker build succeeds reproducibly without local Mac path dependencies (port 7860).
+- [x] Pure Streamlit + PyTorch + ONNX Runtime architecture verified (FastAPI retired from active runtime).
+- [x] Documentation is complete across all specified reference documents.
 - [x] Original checkpoints, baselines, and datasets remain 100% preserved.
+

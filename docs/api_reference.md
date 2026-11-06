@@ -1,71 +1,93 @@
-# FastAPI Microservice API Reference
+# GeoVision AI — API Reference & Programming Interface
 
-The GeoVision AI REST API provides high-throughput inference endpoints for satellite water segmentation.
+This document specifies the primary Python programmatic API (`src.inference`, `src.utils.input_validator`) used for production serving, along with historical reference for the retired REST endpoints.
 
----
-
-## 1. Service Launch
-
-```bash
-# Launch FastAPI via Uvicorn
-uvicorn src.api.main:app --host 0.0.0.0 --port 8000 --workers 1
-```
-* **Interactive OpenAPI Swagger Docs**: `http://localhost:8000/docs`
-* **Interactive Redoc**: `http://localhost:8000/redoc`
+> [!IMPORTANT]
+> **Architecture Notice**: The FastAPI REST microservice has been completely retired from the active production runtime. All inference, cryptographic checkpoint verification, and input validation now execute in-process via `src.inference`.
 
 ---
 
-## 2. Endpoints
+## 1. Primary Programmatic Python API (`src.inference`)
 
-### `GET /health`
-Returns microservice health and loaded neural network models.
-* **Status**: `200 OK`
-* **Response**:
-```json
+### `predict(image, model_name="fpn", threshold=0.50, device=None, engine="pytorch") -> Dict[str, Any]`
+Executes single-model inference on a satellite image tile using either the native PyTorch engine or the accelerated ONNX Runtime engine.
+
+**Parameters**:
+- `image`: Input payload — accepts a PIL `Image.Image`, NumPy array (`np.ndarray`), or file path (`str` / `Path`).
+- `model_name`: Architecture identifier (`"fpn"`, `"unet_plusplus"`, `"deeplabv3_plus"`, `"segformer"`). Default: `"fpn"`.
+- `threshold`: Binary decision threshold $\tau \in [0.0, 1.0]$. Default: `0.50`.
+- `device`: Hardware target (`"cpu"`, `"mps"`). Defaults to optimal detected device.
+- `engine`: Inference engine backend — `"pytorch"` (default) or `"onnx"`.
+
+**Returns**:
+A structured dictionary containing:
+```python
 {
-  "status": "ok",
-  "torch_available": true,
-  "loaded_models": ["unet_plusplus"]
+    "model_name": "fpn",
+    "engine": "pytorch",              # or "onnx"
+    "device": "cpu",
+    "threshold": 0.50,
+    "latency_ms": 28.32,
+    "water_coverage_pct": 12.63,
+    "water_area_km2": 0.8276,
+    "water_pixels": 8276,
+    "total_pixels": 65536,
+    "original_dimensions": [256, 256],
+    "mask_array_256": np.ndarray,     # (256, 256) binary {0, 1}
+    "probability_map_256": np.ndarray,# (256, 256) float32 in [0.0, 1.0]
+    "mask_image": PIL.Image.Image,    # Grayscale mask at original dimensions
+    "binary_mask": np.ndarray         # Binary mask at original dimensions
 }
 ```
 
-### `GET /models`
-Lists supported architectures.
-* **Status**: `200 OK`
-* **Response**:
-```json
-{
-  "supported_models": {
-    "unet_plusplus": "UNet++ (Nested UNet for multi-scale feature fusion)",
-    "deeplabv3_plus": "DeepLabV3+ (Atrous Spatial Pyramid Pooling)",
-    "segformer": "SegFormer-B2 (Lightweight Vision Transformer for Segmentation)",
-    "fpn": "Feature Pyramid Network (Multi-scale feature pyramid for thin streams and boundaries)"
-  },
-  "default_model": "unet_plusplus"
-}
-```
+---
 
-### `POST /predict`
-Uploads a satellite image tile and returns the segmentation mask and metrics.
-* **Content-Type**: `multipart/form-data`
-* **Parameters**:
-  * `file`: Binary image file (`PNG`, `JPEG`, `TIFF`, max 10 MB)
-  * `model_name`: `unet_plusplus` | `deeplabv3_plus` | `segformer` | `fpn`
-  * `threshold`: Float between `0.0` and `1.0` (default: `0.5`)
-* **Response (`200 OK`)**:
-```json
-{
-  "model_name": "unet_plusplus",
-  "threshold": 0.5,
-  "water_coverage_percentage": 24.15,
-  "water_pixels": 15827,
-  "total_pixels": 65536,
-  "latency_ms": 19.33,
-  "image_dimensions": [256, 256],
-  "mask_base64": "iVBORw0KGgoAAAANSUhEUgAAAQ..."
-}
-```
-* **Error Responses**:
-  * `400 Bad Request`: Empty file, invalid image bytes, unsupported MIME type, or threshold out of range.
-  * `413 Payload Too Large`: Upload exceeds 10 MB limit.
-  * `503 Service Unavailable`: Model architecture failed to initialize.
+### `predict_onnx(image, model_name="fpn", threshold=0.50) -> Dict[str, Any]`
+Convenience wrapper that executes inference directly through an accelerated ONNX Runtime CPU graph session, returning the identical output schema.
+
+---
+
+### `predict_all(image, threshold=0.50, device=None, engine="pytorch") -> Dict[str, Dict[str, Any]]`
+Executes multi-model inference sequentially across all four verified models (`fpn`, `unet_plusplus`, `deeplabv3_plus`, `segformer`) on the same image, allowing instantaneous cross-architecture comparison.
+
+---
+
+### `load_model(model_name="fpn", device="cpu") -> torch.nn.Module`
+Loads a verified PyTorch model instance:
+- Verifies local presence or downloads from Hugging Face Hub (`safalya06/geovision-water-segmentation-models@441a990`).
+- Validates cryptographic SHA-256 hash.
+- Deserializes with `weights_only=True` and applies `model.load_state_dict(..., strict=True)`.
+- Freezes running statistics with `model.eval()`.
+- Caches model in memory (`_MODEL_CACHE`).
+
+---
+
+### `load_onnx_session(model_name="fpn") -> onnxruntime.InferenceSession`
+Loads or generates the optimized ONNX computation graph:
+- Resolves `checkpoints/onnx/<model_name>.onnx`.
+- If missing, automatically generates the graph from PyTorch weights with opset 14/17 fallback.
+- Initializes and caches `onnxruntime.InferenceSession` with `CPUExecutionProvider`.
+
+---
+
+## 2. Scientific Input Validation API (`src.utils.input_validator`)
+
+### `validate_input_image(image_bytes: bytes, filename: str) -> ValidationResult`
+Inspects an inbound file payload prior to tensor processing to prevent unscientific hydrological claims.
+
+**Classification States**:
+- `VERIFIED_PROJECT_SAMPLE`: Payload matches curated Sentinel-2 test split patch by SHA-256 hash.
+- `VERIFIED_GEOSPATIAL_INPUT`: GeoTIFF with embedded coordinate reference system and pixel scale tags.
+- `USER_DECLARED_SATELLITE_UNVERIFIED`: Plausible satellite imagery lacking embedded spatial tags.
+- `UNSUPPORTED_INPUT` / `UNSUPPORTED_PHOTOGRAPH`: Consumer photograph (iPhone, Canon, Nikon EXIF tags) or solid black/white image.
+- `INVALID_IMAGE`: Corrupted bytes, zero-length file, or unsupported MIME type.
+
+---
+
+## 3. Retired REST API Specification (Legacy Reference)
+
+*(Archival Note: Existed prior to commit `9eddec5` when FastAPI was retired).*
+
+- `GET /health`: Returned service status and loaded PyTorch models.
+- `GET /models`: Listed supported model architectures.
+- `POST /predict`: Accepted multipart/form-data image uploads with model name and threshold query parameters.

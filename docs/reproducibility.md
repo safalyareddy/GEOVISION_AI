@@ -1,6 +1,6 @@
 # GeoVision AI — Reproducibility & Environment Guide
 
-This document provides deterministic, step-by-step instructions to reproduce the test environment, validate dataset integrity, evaluate trained model checkpoints, and verify ONNX Runtime parity.
+This document provides deterministic, step-by-step instructions to reproduce the test environment, validate dataset integrity, evaluate trained model checkpoints, and verify PyTorch + ONNX Runtime parity.
 
 ---
 
@@ -26,13 +26,13 @@ pip install -r requirements.txt
 
 ## 2. Automated Test Suite Validation
 
-Run the complete 54-test suite across data loaders, model construction, loss functions, API endpoints, model registry cryptographic verification, evaluation metrics, and ONNX parity:
+Run the complete 136-test suite covering data loaders, model construction, loss functions, inference engines, model registry cryptographic verification, input validation safety gates, and ONNX parity:
 
 ```bash
 PYTHONPATH=. pytest tests/ -v
 ```
 
-All 54 tests must pass without warnings or regressions.
+All 136 tests must pass with 0 failures and 0 warnings.
 
 ---
 
@@ -61,51 +61,40 @@ To independently evaluate saved model checkpoints on the held-out test dataset:
 python src/evaluate.py --dataset-dir dataset --save-csv
 ```
 
-To reproduce the 2026 improved model evaluations:
+To reproduce the four-model scientific benchmark across all 54 test tiles:
 ```bash
-# Run multi-model evaluation and visual diagnostic generation
-python scripts/generate_diagnostic_visualizations.py
+python src/benchmark_comparison.py --dataset_dir dataset/test --output reports/four_model_scientific_benchmark.json --device cpu
 ```
 
 The verified results are tracked in [`reports/benchmark-results.csv`](../reports/benchmark-results.csv) and documented in [`reports/model-evaluation.md`](../reports/model-evaluation.md).
 
 ---
 
-## 5. ONNX Export & Parity Verification
+## 5. Multi-Tile 8-Combination Parity Verification (PyTorch × ONNX)
 
-GeoVision AI supports zero-copy ONNX export for low-latency CPU production serving:
+To verify the 8 model-engine combinations across 7 diverse Sentinel-2 test scenes:
 
 ```bash
-# Export PyTorch weights to ONNX graph (Opset 17)
-python scripts/export_onnx.py \
-    --model unet_plusplus \
-    --checkpoint checkpoints/unet_plusplus_best.pth \
-    --output checkpoints/unet_plusplus_best.onnx
-
-# Verify bitwise and numerical parity between PyTorch and ONNX Runtime (< 1e-4 tolerance)
-python scripts/debug_inference.py \
-    --image dataset/test/images/patch_0047.png \
-    --checkpoint checkpoints/unet_plusplus_best.pth
+python scripts/verify_8_combinations.py
 ```
+
+This script:
+1. Validates all 4 PyTorch architectures against their cryptographic SHA-256 digests.
+2. Evaluates or exports the 4 corresponding ONNX computational graphs.
+3. Tests both engines across 7 distinct test scenes (low-water, mixed, boundary demo patch, and water-rich).
+4. Verifies 100.0% binary mask agreement and records results in `backend_acceptance_matrix.json`.
 
 ---
 
 ## 6. Local Serving Verification
 
-### FastAPI Microservice
-```bash
-uvicorn src.api.main:app --host 0.0.0.0 --port 8000
-```
-Test health endpoint:
-```bash
-curl http://localhost:8000/health
-```
-
-### Streamlit Dashboard
+Launch the Streamlit interactive dashboard:
 ```bash
 streamlit run app.py --server.port 8501
 ```
-Open `http://localhost:8501` to test interactive inference.
+Open `http://localhost:8501` to test interactive inference, engine toggling (PyTorch vs ONNX Runtime), threshold calibration, and multi-model comparison.
+
+*(Architectural Notice: The legacy FastAPI microservice has been retired from production to eliminate proxy overhead and multi-process server dependencies).*
 
 ---
 
@@ -115,6 +104,8 @@ Open `http://localhost:8501` to test interactive inference.
 # Build unified container
 docker build -t geovision-ai:latest .
 
-# Run inference service
-docker run -p 8000:8000 -v $(pwd)/checkpoints:/app/checkpoints:ro geovision-ai:latest
+# Run inference service on port 7860
+docker run -p 7860:7860 geovision-ai:latest
 ```
+
+Access the application at `http://localhost:7860`.

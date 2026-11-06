@@ -19,22 +19,20 @@ graph TD
         Models --> FPN[Feature Pyramid Network<br/>ResNet-34 Backbone]
         Models --> UNetPP[UNet++<br/>Nested Dense Skip Connections]
         Models --> DeepLab[DeepLabV3+<br/>Atrous Spatial Pyramid Pooling]
-        Models --> SegFormer[SegFormer<br/>Vision Transformer mit-b0/b2]
+        Models --> SegFormer[SegFormer<br/>Vision Transformer mit-b0]
         FPN & UNetPP & DeepLab & SegFormer --> LossEngine[src/loss.py<br/>Hybrid Dice-Focal / Focal Tversky Loss]
     end
 
     subgraph Optimization & Serialization
         LossEngine --> TrainPipeline[src/train.py<br/>PyTorch / PyTorch Lightning]
         TrainPipeline --> Weights[checkpoints/<br/>State Dictionaries .pth]
-        Weights --> ONNXExp[scripts/export_onnx.py<br/>ONNX Graph Export & Opset 17]
-        ONNXExp --> ONNXRuntime[checkpoints/*.onnx<br/>ONNX Runtime Engine]
+        Weights --> ONNXExp[scripts/export_onnx.py<br/>ONNX Graph Export Opset 14/17]
+        ONNXExp --> ONNXRuntime[checkpoints/onnx/*.onnx<br/>ONNX Runtime Graphs]
     end
 
-    subgraph Serving & User Interfaces
-        Weights & ONNXRuntime --> FastAPIService[src/api/main.py<br/>FastAPI Microservice :8000]
-        Weights & ONNXRuntime --> StreamlitApp[app.py<br/>Streamlit UI Dashboard :8501]
-        FastAPIService --> StreamlitApp
-        FastAPIService --> RESTClients[REST API Clients / GIS Pipelines]
+    subgraph Serving & User Interface
+        Weights & ONNXRuntime --> InferenceAPI[src/inference.py<br/>Unified Multi-Engine API]
+        InferenceAPI --> StreamlitApp[app.py<br/>Streamlit UI Dashboard :7860]
         StreamlitApp --> Hydrologist[Hydrological & Remote Sensing Analysts]
     end
 ```
@@ -61,36 +59,43 @@ To handle severe class imbalance (overall 5.34% water vs. 94.66% land; 3.89% in 
 - **Focal Loss**: Dynamically down-weights easy background examples $(\gamma=2.0, \alpha=0.25)$ to focus backpropagation on ambiguous boundaries.
 - **Tversky & Focal Tversky Loss**: Asymmetrically penalizes False Negatives ($\beta=0.7 > \alpha=0.3$) with focusing exponent $\gamma=1.33$ to recover missed water bodies.
 
-### D. Serving Interfaces
-1. **FastAPI Microservice** (`src/api/main.py`):
-   - High-throughput asynchronous REST API exposing `/health`, `/models`, and `/predict`.
-   - Streaming multipart file verification with 10 MB payload limits and format sanitization.
-   - Dynamic checkpoint caching on CPU/MPS/CUDA.
-   - Returns predicted water coverage percentage, nominal area ($\text{km}^2$), latency ($\text{ms}$), and base64-encoded PNG masks.
-2. **Streamlit Interactive Dashboard** (`app.py`):
-   - Multi-backend execution: FastAPI REST API, in-process PyTorch, or in-process ONNX Runtime.
+### D. Serving Interfaces & Execution Backends
+1. **Streamlit Interactive Dashboard** (`app.py`):
+   - Production web application running on port `7860` (Hugging Face Spaces and cloud compatible).
+   - In-process multi-engine selector: **PyTorch (In-Process CPU/MPS)** and **ONNX Runtime (Accelerated CPU)**.
    - Interactive threshold tuning slider ($0.10 \le \tau \le 0.90$).
+   - Multi-model simultaneous comparison mode across all 4 architectures.
    - Cyan water-overlay visualization and side-by-side ground truth comparison.
+2. **Unified Inference Pipeline** (`src/inference.py`):
+   - Decoupled functional Python API exposing `predict`, `predict_onnx`, `predict_all`, `load_model`, and `load_onnx_session`.
+   - Automatic ONNX fallback export (`dynamo=False`, opset 14/17) when pre-exported graphs are not present.
+   - Dynamic caching of models and sessions in memory.
 3. **Container Supervisor** (`docker/entrypoint.sh`):
-   - Dual-service process supervision conforming to Hugging Face Spaces Docker SDK.
-   - Binds Streamlit to public port `7860` and FastAPI to internal port `8000`.
-   - Non-root user execution (`UID 1000`) and graceful SIGTERM signal handling.
+   - Single-service container lifecycle management conforming to Hugging Face Spaces Docker SDK.
+   - Runs under non-root unprivileged user `appuser` (`UID 1000`).
+   - Clean signal trapping (SIGTERM, SIGINT) and healthcheck endpoint (`/_stcore/health`).
+4. **Retired FastAPI Microservice** (`src/api/main.py`):
+   - *Architecture Notice*: The FastAPI microservice has been completely retired from active serving to eliminate unnecessary HTTP serialization overhead, proxy hops, and multi-process server dependencies.
 
 ### E. Model Registry & Verification Engine (`src/utils/model_registry.py`)
 - Cryptographic SHA-256 verification before state dict deserialization.
 - Local candidate search with fallback to automated Hugging Face Model Hub download.
-- Strict prevention of uninitialized execution (HTTP 503 error if weights are missing).
+- Pinned to authoritative Hugging Face Hub commit `441a99034b36336c34d86c23cfe9c1a8114ca3a4`.
+- Strict prevention of uninitialized execution (halts with diagnostic if weights cannot be verified).
 
 ---
 
 ## 3. Data Flow
 
-1. **Ingestion**: The client posts an optical satellite image file to `/predict` or uploads it via the Streamlit interface.
-2. **Validation**: The image format is verified (PNG/JPG/TIFF), payload size verified ($\le 10 \text{MB}$), and decoded to RGB.
-3. **Tensor Preprocessing**: Resized to $256 \times 256$, normalized to $[0, 1]$ float32 tensor across all architectures, shaped as $(1, 3, 256, 256)$.
-4. **Inference**: Propagated through the selected network in evaluation mode (`torch.no_grad()`). Raw output logits are converted to class probabilities via the sigmoid function $\sigma(z) = \frac{1}{1 + e^{-z}}$.
+1. **Ingestion & Input Validation**: The client uploads an optical satellite image via the Streamlit interface. The file is validated by `src/utils/input_validator.py` (checking magic bytes, rejecting consumer camera EXIF metadata, and detecting extreme non-satellite saturation).
+2. **Tensor Preprocessing**: Resized to $256 \times 256$, normalized to $[0.0, 1.0]$ float32 tensor across all architectures, shaped as $(1, 3, 256, 256)$.
+3. **Inference**: Propagated through the selected network and engine:
+   - **PyTorch**: Native forward pass inside `torch.inference_mode()`.
+   - **ONNX Runtime**: Graph session execution via optimized CPU provider.
+4. **Activation**: Raw output logits are converted to class probabilities via the sigmoid function $\sigma(z) = \frac{1}{1 + e^{-z}}$.
 5. **Thresholding & Postprocessing**: Evaluated against decision threshold $\tau$:
    $$\hat{Y}_{i,j} = \begin{cases} 1 & \text{if } P(Y_{i,j} = 1 \mid X) \ge \tau \\ 0 & \text{otherwise} \end{cases}$$
-6. **Quantification**: Computes pixel-level water coverage fraction and physical area approximation assuming Sentinel-2 10m Ground Sample Distance (GSD):
-   $$\text{Coverage (\%)} = \frac{\sum \hat{Y}_{i,j}}{H \times W} \times 100, \quad \text{Area } (\text{km}^2) = \frac{\sum \hat{Y}_{i,j} \times 100 \text{ m}^2}{10^6 \text{ m}^2/\text{km}^2}$$
-7. **Response Delivery**: Returns structured JSON metadata with base64 PNG mask string or renders interactive overlay on the UI.
+6. **Quantification**: Computes pixel-level water coverage fraction and physical area approximation:
+   - **Verified Geospatial Mode**: If GeoTIFF pixel scale tags are present, calculates exact metric surface area from physical coordinates.
+   - **Nominal Mode**: Assumes Sentinel-2 10m Ground Sample Distance (GSD, $100.0\text{ m}^2/\text{pixel}$) accompanied by an explicit unreferenced approximation disclaimer.
+7. **Visualization**: Renders cyan overlay masks, telemetry metrics (water %, area $\text{km}^2$, latency $\text{ms}$), and side-by-side comparative views.

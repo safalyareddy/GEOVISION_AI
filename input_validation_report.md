@@ -13,9 +13,9 @@ The input validation pipeline classifies every inbound payload into one of six m
 | `VERIFIED_PROJECT_SAMPLE` | Payload matches curated Sentinel-2 test split patch strictly by cryptographic SHA-256 hash (never filename alone). | Allowed. Pre-computed ground truth mask displayed alongside prediction. | Nominal Sentinel-2 10m GSD (100.0 m²/px). |
 | `VERIFIED_GEOSPATIAL_INPUT` | TIFF image containing embedded GeoTIFF tags (Tag 33550 `ModelPixelScaleTag` / Tag 34264 `ModelTransformationTag` and Tag 34735 `GeoKeyDirectoryTag`). | Allowed. Spatial bounds and coordinate reference extracted and verified. | **Verified Geospatial Mode**: Exact square kilometers derived from physical pixel scale ($Scale_X \times Scale_Y$) or affine Jacobian determinant for rotated pixels. |
 | `USER_DECLARED_SATELLITE_UNVERIFIED` | Plausible natural color or false-color remote sensing image without embedded geospatial coordinate tags. | Allowed with explicit disclaimer: *"Satellite imagery was declared by the user but could not be independently verified."* | **Nominal Approximation Mode**: Sentinel-2 10m GSD assumed (100 m²/px) with explicit approximation notice. |
-| `UNSUPPORTED_INPUT` / `UNSUPPORTED_PHOTOGRAPH` | Consumer photograph (flowers, portraits, landscapes, indoor objects, solid blanks) identified via EXIF hardware tags, blank black/white checks, or consumer floral saturation heuristics. | **Blocked**: In FastAPI, returns HTTP 422 Unprocessable Content. In Streamlit, disables hydrological claims. | **Calculations Disabled**: Returns `None`. |
-| `INVALID_IMAGE` | Corrupted byte stream, zero-byte file, oversized (>10MB), invalid dimensions (<32x32 or >8192x8192), extreme aspect ratio (<0.2 or >5.0), or unsupported format. | **Blocked**: In FastAPI, returns HTTP 400 Bad Request. In Streamlit, displays invalid payload banner. | **Calculations Disabled**: Returns `None`. |
-| `INFERENCE_FAILED` | Internal runtime exception during model forward pass or tensor transformation. | Returns HTTP 500 / 503 error with diagnostic stack trace. | **Calculations Disabled**: Returns `None`. |
+| `UNSUPPORTED_INPUT` / `UNSUPPORTED_PHOTOGRAPH` | Consumer photograph (flowers, portraits, landscapes, indoor objects, solid blanks) identified via EXIF hardware tags, blank black/white checks, or consumer floral saturation heuristics. | **Blocked**: In Streamlit, displays descriptive warning banner and disables hydrological claims. | **Calculations Disabled**: Returns `None`. |
+| `INVALID_IMAGE` | Corrupted byte stream, zero-byte file, oversized (>10MB), invalid dimensions (<32x32 or >8192x8192), extreme aspect ratio (<0.2 or >5.0), or unsupported format. | **Blocked**: In Streamlit, displays invalid payload banner and halts inference. | **Calculations Disabled**: Returns `None`. |
+| `INFERENCE_FAILED` | Internal runtime exception during model forward pass or tensor transformation. | Displays diagnostic error notification with informative guidance. | **Calculations Disabled**: Returns `None`. |
 
 ---
 
@@ -67,10 +67,10 @@ Surface water area calculation enforces scientific integrity through two distinc
 
 ## 4. Test Verification Summary
 
-The input validation pipeline has been verified with 100% pass rate in `tests/test_input_validator.py` (13/13 passed) and `tests/test_api.py` (15/15 passed):
+The input validation pipeline has been verified with 100% pass rate in `tests/test_input_validator.py` (13/13 passed):
 1. `test_verified_project_sample`: Passed (`patch_0047.png` correctly recognized by SHA-256).
 2. `test_project_sample_filename_alone_not_trusted`: Passed (Non-matching bytes named `patch_0047.png` rejected as sample).
-3. `test_unsupported_photograph_exif`: Passed (Apple iPhone EXIF tags rejected with HTTP 422).
+3. `test_unsupported_photograph_exif`: Passed (Apple iPhone EXIF tags rejected with UNSUPPORTED_PHOTOGRAPH).
 4. `test_blank_white_and_blank_black_image`: Passed (Blank black and blank white images rejected).
 5. `test_corrupted_image_and_zero_byte`: Passed (Zero-byte and corrupted payloads rejected as invalid).
 6. `test_oversized_upload_and_invalid_extension`: Passed (>10MB and `.exe` rejected as invalid).

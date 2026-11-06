@@ -99,3 +99,38 @@ for name in SUPPORTED_MODELS:
     print(f'  ✓ {name:<15}: Strictly loaded ({sum(p.numel() for p in model.parameters()):,} parameters)')
 "
 ```
+
+---
+
+## 4. Production ONNX Graph Registry & Parity Verification
+
+In addition to native PyTorch `.pth` state dictionaries, GeoVision AI provides optimized Open Neural Network Exchange (ONNX) computational graphs for high-throughput, low-latency CPU serving.
+
+### A. ONNX Computational Graphs
+
+| Model Identifier | Architecture | ONNX Graph Artifact | Size (MB) | ONNX Opset | SHA-256 Digest |
+| :--- | :--- | :--- | :---: | :---: | :--- |
+| `fpn` | FPN-ResNet34 (Champion) | `checkpoints/onnx/fpn.onnx` | 88.5 MB | 14 / 17 | `48e60da00e2eafc91e5c96d6276c7b6c613b95360b3f1e0f084f49b3a8e91478` |
+| `unet_plusplus` | UNet++-ResNet34 | `checkpoints/onnx/unet_plusplus.onnx` | 99.7 MB | 14 / 17 | `319fcd23c48744c172b25699d1543fd6a27d61335acd8c61c0eb30038d8134d3` |
+| `deeplabv3_plus` | DeepLabV3+-ResNet34 | `checkpoints/onnx/deeplabv3_plus.onnx` | 85.8 MB | 14 / 17 | `f9955856cca9b1ad1aeba5c93afd6bb5525ab36271ec6f5ab4edacef143bee3e` |
+| `segformer` | SegFormer-MiT-B0 | `checkpoints/onnx/segformer.onnx` | 14.3 MB | 14 / 17 | `a6e3ea41a9b1966afc40893e11e21db66eacfbb89ba0728f4e7d537605685f56` |
+
+*External weight sidecar tensors (`.onnx.data`) are co-located in `checkpoints/onnx/` when model sizes exceed Protobuf 2GB graph limits or multi-layer splits.*
+
+### B. Numerical Parity Across 7 Diverse Sentinel-2 Test Scenes
+
+Evaluated using `scripts/verify_8_combinations.py` across 7 test scenes representing diverse hydrological profiles (low-water `<1%`, mixed land/water `10–15%`, complex boundary demo patch `25%`, and water-rich `>45%`):
+
+| Architecture | Tiles Evaluated | Binary Mask Agreement | Max Abs Δp | Mean Abs Δp | Parity Verdict |
+| :--- | :---: | :---: | :---: | :---: | :---: |
+| **FPN-ResNet34** (Champion) | 7 | **100.00%** | $1.69 \times 10^{-5}$ | $1.21 \times 10^{-7}$ | **PASS** |
+| **UNet++-ResNet34** | 7 | **100.00%** | $3.18 \times 10^{-5}$ | $1.11 \times 10^{-7}$ | **PASS** |
+| **DeepLabV3+-ResNet34** | 7 | **100.00%** | $1.39 \times 10^{-5}$ | $9.09 \times 10^{-8}$ | **PASS** |
+| **SegFormer-MiT-B0** | 7 | **100.00%** | $1.73 \times 10^{-6}$ | $1.30 \times 10^{-7}$ | **PASS** |
+
+**Aggregate Verdict**: **8/8 Model-Engine Combinations Passed** with **100.0% binary mask agreement**.
+
+### C. Hugging Face Hub Remote Provenance
+- Repository: [`safalya06/geovision-water-segmentation-models`](https://huggingface.co/safalya06/geovision-water-segmentation-models)
+- Authoritative Commit Pin: `441a99034b36336c34d86c23cfe9c1a8114ca3a4`
+
