@@ -25,11 +25,61 @@ logger = logging.getLogger("geovision.model_registry")
 
 # Global Settings & Pinned Defaults
 CHAMPION_MODEL = "fpn"
-DEFAULT_HF_REPO = os.getenv("GEOVISION_HF_REPO", "safalya06/geovision-water-segmentation-models")
-DEFAULT_HF_REVISION = os.getenv("GEOVISION_HF_REVISION", "441a99034b36336c34d86c23cfe9c1a8114ca3a4")
+AUTHORITATIVE_HF_REPO = "safalya06/geovision-water-segmentation-models"
+AUTHORITATIVE_HF_REVISION = "441a99034b36336c34d86c23cfe9c1a8114ca3a4"
+
+# Obsolete / deprecated revisions that MUST NOT be used in production
+OBSOLETE_HF_REVISIONS = {
+    "022039f0ce080afec9354a18635af97cc4cf352e",
+    "022039f",
+    "0ce5ce5824",
+    "0ce5ce582470725a3d706509f7a7590d6b2dc2b3",
+}
+
+
+def get_hf_repo() -> str:
+    """Resolve configured Hugging Face repository with fallback to authoritative default."""
+    repo = os.getenv("GEOVISION_HF_REPO")
+    if not repo:
+        try:
+            import streamlit as st
+            if hasattr(st, "secrets") and "GEOVISION_HF_REPO" in st.secrets:
+                repo = str(st.secrets["GEOVISION_HF_REPO"]).strip()
+        except Exception:
+            pass
+    return repo if (repo and repo.strip()) else AUTHORITATIVE_HF_REPO
+
+
+def get_hf_revision() -> str:
+    """
+    Resolve immutable production revision SHA.
+    Guarantees that obsolete/broken revisions (e.g. 022039f which lacks 3 models)
+    are strictly rejected and overridden with AUTHORITATIVE_HF_REVISION.
+    """
+    rev = os.getenv("GEOVISION_HF_REVISION")
+    if not rev:
+        try:
+            import streamlit as st
+            if hasattr(st, "secrets") and "GEOVISION_HF_REVISION" in st.secrets:
+                rev = str(st.secrets["GEOVISION_HF_REVISION"]).strip()
+        except Exception:
+            pass
+    if not rev or rev in OBSOLETE_HF_REVISIONS or len(rev) < 7:
+        if rev in OBSOLETE_HF_REVISIONS:
+            logger.warning(
+                f"Obsolete Hugging Face revision '{rev}' was detected in environment/secrets. "
+                f"Overriding with authoritative production revision '{AUTHORITATIVE_HF_REVISION}'."
+            )
+        return AUTHORITATIVE_HF_REVISION
+    return rev
+
+
+DEFAULT_HF_REPO = get_hf_repo()
+DEFAULT_HF_REVISION = get_hf_revision()
 
 # Global In-Memory Tracking for Runtime Diagnostics & Caching
 _LAST_DOWNLOAD_ERROR: Dict[str, Optional[str]] = {}
+_LOAD_ERROR: Dict[str, Optional[str]] = {}
 _DOWNLOADING_MODELS: Set[str] = set()
 _LOADED_MODELS_CACHE: Dict[str, Any] = {}
 
@@ -38,6 +88,7 @@ STATUS_VERIFIED_LOADED = "Verified and loaded"
 STATUS_AVAILABLE_NOT_LOADED = "Available but not yet loaded"
 STATUS_DOWNLOADING = "Downloading"
 STATUS_VERIFICATION_FAILED = "Checkpoint verification failed"
+STATUS_LOAD_FAILED = "Model load failed"
 STATUS_UNAVAILABLE = "Unavailable"
 
 # Canonical Model Metadata & Verified Checksums
@@ -67,14 +118,12 @@ MODEL_REGISTRY: Dict[str, Dict[str, Any]] = {
         "default_filename": "unet_plusplus_best.pth",
         "expected_sha256": "497e246ef79d87f3b2255cc119e7ab8bd0045d48caf3d4710e9f6738e56c4548",
         "trusted_sha256_list": [
-            "497e246ef79d87f3b2255cc119e7ab8bd0045d48caf3d4710e9f6738e56c4548",  # Authoritative EXP01 checkpoint
-            "e9ac1bed148e6f3e8926d9008fd3fe6ad490ff8ed1dee6d79b96134ef8712c9b",  # Legacy baseline
+            "497e246ef79d87f3b2255cc119e7ab8bd0045d48caf3d4710e9f6738e56c4548",
         ],
         "size_mb": 99.69,
         "candidate_paths": [
             Path("checkpoints/unet_plusplus_best.pth"),
             Path("experiments/2026_water_segmentation_improvement/checkpoints/EXP01_UNetPlusPlus_Tversky_best.pth"),
-            Path("checkpoints/experiments/unet_plusplus_baseline_legacy_e9ac.pth"),
             Path.home() / ".cache" / "geovision" / "checkpoints" / "unet_plusplus_best.pth",
         ],
         "hf_filename": "unet_plusplus_best.pth",
@@ -88,14 +137,12 @@ MODEL_REGISTRY: Dict[str, Dict[str, Any]] = {
         "default_filename": "deeplabv3_plus_best.pth",
         "expected_sha256": "6c7c6dd4835d29be34b9eda03bdfca878914749a526c44cade99906cc1b1b827",
         "trusted_sha256_list": [
-            "6c7c6dd4835d29be34b9eda03bdfca878914749a526c44cade99906cc1b1b827",  # Authoritative EXP04 checkpoint
-            "58efb3a365479b99483bfc014c301050306456747396262ef1bec3ea7646201b",  # Legacy degenerate
+            "6c7c6dd4835d29be34b9eda03bdfca878914749a526c44cade99906cc1b1b827",
         ],
         "size_mb": 85.77,
         "candidate_paths": [
             Path("checkpoints/deeplabv3_plus_best.pth"),
             Path("experiments/2026_water_segmentation_improvement/checkpoints/EXP04_DeepLabV3Plus_FocalTversky_best.pth"),
-            Path("checkpoints/experiments/degenerate_deeplabv3_plus_58ef.pth"),
             Path.home() / ".cache" / "geovision" / "checkpoints" / "deeplabv3_plus_best.pth",
         ],
         "hf_filename": "deeplabv3_plus_best.pth",
@@ -109,7 +156,7 @@ MODEL_REGISTRY: Dict[str, Dict[str, Any]] = {
         "default_filename": "segformer_best.pth",
         "expected_sha256": "2c762a52a5aa5cafb6aecb698bf483257fd5279bce3f3af7368850ba9354e986",
         "trusted_sha256_list": [
-            "2c762a52a5aa5cafb6aecb698bf483257fd5279bce3f3af7368850ba9354e986",  # Authoritative EXP05 checkpoint
+            "2c762a52a5aa5cafb6aecb698bf483257fd5279bce3f3af7368850ba9354e986",
         ],
         "size_mb": 14.26,
         "candidate_paths": [
@@ -329,15 +376,19 @@ def is_model_obtainable(model_name: str) -> bool:
 def get_model_status_summary() -> Dict[str, Dict[str, Any]]:
     """
     Return comprehensive availability and verification status dictionary for all supported models.
-    Supports 5 standard status categories:
+    Supports 6 standard status categories:
     - Verified and loaded
     - Available but not yet loaded
     - Downloading
     - Checkpoint verification failed
+    - Model load failed
     - Unavailable
     """
     summary = {}
-    for name, meta in MODEL_REGISTRY.items():
+    all_keys = list(dict.fromkeys(list(SUPPORTED_MODELS.keys()) + list(MODEL_REGISTRY.keys())))
+
+    for name in all_keys:
+        meta = MODEL_REGISTRY.get(name, {})
         trusted_hashes = meta.get("trusted_sha256_list") or ([meta["expected_sha256"]] if meta.get("expected_sha256") else [])
         is_supported = meta.get("load_supported", True)
         is_hosted = meta.get("is_hosted_on_hf", False)
@@ -359,11 +410,14 @@ def get_model_status_summary() -> Dict[str, Dict[str, Any]]:
                         has_corrupted_candidate = True
                         break
 
-        # Check if loaded in memory
-        is_loaded = name in _LOADED_MODELS_CACHE
+        # Check if loaded in memory or load error exists
+        load_err = _LOAD_ERROR.get(name)
+        is_loaded = (name in _LOADED_MODELS_CACHE) and (load_err is None)
         is_downloading = name in _DOWNLOADING_MODELS
 
-        if is_loaded:
+        if load_err:
+            status_label = STATUS_LOAD_FAILED
+        elif is_loaded:
             status_label = STATUS_VERIFIED_LOADED
         elif is_downloading:
             status_label = STATUS_DOWNLOADING
@@ -377,22 +431,25 @@ def get_model_status_summary() -> Dict[str, Dict[str, Any]]:
         else:
             status_label = STATUS_UNAVAILABLE
 
+        display_name = meta.get("display_name") or SUPPORTED_MODELS.get(name, name.replace("_", " ").title())
+        is_champ = meta.get("is_champion", (name == CHAMPION_MODEL))
+
         summary[name] = {
             "model_name": name,
-            "display_name": meta["display_name"],
-            "is_champion": meta["is_champion"],
-            "available": (has_file and is_supported) or is_hosted,
+            "display_name": display_name,
+            "is_champion": is_champ,
+            "available": ((has_file and is_supported) or is_hosted) and (load_err is None),
             "is_loaded": is_loaded,
             "is_hosted_on_hf": is_hosted,
             "load_supported": is_supported,
-            "support_note": meta.get("support_note", ""),
+            "support_note": meta.get("support_note", "Standard configuration"),
             "checkpoint_path": str(resolved) if resolved else None,
             "expected_sha256": meta.get("expected_sha256"),
             "trusted_sha256_list": trusted_hashes,
             "pinned_revision": DEFAULT_HF_REVISION if is_hosted else None,
             "hf_repo": DEFAULT_HF_REPO if is_hosted else None,
             "status_label": status_label,
-            "last_error": _LAST_DOWNLOAD_ERROR.get(name),
+            "last_error": load_err or _LAST_DOWNLOAD_ERROR.get(name),
         }
     return summary
 
@@ -405,81 +462,93 @@ def load_verified_model(model_name: str, device: str = "cpu") -> Any:
     preventing uninitialized or simulated execution.
     """
     if not HAS_TORCH:
-        raise RuntimeError("PyTorch is not installed in the environment.")
+        err = "PyTorch is not installed in the environment."
+        _LOAD_ERROR[model_name] = err
+        raise RuntimeError(err)
 
-    if model_name not in SUPPORTED_MODELS:
-        raise ValueError(f"Unknown architecture '{model_name}'. Choose from: {SUPPORTED_MODELS}")
+    if model_name not in SUPPORTED_MODELS and model_name not in MODEL_REGISTRY:
+        err = f"Unknown architecture '{model_name}'. Choose from: {list(SUPPORTED_MODELS.keys())}"
+        _LOAD_ERROR[model_name] = err
+        raise ValueError(err)
 
-    if not MODEL_REGISTRY[model_name].get("load_supported", True):
-        note = MODEL_REGISTRY[model_name].get("support_note", "Architecture unsupported")
-        raise RuntimeError(
-            f"Architecture '{model_name}' cannot be loaded: {note}. "
-            "Inference with uninitialized or incompatible weights is strictly prohibited."
-        )
-
-    ckpt_path = resolve_checkpoint_path(model_name, allow_download=True)
-    if ckpt_path is None or not ckpt_path.exists():
-        diag_err = _LAST_DOWNLOAD_ERROR.get(model_name)
-        diag_details = f"\nUnderlying Hugging Face diagnostic: {diag_err}" if diag_err else ""
-        raise RuntimeError(
-            f"Trained checkpoint for '{model_name}' could not be located locally or downloaded from Hugging Face Hub.\n"
-            f"Expected checkpoint: {MODEL_REGISTRY[model_name].get('default_filename')}\n"
-            f"Configured Hugging Face repository: {DEFAULT_HF_REPO}\n"
-            f"Pinned revision: {DEFAULT_HF_REVISION}{diag_details}\n"
-            "Inference with uninitialized weights is strictly prohibited."
-        )
-
-    # 1. Cryptographic SHA-256 Verification prior to deserialization
-    trusted_hashes = MODEL_REGISTRY[model_name].get("trusted_sha256_list") or (
-        [MODEL_REGISTRY[model_name]["expected_sha256"]] if MODEL_REGISTRY[model_name].get("expected_sha256") else []
-    )
-    if trusted_hashes:
-        if not verify_checkpoint_integrity(ckpt_path, trusted_hashes):
-            actual_hash = compute_file_sha256(ckpt_path)
-            raise RuntimeError(
-                f"Cryptographic SHA-256 verification failed for '{ckpt_path}'. "
-                f"Trusted hashes: {trusted_hashes}, calculated: {actual_hash}. "
-                "Inference with compromised or mismatched weights is strictly prohibited."
-            )
-
-    # 2. Instantiate exact architecture with no uninitialized/random ImageNet download
-    model = build_model(model_name=model_name, encoder_weights=None)
-
-    # 3. Safe deserialization using PyTorch weights_only=True
-    state = torch.load(str(ckpt_path), map_location=device, weights_only=True)
-    if isinstance(state, dict) and "state_dict" in state:
-        state = state["state_dict"]
-
-    if not isinstance(state, dict) or len(state) == 0:
-        raise RuntimeError(f"Checkpoint '{ckpt_path}' does not contain a valid non-empty state dictionary.")
-
-    # 4. Prefix normalization (e.g. PyTorch Lightning 'model.' prefix)
-    cleaned_state = {}
-    for k, v in state.items():
-        clean_k = k
-        if clean_k.startswith("model."):
-            clean_k = clean_k[len("model."):]
-        cleaned_state[clean_k] = v
-
-    # 5. Strict state-dictionary loading
     try:
-        model.load_state_dict(state, strict=True)
-    except Exception:
-        try:
-            model.load_state_dict(cleaned_state, strict=True)
-        except Exception as e_strict:
+        if model_name in MODEL_REGISTRY and not MODEL_REGISTRY[model_name].get("load_supported", True):
+            note = MODEL_REGISTRY[model_name].get("support_note", "Architecture unsupported")
             raise RuntimeError(
-                f"Strict state-dictionary loading failed for '{model_name}' using checkpoint '{ckpt_path}': {e_strict}. "
-                "Inference with mismatched or partially initialized weights is strictly prohibited."
+                f"Architecture '{model_name}' cannot be loaded: {note}. "
+                "Inference with uninitialized or incompatible weights is strictly prohibited."
             )
 
-    # 6. Verify evaluation mode and device placement
-    model.to(device)
-    model.eval()
+        ckpt_path = resolve_checkpoint_path(model_name, allow_download=True)
+        if ckpt_path is None or not ckpt_path.exists():
+            diag_err = _LAST_DOWNLOAD_ERROR.get(model_name)
+            diag_details = f"\nUnderlying Hugging Face diagnostic: {diag_err}" if diag_err else ""
+            default_fname = MODEL_REGISTRY.get(model_name, {}).get("default_filename", f"{model_name}.pth")
+            raise RuntimeError(
+                f"Trained checkpoint for '{model_name}' could not be located locally or downloaded from Hugging Face Hub.\n"
+                f"Expected checkpoint: {default_fname}\n"
+                f"Configured Hugging Face repository: {DEFAULT_HF_REPO}\n"
+                f"Pinned revision: {DEFAULT_HF_REVISION}{diag_details}\n"
+                "Inference with uninitialized weights is strictly prohibited."
+            )
 
-    # Safety assertion: guarantee evaluation mode
-    if model.training:
-        raise RuntimeError(f"Safety violation: Model '{model_name}' is in training mode after loading. Must be in eval mode.")
+        # 1. Cryptographic SHA-256 Verification prior to deserialization
+        meta = MODEL_REGISTRY.get(model_name, {})
+        trusted_hashes = meta.get("trusted_sha256_list") or (
+            [meta["expected_sha256"]] if meta.get("expected_sha256") else []
+        )
+        if trusted_hashes:
+            if not verify_checkpoint_integrity(ckpt_path, trusted_hashes):
+                actual_hash = compute_file_sha256(ckpt_path)
+                raise RuntimeError(
+                    f"Cryptographic SHA-256 verification failed for '{ckpt_path}'. "
+                    f"Trusted hashes: {trusted_hashes}, calculated: {actual_hash}. "
+                    "Inference with compromised or mismatched weights is strictly prohibited."
+                )
 
-    _LOADED_MODELS_CACHE[model_name] = model
-    return model
+        # 2. Instantiate exact architecture with no uninitialized/random ImageNet download
+        model = build_model(model_name=model_name, encoder_weights=None)
+
+        # 3. Safe deserialization using PyTorch weights_only=True
+        state = torch.load(str(ckpt_path), map_location=device, weights_only=True)
+        if isinstance(state, dict) and "state_dict" in state:
+            state = state["state_dict"]
+
+        if not isinstance(state, dict) or len(state) == 0:
+            raise RuntimeError(f"Checkpoint '{ckpt_path}' does not contain a valid non-empty state dictionary.")
+
+        # 4. Prefix normalization (e.g. PyTorch Lightning 'model.' prefix)
+        cleaned_state = {}
+        for k, v in state.items():
+            clean_k = k
+            if clean_k.startswith("model."):
+                clean_k = clean_k[len("model."):]
+            cleaned_state[clean_k] = v
+
+        # 5. Strict state-dictionary loading
+        try:
+            model.load_state_dict(state, strict=True)
+        except Exception:
+            try:
+                model.load_state_dict(cleaned_state, strict=True)
+            except Exception as e_strict:
+                raise RuntimeError(
+                    f"Strict state-dictionary loading failed for '{model_name}' using checkpoint '{ckpt_path}': {e_strict}. "
+                    "Inference with mismatched or partially initialized weights is strictly prohibited."
+                )
+
+        # 6. Verify evaluation mode and device placement
+        model.to(device)
+        model.eval()
+
+        # Safety assertion: guarantee evaluation mode
+        if model.training:
+            raise RuntimeError(f"Safety violation: Model '{model_name}' is in training mode after loading. Must be in eval mode.")
+
+        _LOAD_ERROR[model_name] = None
+        _LOADED_MODELS_CACHE[model_name] = model
+        return model
+    except Exception as e:
+        _LOAD_ERROR[model_name] = str(e)
+        _LOADED_MODELS_CACHE.pop(model_name, None)
+        raise

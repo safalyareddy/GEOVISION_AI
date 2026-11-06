@@ -66,6 +66,28 @@ if HAS_STREAMLIT:
         initial_sidebar_state="expanded"
     )
 
+def get_safe_model_meta(status_map: Dict[str, Any], model_key: str) -> Dict[str, Any]:
+    """Safely extract metadata from status_map, guaranteeing non-empty strings and preventing KeyErrors."""
+    if model_key in status_map and isinstance(status_map[model_key], dict):
+        entry = status_map[model_key]
+        return {
+            "display_name": entry.get("display_name") or SUPPORTED_MODELS.get(model_key, model_key.replace("_", " ").title()),
+            "status_label": entry.get("status_label") or "Unavailable",
+            "support_note": entry.get("support_note") or "Standard configuration",
+            "available": bool(entry.get("available", False)),
+            "is_loaded": bool(entry.get("is_loaded", False)),
+            "is_champion": bool(entry.get("is_champion", (model_key == CHAMPION_MODEL))),
+        }
+    return {
+        "display_name": SUPPORTED_MODELS.get(model_key, model_key.replace("_", " ").title()),
+        "status_label": "Unavailable",
+        "support_note": "Model not found in registry summary.",
+        "available": False,
+        "is_loaded": False,
+        "is_champion": (model_key == CHAMPION_MODEL),
+    }
+
+
 # -----------------------------------------------------------------------------
 # PyTorch Model Caching (Safe Deserialization & Cryptographic Integrity)
 # -----------------------------------------------------------------------------
@@ -254,9 +276,9 @@ def main():
     model_status_map = get_model_status_summary()
 
     def format_model(name: str) -> str:
-        meta = model_status_map.get(name, {})
-        display = meta.get("display_name", name.upper())
-        status_lbl = meta.get("status_label", "")
+        meta = get_safe_model_meta(model_status_map, name)
+        display = meta["display_name"]
+        status_lbl = meta["status_label"]
         prefix = "⭐ " if meta.get("is_champion") else ""
         return f"{prefix}{display} — [{status_lbl}]"
 
@@ -459,15 +481,18 @@ def main():
         elif classification == InputClassification.VERIFIED_GEOSPATIAL_INPUT:
             st.success(f"🌐 **Verified Geospatial Input**: Embedded GeoTIFF coordinate reference & pixel scale detected ({input_meta.get('pixel_scale_m')}). Exact spatial quantification active.")
         elif classification == InputClassification.USER_DECLARED_SATELLITE_UNVERIFIED:
-            st.info("🟡 **User-Declared Satellite (Nominal Approximation Mode)**: Remote sensing imagery without embedded geospatial metadata tags. Nominal 10m GSD assumption applied.")
-        elif classification == InputClassification.UNSUPPORTED_PHOTOGRAPH:
+            st.info(
+                "🟡 **User-Declared Satellite (Nominal Approximation Mode)**: "
+                "Satellite imagery was declared by the user but could not be independently verified. "
+                "Source imagery lacks verifiable geospatial coordinate reference or pixel scale tags; nominal 10m GSD applied."
+            )
+        elif classification in (InputClassification.UNSUPPORTED_INPUT, InputClassification.UNSUPPORTED_PHOTOGRAPH):
             st.error(
-                f"🛑 **Unsupported Consumer Photograph Detected**\n\n"
+                f"🛑 **Unsupported Input / Consumer Photograph Detected**\n\n"
                 f"{input_meta.get('rejection_reason')}\n\n"
-                f"• **Mean Saturation**: `{input_meta.get('mean_saturation', 'N/A')}`\n"
                 f"• **Camera / EXIF**: `{input_meta.get('camera_make', 'None')} {input_meta.get('camera_model', '')}`\n\n"
-                "**Hydrological Area Claim Blocked**: Consumer photographs of flowers, portraits, or indoor objects "
-                "do not represent Earth observation reflectance and cannot produce valid hydrological area metrics."
+                "**Hydrological Area Claim Blocked**: Non-remote-sensing imagery (consumer photography, portraits, floral macros, solid blanks) "
+                "does not represent Earth observation reflectance and cannot produce valid hydrological area metrics."
             )
         elif classification == InputClassification.INVALID_IMAGE:
             st.error(f"❌ **Invalid Image Payload**: {input_meta.get('rejection_reason')}")
@@ -486,7 +511,7 @@ def main():
         # Verification Gate
         can_run = False
         is_photo_rejected = (
-            classification == InputClassification.UNSUPPORTED_PHOTOGRAPH or
+            classification in (InputClassification.UNSUPPORTED_INPUT, InputClassification.UNSUPPORTED_PHOTOGRAPH) or
             classification == InputClassification.INVALID_IMAGE
         )
 
@@ -607,11 +632,17 @@ def main():
         )
 
         status_map = get_model_status_summary()
-        available_keys = [k for k, meta in status_map.items() if meta["available"]]
+        available_keys = [k for k, meta in status_map.items() if meta.get("available")]
+        all_model_keys = list(dict.fromkeys(list(SUPPORTED_MODELS.keys()) + list(status_map.keys())))
+
+        status_bullets = []
+        for k in all_model_keys:
+            m = get_safe_model_meta(status_map, k)
+            status_bullets.append(f"• **{m['display_name']}**: {m['status_label']} — {m['support_note']}")
 
         st.info(
-            f"**Architecture Verification Status ({len(available_keys)}/{len(SUPPORTED_MODELS)} Available)**:\n\n" +
-            "\n".join([f"• **{status_map[k]['display_name']}**: {status_map[k]['status_label']} — {status_map[k]['support_note']}" for k in SUPPORTED_MODELS])
+            f"**Architecture Verification Status ({len(available_keys)}/{len(all_model_keys)} Available)**:\n\n" +
+            "\n".join(status_bullets)
         )
 
         if image is None:
@@ -636,9 +667,10 @@ def main():
                         water_px = int(np.sum(b_mask))
                         area_km2, a_note = calculate_water_area_km2(water_px, classification, input_meta)
                         ov_img = create_overlay(image, m_img)
+                        arch_meta = get_safe_model_meta(status_map, arch_key)
                         comp_results.append({
                             "key": arch_key,
-                            "name": status_map[arch_key]["display_name"],
+                            "name": arch_meta["display_name"],
                             "mask_img": m_img,
                             "overlay_img": ov_img,
                             "latency_ms": lat,

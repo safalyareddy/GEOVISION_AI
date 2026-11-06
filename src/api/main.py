@@ -239,7 +239,7 @@ async def predict(
 
     # Scientific Safety Gate: Classify image
     classification, input_meta = classify_input_image(image, raw_bytes=raw_bytes, filename=file.filename)
-    if classification == InputClassification.UNSUPPORTED_PHOTOGRAPH:
+    if classification in (InputClassification.UNSUPPORTED_INPUT, InputClassification.UNSUPPORTED_PHOTOGRAPH):
         _METRICS["rejected_photos"] += 1
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,

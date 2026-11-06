@@ -32,8 +32,13 @@ from src.utils.model_registry import (
     STATUS_AVAILABLE_NOT_LOADED,
     STATUS_DOWNLOADING,
     STATUS_VERIFICATION_FAILED,
+    STATUS_LOAD_FAILED,
     STATUS_UNAVAILABLE,
     _LAST_DOWNLOAD_ERROR,
+    _LOAD_ERROR,
+    get_hf_revision,
+    AUTHORITATIVE_HF_REVISION,
+    OBSOLETE_HF_REVISIONS,
 )
 
 
@@ -256,15 +261,80 @@ def test_hf_download_failure_captures_diagnostic_and_surfaces_in_load(tmp_path: 
 
 
 def test_model_status_categories():
-    """Test that model status summary provides canonical 5 status labels."""
+    """Test that model status summary provides canonical 6 status labels."""
     summary = get_model_status_summary()
     valid_statuses = {
         STATUS_VERIFIED_LOADED,
         STATUS_AVAILABLE_NOT_LOADED,
         STATUS_DOWNLOADING,
         STATUS_VERIFICATION_FAILED,
+        STATUS_LOAD_FAILED,
         STATUS_UNAVAILABLE,
     }
     for model_name, info in summary.items():
         assert info["status_label"] in valid_statuses, f"Invalid status: {info['status_label']}"
+
+
+def test_obsolete_revision_override(monkeypatch):
+    """Test that obsolete revision 022039f is strictly rejected and overridden with authoritative revision."""
+    for obsolete_rev in OBSOLETE_HF_REVISIONS:
+        monkeypatch.setenv("GEOVISION_HF_REVISION", obsolete_rev)
+        resolved = get_hf_revision()
+        assert resolved == AUTHORITATIVE_HF_REVISION, f"Expected {AUTHORITATIVE_HF_REVISION}, got {resolved}"
+
+
+def test_authoritative_four_model_manifest_hashes():
+    """Verify that all four production architectures have expected cryptographic hashes registered."""
+    expected_manifest = {
+        "fpn": "d21fa18c36beabdb0b139364d347a6e97c1cc00e83e9ba92630e9a7795119eb1",
+        "unet_plusplus": "497e246ef79d87f3b2255cc119e7ab8bd0045d48caf3d4710e9f6738e56c4548",
+        "deeplabv3_plus": "6c7c6dd4835d29be34b9eda03bdfca878914749a526c44cade99906cc1b1b827",
+        "segformer": "2c762a52a5aa5cafb6aecb698bf483257fd5279bce3f3af7368850ba9354e986",
+    }
+    for model_key, expected_hash in expected_manifest.items():
+        assert model_key in MODEL_REGISTRY, f"Missing {model_key} in MODEL_REGISTRY"
+        assert MODEL_REGISTRY[model_key]["expected_sha256"] == expected_hash
+        assert expected_hash in MODEL_REGISTRY[model_key]["trusted_sha256_list"]
+
+
+def test_status_summary_complete_for_supported_models():
+    """
+    Test Failure C regression: get_model_status_summary() must contain a complete
+    status dict for all keys in SUPPORTED_MODELS even if a key is missing from MODEL_REGISTRY.
+    """
+    from src.models import SUPPORTED_MODELS
+    # Intentionally test with a synthetic extra key in SUPPORTED_MODELS
+    with patch.dict(SUPPORTED_MODELS, {"future_model_v2": "Future Architecture"}):
+        summary = get_model_status_summary()
+        assert "future_model_v2" in summary
+        entry = summary["future_model_v2"]
+        # Required keys for UI rendering
+        assert "display_name" in entry
+        assert "status_label" in entry
+        assert "support_note" in entry
+        assert "available" in entry
+        assert "is_loaded" in entry
+        assert entry["display_name"] == "Future Architecture"
+        assert entry["status_label"] == STATUS_UNAVAILABLE
+
+
+def test_load_error_tracked_in_status_summary(tmp_path: Path):
+    """Test that a load failure sets STATUS_LOAD_FAILED and populates last_error."""
+    with patch.dict(MODEL_REGISTRY, {"fpn": {
+        "display_name": "Failing FPN",
+        "is_champion": True,
+        "default_filename": "missing.pth",
+        "expected_sha256": None,
+        "candidate_paths": [tmp_path / "missing.pth"],
+        "hf_filename": "missing.pth",
+        "load_supported": True,
+        "is_hosted_on_hf": False,
+    }}):
+        with pytest.raises(RuntimeError):
+            load_verified_model("fpn", device="cpu")
+        summary = get_model_status_summary()
+        assert summary["fpn"]["status_label"] == STATUS_LOAD_FAILED
+        assert summary["fpn"]["last_error"] is not None
+        assert "Trained checkpoint for 'fpn' could not be located" in summary["fpn"]["last_error"]
+
 
